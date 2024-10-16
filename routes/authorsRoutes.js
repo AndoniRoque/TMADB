@@ -1,6 +1,8 @@
 const { Router } = require("express");
-const { getAuthorById } = require("../controllers/authorController");
 const authorsRouter = Router();
+const { getAuthorById } = require("../controllers/authorController");
+
+authorsRouter
 
 
 function myMiddleware(req, res, next) {
