@@ -1,12 +1,28 @@
 const express = require("express");
 const app = express();
+const path = require("node:path");
 //const booksRouter = require("routes/booksRouter");
 const authorsRouter = require("./routes/authorsRoutes");
 // const indexRouter = require("routes/indexRouter");
 
-//app.use("/books", booksRouter);
+// app.js
+const links = [
+  { href: "/", text: "Home" },
+  { href: "about", text: "About" },
+];
+
+app.set("views", path.join(__dirname, "views"));
+console.log(__dirname);
+app.set("view engine", "ejs");
+
+app.get("/", (req, res) => {
+  res.render("index", { links: links }); // Pass links to index view
+});
+
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
 app.use("/authors", authorsRouter);
-// app.use("/", indexRouter);
+//app.use("/books", booksRouter);
 
 const PORT = 3333;
 
