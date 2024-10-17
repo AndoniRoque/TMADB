@@ -2,17 +2,16 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title></title>
   </head>
 <body>
-  <h1><%= title %></h1>
-  <%- include("partials/errors.ejs") %>
-  <form action="/create" method="POST">
-    <label for="firstName">First Name: </label>
-    <input type="text" name="firstName" id="firstName" required>
-    <label for="lastName">Last Name: </label>
-    <input type="text" name="lastName" id="lastName" required>
-    <button type="submit">Submit</button>
+  <h1></h1>
+  <form action="" method="POST">
+    <label for="username">Username: </label>
+    <input id="username" type="text" name="username" placeholder="username" required>
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" required />
+    <button type="submit">Sign up</button>
   </form>
   <a href="/">Back to home</a>
 </body>
