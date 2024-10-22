@@ -76,9 +76,9 @@
 const db = require("../db/queries");
 
 async function getUsernames(req, res) {
-  console.log("Hola");
   const usernames = await db.getAllUsernames();
-  res.send("Usernames: " + usernames.map(user => user.name).join(", "));
+  console.log("Usernames: ", usernames);
+  res.send("Usernames: " + usernames.map(user => user.username).join(", "));
 }
 
 async function createUsernameGet(req, res) {

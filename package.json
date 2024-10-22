@@ -10,7 +10,8 @@
     "passport": "^0.7.0",
     "passport-google-oauth": "^2.0.0",
     "passport-local": "^1.0.0",
-    "pg": "^8.13.0"
+    "pg": "^8.13.0",
+    "uuid": "^10.0.0"
   },
   "name": "tmadb",
   "description": "",
