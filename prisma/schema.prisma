@@ -12,8 +12,6 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-<<<<<<< HEAD
-=======
 
 model Post {
   id        Int      @id @default(autoincrement())
@@ -37,7 +35,7 @@ model User {
   id      Int      @id @default(autoincrement())
   email   String   @unique
   name    String?
+  jobTitle String
   posts   Post[]
   profile Profile?
 }
->>>>>>> b83b64edab0a92737b598fe9538fbeba36bfe290
