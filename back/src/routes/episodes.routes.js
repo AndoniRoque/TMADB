@@ -4,7 +4,7 @@ import { ensureAuthenticated } from "../controllers/auth.controller.js";
 
 const router = Router();
 
-router.get('/episodes', ensureAuthenticated, async (req, res) => {
+router.get('/episodes', async (req, res) => {
   const episodes = await prisma.episode.findMany();
   res.json(episodes);
 })
