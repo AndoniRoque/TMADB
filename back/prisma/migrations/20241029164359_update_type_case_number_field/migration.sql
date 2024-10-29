@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Episode" ALTER COLUMN "caseNumber" DROP DEFAULT,
+ALTER COLUMN "caseNumber" SET DATA TYPE TEXT;

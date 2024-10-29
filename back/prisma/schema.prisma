@@ -22,6 +22,8 @@ model Episode {
   description String
   characters Character @relation(fields: [characterId], references: [id])
   characterId Int
+  heard Boolean @default(false)
+  caseNumber String
 }
 
 model Character {
