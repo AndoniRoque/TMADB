@@ -5,6 +5,8 @@ import {
   Checkbox, 
   FormControl, 
   FormLabel, 
+  Grid, 
+  GridItem, 
   Input, 
   Modal, 
   ModalBody, 
@@ -90,21 +92,25 @@ export default function EpisodesPage() {
         <Text w={"50%"} > T.M.A Episodes</Text>
         <Button onClick={onOpen} > Upload Episode </Button>
       </Box>
-      {episodes ? (
-        episodes?.map((e:Episode, index: number) => (
+      <Grid templateColumns='repeat(5,1fr)' gap={4}>
+        {episodes ? (
+          episodes?.map((e:Episode, index: number) => (
+            <>
+              <GridItem w={'100%'} bg={'blue.500'} mx={4}>
+                <Box border={"1px solid black"} w={"50vw"} p={4} m={4}>
+                  <Checkbox/>
+                  <Text key={index}>{e.number} - {e.title} | {e.releaseDate}</Text> 
+                  <p> {e.description} </p>
+                </Box>
+              </GridItem>
+            </>
+          ))
+        ) : (
           <>
-            <Box border={"1px solid black"} w={"50vw"} p={4} m={4}>
-              <Checkbox/>
-              <Text key={index}>{e.number} - {e.title} | {e.releaseDate}</Text> 
-              <p> {e.description}</p>
-            </Box>
+            <Text> {message} </Text>
           </>
-        ))
-      ) : (
-        <>
-          <Text> {message} </Text>
-        </>
-      )}
+        )}
+      </Grid>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
