@@ -17,11 +17,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="typewriter.className">
-      <Header>
         <body style={{margin: "0px"}}>
+          <Header>{children}</Header>
           <Providers>{children}</Providers>
         </body>
-      </Header>
     </html>
   );
 }
