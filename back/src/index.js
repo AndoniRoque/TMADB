@@ -17,7 +17,6 @@ app.use(express.urlencoded({extended: false}));
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
 app.use('/api', usersRoutes);
-app.use('/api', episodesRoutes);
 
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;
@@ -26,6 +25,7 @@ app.use((req, res, next) => {
 
 // Rutas protegidas
 app.use('/api', ensureAuthenticated, charactersRoutes);
+app.use('/api', ensureAuthenticated, episodesRoutes);
 
 
 app.listen(3333, () => {

@@ -15,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="typewriter.className">
+    <html lang="en" className="typewriter.className" suppressHydrationWarning>
       <Header></Header>
       <body>
         <Providers>{children}</Providers>
