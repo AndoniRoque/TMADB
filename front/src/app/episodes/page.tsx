@@ -7,7 +7,10 @@ import {
   FormLabel, 
   Grid, 
   GridItem, 
+  Heading, 
   Input, 
+  LinkBox, 
+  LinkOverlay, 
   Modal, 
   ModalBody, 
   ModalCloseButton, 
@@ -16,6 +19,7 @@ import {
   ModalHeader, 
   ModalOverlay, 
   Select, 
+  Skeleton, 
   Text, 
   Textarea, 
   useDisclosure 
@@ -23,6 +27,7 @@ import {
 import axios from "axios";
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from "react";
+import EpisodeCard from "../components/Card";
 const URL_BACK = "http://localhost:3333/api";
 
 interface Episode {
@@ -33,6 +38,7 @@ interface Episode {
   description: string;
   caseNumber: string;
   heard: boolean;
+  season: number;
 }
 
 export default function EpisodesPage() {
@@ -44,20 +50,10 @@ export default function EpisodesPage() {
   const [releaseDate, setReleaseDate] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [characters, setCharacters ] = useState<number>(0);
-  const [heard, setHeard] = useState<boolean>(true);
+  const [heard, setHeard] = useState<boolean>(false);
   const [caseNumber, setCaseNumber] = useState<string>("");
-
-
-  const getEpisodes = async () =>  {
-    try {
-      const response = await axios.get(`${URL_BACK}/episodes`);
-      console.log(response);
-      setEpisodes(response.data);
-    } catch(err) {
-      setMessage('Episodes not found.');
-      console.error(err);
-    }
-  }
+  const [season, setSeason] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(true); 
 
   const data = {
     title,
@@ -66,7 +62,21 @@ export default function EpisodesPage() {
     description,
     characterId: 1,
     heard,
-    caseNumber
+    caseNumber,
+    season
+  }
+
+  const getEpisodes = async () =>  {
+    try {
+      const response = await axios.get(`${URL_BACK}/episodes`);
+      // console.log(response);
+      setEpisodes(response.data);
+    } catch(err) {
+      setMessage('Episodes not found.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   }
 
   const uploadEpisode = async () => {
@@ -81,44 +91,48 @@ export default function EpisodesPage() {
     }
   }
 
-  const heardEpisode = async (heard:boolean, id: number) => {
-    try {
-      const update = await axios.put(`${URL_BACK}/episodes/${id}`, {heard: !heard});
-      getEpisodes();
-    } catch(err) {
-      console.error(err);
-    }
-  }
-
   useEffect(() => {
     getEpisodes();
   }, []);
 
   return (
     <>
-      <Box display={"flex"} justifyContent={"space-between"} flexDirection={"row"} m={4} p={4} >
-        <Text w={"50%"} > T.M.A Episodes</Text>
-        <Button onClick={onOpen} > Upload Episode </Button>
+      <Box display={"flex"} justifyContent={"space-around"} flexDirection={"row"} m={4} p={4} >
+        <Heading size="6xl"> T.M.A Episodes</Heading>
+        <Button onClick={onOpen}> Upload Episode </Button>
       </Box>
-      <Grid templateColumns='repeat(5,1fr)' gap={2}>
-        {episodes ? (
-          episodes?.map((e:Episode, index: number) => (
+      <Box display={"flex"} justifyContent={"center"} alignItems="center" w="100%">
+        <Grid templateColumns='repeat(3, 1fr)' gap={10} mx="auto" >
+          {loading ? (
             <>
-              <GridItem w={'50vw'} bg={'green.500'} mx={4}>
-                <Box border={"1px solid black"} p={4} >
-                  <Checkbox isChecked={e.heard} onChange={() => heardEpisode(e.heard, e.id)}/>
-                  <Text key={index}>{e.number} - {e.title} | {e.releaseDate}</Text> 
-                  <p> {e.description} </p>
-                </Box>
-              </GridItem>
+              <Skeleton ml={16} height="200px" />
+              <Skeleton ml={16} height="200px" />
+              <Skeleton ml={16} height="200px" />
             </>
-          ))
-        ) : (
-          <>
-            <Text> {message} </Text>
-          </>
-        )}
-      </Grid>
+          ) : (
+            <>
+              {episodes ? (
+                episodes?.map((e:Episode) => (
+                  <>
+                    <GridItem key={e.id} w={500} >
+                      <LinkBox>
+                        <LinkOverlay href={`/episode/${e.number}`}>
+                          <EpisodeCard episode={e} />
+                        </LinkOverlay>
+                      </LinkBox>
+                    </GridItem>
+                  </>
+                ))
+              ) : (
+                <>
+                  <Text>{message}</Text>
+                </>
+              )}
+            </>
+          )}
+        </Grid>
+      </Box>
+      
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -128,6 +142,8 @@ export default function EpisodesPage() {
             <FormControl>
               <FormLabel>Title</FormLabel>
               <Input placeholder="Episode title..." onChange={(e) => setTitle(e.target.value)}/>
+              <FormLabel>Season</FormLabel>
+              <Input placeholder="Season..." onChange={(e) => setSeason(parseInt(e.target.value))}/>
               <FormLabel>Episode Number</FormLabel>
               <Input placeholder="Episode number..." onChange={(e) => setNumber(parseInt(e.target.value))}/>
               <FormLabel>Case #</FormLabel>
@@ -139,7 +155,7 @@ export default function EpisodesPage() {
               <FormLabel>Characters in Episode</FormLabel>
               <Select> </Select>
               <FormLabel>Heard Episode </FormLabel>
-              <Checkbox onChange={(e) => e ? setHeard(true) : setHeard(false)}></Checkbox>
+              <Checkbox onChange={(e) => setHeard(e.target.checked)}></Checkbox>
             </FormControl>
           </ModalBody>
 

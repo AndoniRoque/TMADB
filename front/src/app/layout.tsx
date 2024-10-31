@@ -17,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="typewriter.className">
-        <body style={{margin: "0px"}}>
+        <body style={{margin: "0px", width: "100vw"}}>
           <Header>{children}</Header>
           <Providers>{children}</Providers>
         </body>
