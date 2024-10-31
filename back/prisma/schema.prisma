@@ -14,26 +14,29 @@ datasource db {
 }
 
 model Episode {
-  id Int @id @default(autoincrement())
-  title String @unique
-  number Int
+  id          Int         @id @default(autoincrement())
+  title       String      @unique
+  number      Int
+  season      Int         @default(1)
   releaseDate DateTime
-  createdAt DateTime @default(now())
+  createdAt   DateTime    @default(now())
   description String
-  characters Character @relation(fields: [characterId], references: [id])
-  characterId Int
+  heard       Boolean     @default(false)
+  caseNumber  String
+  characters  Character[] @relation("EpisodeCharacters")
 }
 
 model Character {
-  id Int @id @default(autoincrement())
-  name String @unique
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
   description String
-  episode Episode[]
+  episodes    Episode[]    @relation("EpisodeCharacters")
 }
 
 model User {
-  id Int @id @default(autoincrement())
+  id       Int    @id @default(autoincrement())
   username String @unique
   password String
-  mail String @unique
+  mail     String @unique
 }
+
