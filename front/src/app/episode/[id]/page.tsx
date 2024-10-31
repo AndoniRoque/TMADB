@@ -1,4 +1,6 @@
 'use client';
+import EpisodeCard from '@/app/components/Card';
+import { Box, Image, Text } from '@chakra-ui/react';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/compat/router';
@@ -41,13 +43,26 @@ function page() {
   }, [episodeNumber])
 
   return (
-    <div>
-      <h1>{episode.title}</h1>
-      <p>{episode.description}</p>
-      <p>Número de caso: {episode.caseNumber}</p>
-      <p>Fecha de lanzamiento: {dayjs(episode.releaseDate).format('DD-MM-YYYY')}</p>
-      <p>Temporada: {episode.season}</p>
-    </div>
+    <Box 
+      display={"flex"}
+      flexDirection={"column"}
+      alignItems={"center"}
+      justifyContent="center"
+      h={"90vh"}
+      background="linear-gradient(282deg, rgba(2, 0, 36, 1) 0%, rgba(26, 83, 25, 1) 35%, rgba(80, 141, 78, 1) 100%)"
+    >
+      <Box display={"flex"} justifyContent={"center"}>
+        <Text fontSize={"4xl"}>MAG {episode.number} - {episode.title}</Text>
+      </Box>
+      <Text textAlign={"right"}>Season: {episode.season}</Text>
+      <Text textAlign={"right"}>Release Date: {dayjs(episode.releaseDate).format('DD-MM-YYYY')}</Text>
+      <Box display={"flex"} justifyContent={"center"}>
+        <Text fontSize={"2xl"}>
+          <Text as="span" fontWeight="bold">#{episode.caseNumber} - </Text>
+          {episode.description}
+        </Text>
+      </Box>
+    </Box>
   )
 }
 

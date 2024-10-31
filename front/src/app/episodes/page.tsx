@@ -60,7 +60,6 @@ export default function EpisodesPage() {
     number,
     releaseDate: dayjs(releaseDate, 'DD-MM-YYYY').toDate(),
     description,
-    characterId: 1,
     heard,
     caseNumber,
     season
