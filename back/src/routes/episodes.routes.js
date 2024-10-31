@@ -73,7 +73,7 @@ router.get('/episodes/:id', async(req,res) => {
     res.status(500).json({error: 'Error getting episodes', details: err.message})
   }
 })
-router.put('/episodes/:id', ensureAuthenticated, async (req, res) => {
+router.put('/episodes/:id', async (req, res) => {
   const id = parseInt(req.params.id, 10);
 
   if (isNaN(id)) {

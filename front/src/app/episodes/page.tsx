@@ -26,10 +26,13 @@ import React, { useEffect, useState } from "react";
 const URL_BACK = "http://localhost:3333/api";
 
 interface Episode {
+  id: number;
   title: string;
   number: number;
   releaseDate: string;
   description: string;
+  caseNumber: string;
+  heard: boolean;
 }
 
 export default function EpisodesPage() {
@@ -66,16 +69,21 @@ export default function EpisodesPage() {
     caseNumber
   }
 
-  console.log("Hola");
-
-  
-  console.log(data);
   const uploadEpisode = async () => {
     try {
       const upload = await axios.post(`${URL_BACK}/episodes`, data);
       console.log(upload);
       alert("El episodio fue cargado exitosamente.")
       onClose();
+      getEpisodes();
+    } catch(err) {
+      console.error(err);
+    }
+  }
+
+  const heardEpisode = async (heard:boolean, id: number) => {
+    try {
+      const update = await axios.put(`${URL_BACK}/episodes/${id}`, {heard: !heard});
       getEpisodes();
     } catch(err) {
       console.error(err);
@@ -92,13 +100,13 @@ export default function EpisodesPage() {
         <Text w={"50%"} > T.M.A Episodes</Text>
         <Button onClick={onOpen} > Upload Episode </Button>
       </Box>
-      <Grid templateColumns='repeat(5,1fr)' gap={4}>
+      <Grid templateColumns='repeat(5,1fr)' gap={2}>
         {episodes ? (
           episodes?.map((e:Episode, index: number) => (
             <>
-              <GridItem w={'100%'} bg={'blue.500'} mx={4}>
-                <Box border={"1px solid black"} w={"50vw"} p={4} m={4}>
-                  <Checkbox/>
+              <GridItem w={'50vw'} bg={'green.500'} mx={4}>
+                <Box border={"1px solid black"} p={4} >
+                  <Checkbox isChecked={e.heard} onChange={() => heardEpisode(e.heard, e.id)}/>
                   <Text key={index}>{e.number} - {e.title} | {e.releaseDate}</Text> 
                   <p> {e.description} </p>
                 </Box>
