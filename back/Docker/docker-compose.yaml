@@ -1,0 +1,13 @@
+version: "3"
+   
+services:
+  TMADBdb:
+    image: postgres:14
+    container_name: TMADB_DB
+    ports:
+      - "7654:5432"
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    env_file:
+      - ../.env  
+    restart: always

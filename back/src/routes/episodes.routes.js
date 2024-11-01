@@ -16,6 +16,9 @@ router.get('/episodes', async (req, res) => {
       },
       orderBy: {
         number: 'asc'
+      },
+      include: {
+        characters: true,
       }
     });
 
@@ -67,7 +70,10 @@ router.get('/episodes/:id', async(req,res) => {
 
   try {
     const episode = await prisma.episode.findFirst({
-      where: {id}
+      where: {id},
+      include: {
+        characters: true,
+      }
     })
 
     !episode ? res.status(400).json({error: 'Episode not found.'}) : res.status(200).json(episode);
