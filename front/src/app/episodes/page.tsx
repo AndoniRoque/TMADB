@@ -53,6 +53,7 @@ export default function EpisodesPage() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [message, setMessage] = useState<string>("");
+  const [characterMessage, setCharacterMessage] = useState<string>("");
   const [title, setTitle] = useState<string>("");
   const [number, setNumber] = useState<number>(0);
   const [releaseDate, setReleaseDate] = useState<string>("");
@@ -104,12 +105,12 @@ export default function EpisodesPage() {
     try{
       const characters = await axios.get(`${URL_BACK}/characters`);
       if(characters.data.message) {
-        setMessage(characters.data.message);
+        setCharacterMessage(characters.data.message);
       } else {
         setCharacters(characters.data);
       }
     } catch(err) {
-      setMessage('Characters not found.')
+      setCharacterMessage('Characters not found.')
       console.error(err);
     } finally {
       setLoading(false);
@@ -121,8 +122,8 @@ export default function EpisodesPage() {
       const upload = await axios.post(`${URL_BACK}/episodes`, data);
       console.log(upload);
       alert("El episodio fue cargado exitosamente.")
-      onClose();
       getEpisodes();
+      onClose();
     } catch(err) {
       console.error(err);
     }
@@ -139,8 +140,7 @@ export default function EpisodesPage() {
         <Heading fontSize="4xl" color={"whitesmoke"} > T.M.A Episodes</Heading>
         <Button onClick={onOpen} > Upload Episode </Button>
       </Box>
-      <Box display={"flex"} justifyContent={"center"} alignItems="center" w="100%">
-        <Grid templateColumns='repeat(3, 1fr)' gap={10} mx="auto" >
+      <Box display={"flex"} justifyContent={"center"} alignItems="center" >
           {loading ? (
             <>
               <Skeleton ml={16} height="200px" />
@@ -148,19 +148,26 @@ export default function EpisodesPage() {
               <Skeleton ml={16} height="200px" />
             </>
           ) : message ? ( // Mostrar mensaje de error si existe
-            <Text color={"whitesmoke"}>{message}</Text>
+            <>
+              <Box display={"flex"} justifyContent={"center"} alignItems={"center"} h={"70vh"}>
+                <Text color={"whitesmoke"}>{message}</Text>
+              </Box>
+            </>
           ) : (
-              episodes.map((e: Episode) => (
-                <GridItem key={e.id} w={500}>
-                  <LinkBox>
-                    <LinkOverlay href={`/episode/${e.number}`}>
-                      <EpisodeCard episode={e} refreshEpisodes={getEpisodes}/>
-                    </LinkOverlay>
-                  </LinkBox>
-                </GridItem>
-              ))
-            )}
-          </Grid>
+            <>
+              <Grid templateColumns='repeat(3, 1fr)' gap={10} mx="auto" >
+                {episodes.map((e: Episode) => (
+                  <GridItem key={e.id} w={500}>
+                    <LinkBox>
+                      <LinkOverlay href={`/episode/${e.id}`}>
+                        <EpisodeCard episode={e} refreshEpisodes={getEpisodes}/>
+                      </LinkOverlay>
+                    </LinkBox>
+                  </GridItem>
+                ))}
+              </Grid>
+            </>
+          )}
         </Box>
       
       <Modal isOpen={isOpen} onClose={onClose}>

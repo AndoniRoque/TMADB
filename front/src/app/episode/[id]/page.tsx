@@ -44,48 +44,51 @@ function page() {
     }
   }
 
-  useEffect(() => {
-    const getEpisode = async () => {
-      try {
-        const response = await axios.get(`${URL_BACK}/episodes/${episodeNumber}`);
-        console.log(response.data);
-        setEpisode(response.data);
-      } catch (err) {
-        console.error(err);
-        setMessage("The episode couldn't be loaded.")
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getEpisode();
-  }, [episodeNumber])
+  const getEpisode = async () => {
+    try {
+      const response = await axios.get(`${URL_BACK}/episodes/${episodeNumber}`);
+      console.log(response.data);
+      setEpisode(response.data);
+    } catch (err) {
+      console.error(err);
+      setMessage("The episode couldn't be loaded.")
+    } finally {
+      setLoading(false);
+    }
+  };
   
   const uploadCharacter = async () => {
     try {
       const response = await axios.post(`${URL_BACK}/characters`, data);
       alert("The character was uploaded successfully.");
+      getEpisode();
       onClosedCharacter();
     } catch (err) {
       console.error(err);
     }
   }
+  
+  useEffect(() => {
+    getEpisode();
+  }, [episodeNumber])
 
   if (loading) return (
     <>
       <Box
-        h={"90vh"}
-        alignItems="center"
+        display={"flex"}
+        flexDirection={"column"}
+        alignItems={"center"}
         justifyContent="center"
-        background="linear-gradient(282deg, rgba(2, 0, 36, 1) 0%, rgba(26, 83, 25, 1) 35%, rgba(80, 141, 78, 1) 100%)"
+        h={"50vh"}
       >
-        <Skeleton ml={16} height="100px" />
+        <Skeleton ml={16} height="100px" width="80%" w="600px" />
       </Box>
     </>
   ) 
   // TODO: acomodar el Skeleton para que se vea en el lugar donde aparezca el texto.
   // TODO: Agregar las imagenes de The Magnus Archive correspondientes. 
-  if (!episode) return <Text>{message}</Text>;
+  // TODO: Al cargar la página se ve un estilo feo que no es el del sitio.
+  if (!episode) return <Text textAlign={"center"}>{message}</Text>;
 
   return (
     <>
@@ -98,7 +101,7 @@ function page() {
         alignItems={"center"}
         justifyContent="center"
         h={"50vh"}
-        color="white"
+        color="whitesmoke"
       >
         <Box display={"flex"} justifyContent={"center"}>
           <Text fontSize={"4xl"}>MAG {episode.number} - {episode.title}</Text>

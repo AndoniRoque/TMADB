@@ -63,7 +63,7 @@
   body::before,
 body::after {
   content: '';
-  position: absolute;
+  position: fixed; /* Cambia a fixed */
   z-index: -1;
   opacity:0.8
 }
