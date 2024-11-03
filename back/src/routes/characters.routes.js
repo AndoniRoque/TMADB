@@ -58,5 +58,40 @@ router.post('/characters', async (req,res) => {
     res.status(500).json({error: 'Error getting characters', details: err.message});
   }
 })
+router.get('/characters/:id', async(req,res) => {
+  const id = parseInt(req.params.id, 10);
+
+  if (isNaN(id)) { return res.status(400).json({ error: "Invalid ID format" })}
+
+  try {
+    const character = await prisma.character.findFirst({
+      where: {
+        id: id
+      }
+    })
+
+    !character ? res.status(400).json({error: 'Character not found.'}) : res.status(200).json(character);
+  } catch (err) {
+    res.status(500).json({error: 'Error getting character', details: err.message})
+  }
+})
+router.delete('/characters/:id', async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+
+  if (isNaN(id)) { return res.send(400).json({error: "Invalid ID format."})}
+  
+  try {
+    const deleteCharacter = await prisma.character.delete({
+      where: {
+        id: id
+      }
+    })
+    res.status(200).json({message: "The character was deleted successfully"});
+  } catch(err) {
+    console.log(req.body);
+    res.status(500).json({error: "Error deleting character", details: err.message});
+  }
+})
+
 
 export default router;

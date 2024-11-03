@@ -107,10 +107,27 @@ router.put('/episodes/:id', async (req, res) => {
       where: {id},
       data: req.body,
     })
-    res.json(updateEpisode);
+    res.status(200).json(updateEpisode);
   } catch (err) {
     console.log(req.body);
     res.status(500).json({ error: "Error updating episode", details: err.message});
+  }
+})
+router.delete('/episodes/:id', async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+
+  if (isNaN(id)) { return res.send(400).json({error: "Invalid ID format."})}
+  
+  try {
+    const deleteEpisode = await prisma.episode.delete({
+      where: {
+        id: id
+      }
+    })
+    res.status(200).json({message: "The episode was deleted successfully"});
+  } catch(err) {
+    console.log(req.body);
+    res.status(500).json({error: "Error deleting episode", details: err.message});
   }
 })
 
