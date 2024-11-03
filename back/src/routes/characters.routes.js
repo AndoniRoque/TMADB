@@ -47,7 +47,7 @@ router.post('/characters', async (req,res) => {
       data: {
         name,
         description,
-        episode: {
+        episodes: {
           connect: { id: parseInt(episode.connect.id) } 
         },
       },

@@ -32,7 +32,9 @@ router.get('/episodes', async (req, res) => {
   }
 })
 router.post('/episodes', async (req,res) => {
-  const {title, number, releaseDate, description, caseNumber, season, heard } = req.body;
+  const {title, number, releaseDate, description, caseNumber, season, heard, characterIds } = req.body;
+  console.log(req.body);
+  console.log(characterIds);
 
   try {
     if (!title) res.status(400).json({message: "Title is missing"});
@@ -53,8 +55,20 @@ router.post('/episodes', async (req,res) => {
     if (existingEpisode) res.status(400).json({message: "An episode with this values already exists, please upload a new one."});
     
     const newEpisode = await prisma.episode.create({
-      data: {title, number, releaseDate, description, caseNumber, season, heard},
-    })
+      data: {
+        title,
+        number,
+        releaseDate,
+        description,
+        caseNumber,
+        season,
+        heard,
+        characters: {
+          connect: characterIds ? characterIds.map(id => ({ id })) : []
+        }
+      },
+      include: { characters: true }
+    });
     res.status(200).json(newEpisode);
   } catch (err) {
     console.error(err);

@@ -72,7 +72,8 @@ export default function EpisodesPage() {
     description,
     heard,
     caseNumber,
-    season
+    season,
+    characterIds: selectedCharacter
   }
 
   const characterOptions = characters.map((character: Character) => ({
@@ -80,9 +81,9 @@ export default function EpisodesPage() {
     label: character.name,
   }));
 
-  const handleCharacterChange = (selectedOption: any) => {
-    setSelectedCharacter(selectedOption ? selectedOption.value : null);
-  };
+  const handleCharacterChange = (selectedOptions: any) => {
+    setSelectedCharacter(selectedOptions ? selectedOptions.map((option: any) => option.value) : []);
+  };  
 
   const getEpisodes = async () =>  {
     try {
@@ -147,7 +148,7 @@ export default function EpisodesPage() {
               <Skeleton ml={16} height="200px" />
               <Skeleton ml={16} height="200px" />
             </>
-          ) : message ? ( // Mostrar mensaje de error si existe
+          ) : message ? (
             <>
               <Box display={"flex"} justifyContent={"center"} alignItems={"center"} h={"70vh"}>
                 <Text color={"whitesmoke"}>{message}</Text>
@@ -193,7 +194,7 @@ export default function EpisodesPage() {
               <ReactSelect
                 options={characterOptions}
                 placeholder="Select..."
-                isClearable
+                isMulti
                 onChange={handleCharacterChange}
                 value={characterOptions.find((option) => option.value === selectedCharacter)}
               />
