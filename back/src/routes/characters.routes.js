@@ -75,6 +75,24 @@ router.get('/characters/:id', async(req,res) => {
     res.status(500).json({error: 'Error getting character', details: err.message})
   }
 })
+router.put('/characters/:id', async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+
+  if (isNaN(id)) {
+    return res.status(400).json({ error: "Invalid ID format" });
+  }
+
+  try {
+    const updateCharacter = await prisma.character.update({
+      where: {id},
+      data: req.body,
+    })
+    res.status(200).json(updateCharacter);
+  } catch (err) {
+    console.log(req.body);
+    res.status(500).json({ error: "Error updating character", details: err.message});
+  }
+})
 router.delete('/characters/:id', async (req, res) => {
   const id = parseInt(req.params.id, 10);
 
@@ -95,3 +113,5 @@ router.delete('/characters/:id', async (req, res) => {
 
 
 export default router;
+
+// TODO: agregar validaciones para cuando llegan campos que nada que ver. Ejemplo: season: 1 y llega "aoijda"

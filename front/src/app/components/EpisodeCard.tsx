@@ -23,33 +23,47 @@ interface EpisodeCardProps {
 
 // Componente EpisodeCard
 function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
-
-  const heardEpisode = async (heard:boolean, id: number) => {
+  const heardEpisode = async (heard: boolean, id: number) => {
     try {
-      const update = await axios.put(`${URL_BACK}/episodes/${id}`, {heard: !heard});
+      const update = await axios.put(`${URL_BACK}/episodes/${id}`, {
+        heard: !heard,
+      });
       refreshEpisodes();
-    } catch(err) {
+    } catch (err) {
       console.error(err);
     }
-  }
+  };
 
   return (
-    <Stack gap="14" direction="row" wrap="wrap" minH={"200px"} h={"300px"} w={"100%"}>
-      <Box 
+    <Stack
+      gap="14"
+      direction="row"
+      wrap="wrap"
+      minH={"200px"}
+      h={"300px"}
+      w={"100%"}
+    >
+      <Box
         p={16}
         border={"1px solid gray"}
         borderRadius={8}
-        //background="linear-gradient(282deg, rgba(2, 0, 36, 1) 0%, rgba(26, 83, 25, 1) 35%, rgba(80, 141, 78, 1) 100%)"
         color={"white"}
         fontWeight={400}
+        w={"100%"}
         _hover={{
-          transform: 'scale(1.01)', 
-          transition: 'transform 0.2s', 
-          boxShadow: '2px 0px 10px rgba(0,0,0,0.5)' 
+          transform: "scale(1.01)",
+          transition: "transform 0.2s",
+          boxShadow: "2px 0px 10px rgba(0,0,0,0.5)",
         }}
       >
         <Stack spacing={2}>
-          <Box display={"flex"} justifyContent={"start"} flexDirection={"row"} alignItems={"center"} w={"500"}>
+          <Box
+            display={"flex"}
+            justifyContent={"start"}
+            flexDirection={"row"}
+            alignItems={"center"}
+            w={"500"}
+          >
             <Avatar
               src="/TMA_icon.webp"
               name={episode.title}
@@ -57,7 +71,11 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
               borderRadius="full"
               mr={8}
             />
-            <Text textStyle="6xl" fontWeight={600} w={"full"}>MAG {episode.season < 10 ? `0${episode.season}` : episode.season}.{episode.number < 10 ? `0${episode.number}` : episode.number}: {episode.title}</Text>
+            <Text textStyle="6xl" fontWeight={600} w={"full"}>
+              MAG {episode.season < 10 ? `0${episode.season}` : episode.season}.
+              {episode.number < 10 ? `0${episode.number}` : episode.number}:{" "}
+              {episode.title}
+            </Text>
             <Box display={"flex"} w={"100%"} justifyContent={"flex-end"}>
               <Checkbox
                 isChecked={episode.heard}
@@ -65,7 +83,9 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
               />
             </Box>
           </Box>
-          <Text mt={4}><strong>#{episode.caseNumber}</strong> - {episode.description}</Text>
+          <Text mt={4}>
+            <strong>#{episode.caseNumber}</strong> - {episode.description}
+          </Text>
         </Stack>
       </Box>
     </Stack>

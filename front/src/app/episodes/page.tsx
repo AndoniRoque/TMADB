@@ -29,6 +29,7 @@ import dayjs from 'dayjs';
 import React, { useEffect, useState } from "react";
 import EpisodeCard from "../components/EpisodeCard";
 import ReactSelect from 'react-select';
+import EpisodeModal from "../components/EpisodeModal";
 const URL_BACK = "http://localhost:3333/api";
 
 interface Character {
@@ -142,75 +143,43 @@ export default function EpisodesPage() {
         <Button onClick={onOpen} > Upload Episode </Button>
       </Box>
       <Box display={"flex"} justifyContent={"center"} alignItems="center" >
-          {loading ? (
-            <>
-              <Skeleton ml={16} height="200px" />
-              <Skeleton ml={16} height="200px" />
-              <Skeleton ml={16} height="200px" />
-            </>
-          ) : message ? (
-            <>
-              <Box display={"flex"} justifyContent={"center"} alignItems={"center"} h={"70vh"}>
-                <Text color={"whitesmoke"}>{message}</Text>
-              </Box>
-            </>
-          ) : (
-            <>
-              <Grid templateColumns='repeat(3, 1fr)' gap={10} mx="auto" >
-                {episodes.map((e: Episode) => (
-                  <GridItem key={e.id} w={500}>
-                    <LinkBox>
-                      <LinkOverlay href={`/episode/${e.id}`}>
-                        <EpisodeCard episode={e} refreshEpisodes={getEpisodes}/>
-                      </LinkOverlay>
-                    </LinkBox>
-                  </GridItem>
-                ))}
-              </Grid>
-            </>
-          )}
-        </Box>
-      
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Upload Episode</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FormControl>
-              <FormLabel>Title</FormLabel>
-              <Input placeholder="Episode title..." onChange={(e) => setTitle(e.target.value)}/>
-              <FormLabel>Season</FormLabel>
-              <Input placeholder="Season..." onChange={(e) => setSeason(parseInt(e.target.value))}/>
-              <FormLabel>Episode Number</FormLabel>
-              <Input placeholder="Episode number..." onChange={(e) => setNumber(parseInt(e.target.value))}/>
-              <FormLabel>Case #</FormLabel>
-              <Input placeholder="Case number... " onChange={(e) => setCaseNumber(e.target.value)}/>
-              <FormLabel>Release Date</FormLabel>
-              <Input type="date" onChange={(e) => setReleaseDate(e.target.value)}/>
-              <FormLabel>Description</FormLabel>
-              <Textarea placeholder="Episode description..." onChange={(e) => setDescription(e.target.value)}/>
-              <FormLabel>Characters in Episode</FormLabel>
-              <ReactSelect
-                options={characterOptions}
-                placeholder="Select..."
-                isMulti
-                onChange={handleCharacterChange}
-                value={characterOptions.find((option) => option.value === selectedCharacter)}
-              />
-              <FormLabel>Heard Episode </FormLabel>
-              <Checkbox onChange={(e) => setHeard(e.target.checked)}></Checkbox>
-            </FormControl>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button variant='ghost' mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button colorScheme='blue' onClick={uploadEpisode}>Upload</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+        {loading ? (
+          <>
+            <Skeleton ml={16} height="200px" />
+            <Skeleton ml={16} height="200px" />
+            <Skeleton ml={16} height="200px" />
+          </>
+        ) : message ? (
+          <>
+            <Box display={"flex"} justifyContent={"center"} alignItems={"center"} h={"70vh"}>
+              <Text color={"whitesmoke"}>{message}</Text>
+            </Box>
+          </>
+        ) : (
+          <>
+            <Grid templateColumns='repeat(3, 1fr)' gap={10} mx="auto" >
+              {episodes.map((e: Episode) => (
+                <GridItem key={e.id} w={500}>
+                  <LinkBox>
+                    <LinkOverlay href={`/episode/${e.id}`}>
+                      <EpisodeCard episode={e} refreshEpisodes={getEpisodes}/>
+                    </LinkOverlay>
+                  </LinkBox>
+                </GridItem>
+              ))}
+            </Grid>
+          </>
+        )}
+      </Box>
+      <EpisodeModal
+        isOpen={isOpen}
+        onClose={onClose}
+        characters={characters}
+        onSubmit={uploadEpisode}
+        initialValue={null}
+      />
     </>
   )
 }
+
+// TODO: Responsive grid

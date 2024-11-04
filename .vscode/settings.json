@@ -29,5 +29,8 @@
     "**/*.tsx",
     "**/*.js",
     "**/*.jsx"
-  ]
+  ],
+  "rainbowIndent.guides": {
+    "space": "#FFFFFF00"
+  }
 }

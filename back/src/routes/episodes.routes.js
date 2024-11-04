@@ -1,17 +1,17 @@
-import {Router} from "express";
+import { Router } from "express";
 import { prisma } from "../db.js";
 import { ensureAuthenticated } from "../controllers/auth.controller.js";
 
 const router = Router();
 
 router.get('/episodes', async (req, res) => {
-  const {title, number, caseNumber } = req.query;
+  const { title, number, caseNumber } = req.query;
 
   try {
     const episodes = await prisma.episode.findMany({
       where: {
-        ...(title ? {title: {contains: title, mode: 'insensitive'}}:{}),
-        ...(number ? { number: parseInt(number)} : {}),
+        ...(title ? { title: { contains: title, mode: 'insensitive' } } : {}),
+        ...(number ? { number: parseInt(number) } : {}),
         ...(caseNumber ? { caseNumber } : {})
       },
       orderBy: {
@@ -27,33 +27,33 @@ router.get('/episodes', async (req, res) => {
     }
 
     res.status(200).json(episodes);
-  } catch(err) {
-    res.status(500).json({error: 'Error getting episodes', details: err.message})
+  } catch (err) {
+    res.status(500).json({ error: 'Error getting episodes', details: err.message })
   }
 })
-router.post('/episodes', async (req,res) => {
-  const {title, number, releaseDate, description, caseNumber, season, heard, characterIds } = req.body;
+router.post('/episodes', async (req, res) => {
+  const { title, number, releaseDate, description, caseNumber, season, heard, characterIds } = req.body;
   console.log(req.body);
   console.log(characterIds);
 
   try {
-    if (!title) res.status(400).json({message: "Title is missing"});
-    if (!number) res.status(400).json({message: "Episode number is missing"});
-    if (!releaseDate) res.status(400).json({message: "Release date is missing."});
-    if (!description) res.status(400).json({message: "The episode description is missing."});
-    if (!caseNumber) res.status(400).json({message: "Case number is missing."});
+    if (!title) res.status(400).json({ message: "Title is missing" });
+    if (!number) res.status(400).json({ message: "Episode number is missing" });
+    if (!releaseDate) res.status(400).json({ message: "Release date is missing." });
+    if (!description) res.status(400).json({ message: "The episode description is missing." });
+    if (!caseNumber) res.status(400).json({ message: "Case number is missing." });
     const existingEpisode = await prisma.episode.findFirst({
       where: {
-        title: {equals: title, mode: 'insensitive'},
-        number: {equals: number},
-        releaseDate: {equals: releaseDate},
-        description: {equals: description},
-        caseNumber: {equals: caseNumber}
+        title: { equals: title, mode: 'insensitive' },
+        number: { equals: number },
+        releaseDate: { equals: releaseDate },
+        description: { equals: description },
+        caseNumber: { equals: caseNumber }
       }
     });
 
-    if (existingEpisode) res.status(400).json({message: "An episode with this values already exists, please upload a new one."});
-    
+    if (existingEpisode) res.status(400).json({ message: "An episode with this values already exists, please upload a new one." });
+
     const newEpisode = await prisma.episode.create({
       data: {
         title,
@@ -72,10 +72,10 @@ router.post('/episodes', async (req,res) => {
     res.status(200).json(newEpisode);
   } catch (err) {
     console.error(err);
-    res.status(500).json({error: 'Error getting episodes', details: err.message});
+    res.status(500).json({ error: 'Error getting episodes', details: err.message });
   }
 })
-router.get('/episodes/:id', async(req,res) => {
+router.get('/episodes/:id', async (req, res) => {
   const id = parseInt(req.params.id, 10);
 
   if (isNaN(id)) {
@@ -84,15 +84,15 @@ router.get('/episodes/:id', async(req,res) => {
 
   try {
     const episode = await prisma.episode.findFirst({
-      where: {id},
+      where: { id },
       include: {
         characters: true,
       }
     })
 
-    !episode ? res.status(400).json({error: 'Episode not found.'}) : res.status(200).json(episode);
+    !episode ? res.status(400).json({ error: 'Episode not found.' }) : res.status(200).json(episode);
   } catch (err) {
-    res.status(500).json({error: 'Error getting episodes', details: err.message})
+    res.status(500).json({ error: 'Error getting episodes', details: err.message })
   }
 })
 router.put('/episodes/:id', async (req, res) => {
@@ -102,33 +102,59 @@ router.put('/episodes/:id', async (req, res) => {
     return res.status(400).json({ error: "Invalid ID format" });
   }
 
+  const {
+    title,
+    number,
+    releaseDate,
+    description,
+    heard,
+    caseNumber,
+    season,
+    characterIds, // Extrae `characterIds` del cuerpo de la solicitud
+  } = req.body;
+
   try {
     const updateEpisode = await prisma.episode.update({
-      where: {id},
-      data: req.body,
-    })
+      where: { id },
+      data: {
+        title,
+        number,
+        releaseDate,
+        description,
+        heard,
+        caseNumber,
+        season,
+        characters: {
+          connect: characterIds.map((characterId) => ({ id: characterId })), // Conecta los IDs de personajes
+        },
+      },
+    });
+
     res.status(200).json(updateEpisode);
   } catch (err) {
     console.log(req.body);
-    res.status(500).json({ error: "Error updating episode", details: err.message});
+    res.status(500).json({ error: "Error updating episode", details: err.message });
   }
-})
+});
+
 router.delete('/episodes/:id', async (req, res) => {
   const id = parseInt(req.params.id, 10);
 
-  if (isNaN(id)) { return res.send(400).json({error: "Invalid ID format."})}
-  
+  if (isNaN(id)) { return res.send(400).json({ error: "Invalid ID format." }) }
+
   try {
     const deleteEpisode = await prisma.episode.delete({
       where: {
         id: id
       }
     })
-    res.status(200).json({message: "The episode was deleted successfully"});
-  } catch(err) {
+    res.status(200).json({ message: "The episode was deleted successfully" });
+  } catch (err) {
     console.log(req.body);
-    res.status(500).json({error: "Error deleting episode", details: err.message});
+    res.status(500).json({ error: "Error deleting episode", details: err.message });
   }
 })
 
 export default router;
+
+// TODO: agregar validaciones para cuando llegan campos que nada que ver. Ejemplo: season: 1 y llega "aoijda"
