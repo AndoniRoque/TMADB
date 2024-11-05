@@ -24,9 +24,9 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import dayjs from "dayjs";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { AddIcon, EditIcon } from "@chakra-ui/icons";
+import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import EpisodeModal from "@/app/components/EpisodeModal";
 import { Episode, EpisodeData, Character } from "@/app/types/types";
 const URL_BACK = "http://localhost:3333/api";
@@ -43,6 +43,7 @@ function Page() {
     onClose: onCloseEpisode,
   } = useDisclosure();
   const params = useParams();
+  const router = useRouter();
   const episodeNumber = params.id;
   const [episode, setEpisode] = useState<Episode | null>(null);
   const [message, setMessage] = useState<string>("");
@@ -99,6 +100,22 @@ function Page() {
     }
   };
 
+  const deleteEpisode = async () => {
+    try {
+      const delEpisode = await axios.delete(
+        `${URL_BACK}/episodes/${episodeNumber}`
+      );
+      setEpisode(delEpisode.data);
+      alert("The episode was deleted successfully");
+      router.push("/episodes");
+    } catch (err) {
+      console.error(err);
+      setMessage("The episode couldn't be deleted. Please try again.");
+    } finally {
+      setLoading(true);
+    }
+  };
+
   useEffect(() => {
     getEpisode();
   }, [episodeNumber]);
@@ -128,6 +145,13 @@ function Page() {
           </Button>
           <Button onClick={handleEditEpisode} leftIcon={<EditIcon />}>
             Edit Episode
+          </Button>
+          <Button
+            onClick={deleteEpisode}
+            leftIcon={<DeleteIcon />}
+            color={"red"}
+          >
+            Delete Episode
           </Button>
         </Box>
       </Box>
