@@ -32,7 +32,6 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   initialValue,
   getEpisode,
 }) => {
-  console.log(characters);
   const [title, setTitle] = useState<string>(initialValue?.title || "");
   const [number, setNumber] = useState<number>(initialValue?.season || 1);
   const [releaseDate, setReleaseDate] = useState<string>(
@@ -90,7 +89,6 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   const uploadEpisode = async (data: EpisodeData) => {
     try {
       const upload = await axios.post(`${URL_BACK}/episodes`, data);
-      console.log(upload);
       alert("El episodio fue cargado exitosamente.");
       getEpisode();
       onClose();

@@ -161,7 +161,7 @@ function Page() {
         flexDirection="column"
         alignItems="center"
         justifyContent="center"
-        h="50vh"
+        h="46vh"
         color="whitesmoke"
       >
         <Text fontSize="4xl">
@@ -175,21 +175,26 @@ function Page() {
         <Text fontSize="2xl">{episode.description}</Text>
       </Box>
 
-      {episode.characters.length > 0 && (
-        <Box display="flex" justifyContent="center">
-          <Grid templateColumns="repeat(3, 1fr)" gap={10} mx="auto">
-            {episode.characters.map((character) => (
-              <GridItem key={character.id} w={500}>
-                <LinkBox>
-                  <LinkOverlay href={`/character/${character.id}`}>
-                    <CharacterCard character={character} />
-                  </LinkOverlay>
-                </LinkBox>
-              </GridItem>
-            ))}
-          </Grid>
-        </Box>
-      )}
+      <Box display={"flex"} justifyContent={"center"} flexDirection={"column"}>
+        <Text fontSize={"2xl"} color={"whitesmoke"} mb={5} textAlign={"center"}>
+          Characters appearences:
+        </Text>
+        {episode.characters.length > 0 && (
+          <Box display="flex" justifyContent="center">
+            <Grid templateColumns="repeat(3, 1fr)" gap={10} mx="auto">
+              {episode.characters.map((character) => (
+                <GridItem key={character.id} w={500}>
+                  <LinkBox>
+                    <LinkOverlay href={`/character/${character.id}`}>
+                      <CharacterCard character={character} />
+                    </LinkOverlay>
+                  </LinkBox>
+                </GridItem>
+              ))}
+            </Grid>
+          </Box>
+        )}
+      </Box>
 
       <Modal isOpen={isOpenCharacter} onClose={onCloseCharacter}>
         <ModalOverlay />
@@ -233,3 +238,5 @@ function Page() {
 }
 
 export default Page;
+
+// TODO: Hace el mismo modal reutilizable para subir y modificar Characters
