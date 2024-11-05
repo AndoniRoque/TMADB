@@ -16,7 +16,12 @@ import {
 import dayjs from "dayjs";
 import ReactSelect from "react-select";
 import { useEffect, useState } from "react";
-import { EpisodeModalProps, EpisodeData, Episode } from "../types/types";
+import {
+  EpisodeModalProps,
+  EpisodeData,
+  Episode,
+  Character,
+} from "../types/types";
 import axios from "axios";
 const URL_BACK = "http://localhost:3333/api";
 
@@ -27,6 +32,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   initialValue,
   getEpisode,
 }) => {
+  console.log(characters);
   const [title, setTitle] = useState<string>(initialValue?.title || "");
   const [number, setNumber] = useState<number>(initialValue?.season || 1);
   const [releaseDate, setReleaseDate] = useState<string>(
@@ -43,7 +49,27 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   const [selectedCharacter, setSelectedCharacter] = useState<number[]>(
     initialValue?.characterIds || []
   );
-  const characterOptions = characters.map((character) => ({
+  const [characterMessage, setCharacterMessage] = useState<string>("");
+  const [charactersList, setCharactersList] = useState<Character[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const getCharacters = async () => {
+    try {
+      const characters = await axios.get(`${URL_BACK}/characters`);
+      if (characters.data.message) {
+        setCharacterMessage(characters.data.message);
+      } else {
+        setCharactersList(characters.data);
+      }
+    } catch (err) {
+      setCharacterMessage("Characters not found.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const characterOptions = charactersList.map((character) => ({
     value: character.id,
     label: character.name,
   }));
@@ -108,6 +134,10 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
       selectedOptions ? selectedOptions.map((option: any) => option.value) : []
     );
   };
+
+  useEffect(() => {
+    getCharacters();
+  }, []);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
