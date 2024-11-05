@@ -1,27 +1,9 @@
 import { Avatar, Box, Button, Checkbox, Stack, Text } from "@chakra-ui/react";
 import axios from "axios";
 import React from "react";
+import { EpisodeCardProps } from "../types/types";
 const URL_BACK = "http://localhost:3333/api";
 
-// Define la interfaz para el episodio
-interface Episode {
-  id: number;
-  title: string;
-  number: number;
-  releaseDate: string;
-  description: string;
-  caseNumber: string;
-  heard: boolean;
-  season: number;
-}
-
-// Define la interfaz para las props del componente EpisodeCard
-interface EpisodeCardProps {
-  episode: Episode;
-  refreshEpisodes: () => void;
-}
-
-// Componente EpisodeCard
 function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
   const heardEpisode = async (heard: boolean, id: number) => {
     try {

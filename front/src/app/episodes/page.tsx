@@ -28,72 +28,21 @@ import axios from "axios";
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import EpisodeCard from "../components/EpisodeCard";
-import ReactSelect from "react-select";
 import EpisodeModal from "../components/EpisodeModal";
+import { Character, Episode } from "../types/types";
 const URL_BACK = "http://localhost:3333/api";
-
-interface Character {
-  id: number;
-  name: string;
-  description: string;
-}
-
-interface Episode {
-  id: number;
-  title: string;
-  number: number;
-  releaseDate: string;
-  description: string;
-  caseNumber: string;
-  heard: boolean;
-  season: number;
-  message: string;
-}
 
 export default function EpisodesPage() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [message, setMessage] = useState<string>("");
   const [characterMessage, setCharacterMessage] = useState<string>("");
-  const [title, setTitle] = useState<string>("");
-  const [number, setNumber] = useState<number>(0);
-  const [releaseDate, setReleaseDate] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
   const [characters, setCharacters] = useState<Character[]>([]);
-  const [heard, setHeard] = useState<boolean>(false);
-  const [caseNumber, setCaseNumber] = useState<string>("");
-  const [season, setSeason] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(true);
-  const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(
-    null
-  );
-
-  const data = {
-    title,
-    number,
-    releaseDate: dayjs(releaseDate, "DD-MM-YYYY").toDate(),
-    description,
-    heard,
-    caseNumber,
-    season,
-    characterIds: selectedCharacter,
-  };
-
-  const characterOptions = characters.map((character: Character) => ({
-    value: character.id,
-    label: character.name,
-  }));
-
-  const handleCharacterChange = (selectedOptions: any) => {
-    setSelectedCharacter(
-      selectedOptions ? selectedOptions.map((option: any) => option.value) : []
-    );
-  };
 
   const getEpisodes = async () => {
     try {
       const response = await axios.get(`${URL_BACK}/episodes`);
-      // console.log(response);
       if (response.data.message) {
         setMessage(response.data.message);
       } else {
@@ -123,24 +72,10 @@ export default function EpisodesPage() {
     }
   };
 
-  const uploadEpisode = async () => {
-    try {
-      const upload = await axios.post(`${URL_BACK}/episodes`, data);
-      console.log(upload);
-      alert("El episodio fue cargado exitosamente.");
-      getEpisodes();
-      onClose();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   useEffect(() => {
     getEpisodes();
     getCharacters();
   }, []);
-
-  // TODO: El header quedó raro luego de agrgarle la posición fixed. Acomodar.
 
   return (
     <>
@@ -150,6 +85,7 @@ export default function EpisodesPage() {
         flexDirection={"row"}
         m={4}
         p={4}
+        mt={28} // TODO: Responsive shit here.
       >
         <Heading fontSize="4xl" color={"whitesmoke"}>
           {" "}
@@ -195,8 +131,8 @@ export default function EpisodesPage() {
         isOpen={isOpen}
         onClose={onClose}
         characters={characters}
-        onSubmit={uploadEpisode}
         initialValue={null}
+        getEpisode={getEpisodes}
       />
     </>
   );

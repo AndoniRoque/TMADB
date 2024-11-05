@@ -37,11 +37,12 @@ router.post('/episodes', async (req, res) => {
   console.log(characterIds);
 
   try {
-    if (!title) res.status(400).json({ message: "Title is missing" });
-    if (!number) res.status(400).json({ message: "Episode number is missing" });
-    if (!releaseDate) res.status(400).json({ message: "Release date is missing." });
-    if (!description) res.status(400).json({ message: "The episode description is missing." });
-    if (!caseNumber) res.status(400).json({ message: "Case number is missing." });
+    if (!title) return res.status(400).json({ message: "Title is missing" });
+    if (!number) return res.status(400).json({ message: "Episode number is missing" });
+    if (!releaseDate) return res.status(400).json({ message: "Release date is missing." });
+    if (!description) return res.status(400).json({ message: "The episode description is missing." });
+    if (!caseNumber) return res.status(400).json({ message: "Case number is missing." });
+
     const existingEpisode = await prisma.episode.findFirst({
       where: {
         title: { equals: title, mode: 'insensitive' },
@@ -52,7 +53,7 @@ router.post('/episodes', async (req, res) => {
       }
     });
 
-    if (existingEpisode) res.status(400).json({ message: "An episode with this values already exists, please upload a new one." });
+    if (existingEpisode) return res.status(400).json({ message: "An episode with this values already exists, please upload a new one." });
 
     const newEpisode = await prisma.episode.create({
       data: {

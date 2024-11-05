@@ -3,12 +3,10 @@ import CharacterCard from "../../components/CharacterCard";
 import {
   Box,
   Button,
-  Checkbox,
   FormControl,
   FormLabel,
   Grid,
   GridItem,
-  Image,
   Input,
   LinkBox,
   LinkOverlay,
@@ -19,7 +17,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Select,
   Skeleton,
   Text,
   Textarea,
@@ -27,36 +24,18 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import dayjs from "dayjs";
-import { useRouter } from "next/compat/router";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { AddIcon, EditIcon } from "@chakra-ui/icons";
 import EpisodeModal from "@/app/components/EpisodeModal";
+import { Episode, EpisodeData, Character } from "@/app/types/types";
 const URL_BACK = "http://localhost:3333/api";
 
-interface Character {
-  id: number;
-  name: string;
-  description: string;
-}
-
-interface Episode {
-  id: number;
-  title: string;
-  number: number;
-  releaseDate: string;
-  description: string;
-  caseNumber: string;
-  heard: boolean;
-  season: number;
-  characters: Character[];
-}
-
-function page() {
+function Page() {
   const {
     isOpen: isOpenCharacter,
     onOpen: onOpenCharacter,
-    onClose: onClosedCharacter,
+    onClose: onCloseCharacter,
   } = useDisclosure();
   const {
     isOpen: isOpenEpisode,
@@ -76,7 +55,7 @@ function page() {
     name: characterName,
     description: characterDescription,
     episode: {
-      connect: { id: params.id },
+      connect: { id: episodeNumber },
     },
   };
 
@@ -84,12 +63,12 @@ function page() {
     if (episode) {
       setEpisodeToEdit({
         title: episode.title,
-        number: episode.number,
+        number: Number(episode.number),
         releaseDate: episode.releaseDate,
         description: episode.description,
         heard: episode.heard,
         caseNumber: episode.caseNumber,
-        season: episode.season,
+        season: Number(episode.season),
         characters: episode.characters,
         characterIds: episode.characters.map((character) => character.id),
       });
@@ -97,21 +76,9 @@ function page() {
     }
   };
 
-  const handleEpisodeSubmit = async (data: EpisodeData) => {
-    try {
-      await axios.put(`${URL_BACK}/episodes/${episodeNumber}`, data);
-      alert("Episode updated successfully.");
-      getEpisode(); // Recargar el episodio actualizado
-      onCloseEpisode();
-    } catch (err) {
-      console.error("Error updating episode:", err);
-    }
-  };
-
   const getEpisode = async () => {
     try {
       const response = await axios.get(`${URL_BACK}/episodes/${episodeNumber}`);
-      console.log(response.data);
       setEpisode(response.data);
     } catch (err) {
       console.error(err);
@@ -123,10 +90,10 @@ function page() {
 
   const uploadCharacter = async () => {
     try {
-      const response = await axios.post(`${URL_BACK}/characters`, data);
+      await axios.post(`${URL_BACK}/characters`, data);
       alert("The character was uploaded successfully.");
       getEpisode();
-      onClosedCharacter();
+      onCloseCharacter();
     } catch (err) {
       console.error(err);
     }
@@ -136,29 +103,26 @@ function page() {
     getEpisode();
   }, [episodeNumber]);
 
-  if (loading)
+  if (loading) {
     return (
-      <>
-        <Box
-          display={"flex"}
-          flexDirection={"column"}
-          alignItems={"center"}
-          justifyContent="center"
-          h={"50vh"}
-        >
-          <Skeleton ml={16} height="100px" width="80%" w="600px" />
-        </Box>
-      </>
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        h="50vh"
+      >
+        <Skeleton ml={16} height="100px" width="80%" w="600px" />
+      </Box>
     );
-  // TODO: acomodar el Skeleton para que se vea en el lugar donde aparezca el texto.
-  // TODO: Agregar las imagenes de The Magnus Archive correspondientes.
-  // TODO: Al cargar la página se ve un estilo feo que no es el del sitio.
-  if (!episode) return <Text textAlign={"center"}>{message}</Text>;
+  }
+
+  if (!episode) return <Text textAlign="center">{message}</Text>;
 
   return (
     <>
-      <Box position={"fixed"} m={4} top={"15%"} left={"88%"} zIndex={1000}>
-        <Box display={"flex"} flexDirection={"column"} gap={2}>
+      <Box position="fixed" m={4} top="15%" left="88%" zIndex={1000}>
+        <Box display="flex" flexDirection="column" gap={2}>
           <Button onClick={onOpenCharacter} leftIcon={<AddIcon />}>
             Add Characters
           </Button>
@@ -167,56 +131,43 @@ function page() {
           </Button>
         </Box>
       </Box>
+
       <Box
-        display={"flex"}
-        flexDirection={"column"}
-        alignItems={"center"}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
         justifyContent="center"
-        h={"50vh"}
+        h="50vh"
         color="whitesmoke"
       >
-        <Box display={"flex"} justifyContent={"center"}>
-          <Text fontSize={"4xl"}>
-            MAG {episode.number} - {episode.title}
-          </Text>
-        </Box>
-        <Text textAlign={"right"}>Season: {episode.season}</Text>
-        <Text textAlign={"right"}>
+        <Text fontSize="4xl">
+          MAG {episode.number} - {episode.title}
+        </Text>
+        <Text textAlign="right">Season: {episode.season}</Text>
+        <Text textAlign="right">
           Release Date: {dayjs(episode.releaseDate).format("DD-MM-YYYY")}
         </Text>
-        <Box display={"flex"} justifyContent={"center"}>
-          <Text fontSize={"2xl"}>
-            <Text as="span" fontWeight="bold">
-              #{episode.caseNumber} -{" "}
-            </Text>
-            {episode.description}
-          </Text>
-        </Box>
+        <Text as="span">Case Number: #{episode.caseNumber}</Text>
+        <Text fontSize="2xl">{episode.description}</Text>
       </Box>
-      {episode.characters.length === 0 ? null : (
-        <>
-          <Box display={"flex"} justifyContent={"center"}>
-            <Grid templateColumns="repeat(3, 1fr)" gap={10} mx="auto">
-              {episode.characters.map((character: Character) => (
-                <>
-                  <GridItem key={character.id} w={500}>
-                    <LinkBox>
-                      <LinkOverlay href={`/character/${character.id}`}>
-                        <CharacterCard
-                          key={character.id}
-                          character={character}
-                        />
-                      </LinkOverlay>
-                    </LinkBox>
-                  </GridItem>
-                </>
-              ))}
-            </Grid>
-          </Box>
-        </>
+
+      {episode.characters.length > 0 && (
+        <Box display="flex" justifyContent="center">
+          <Grid templateColumns="repeat(3, 1fr)" gap={10} mx="auto">
+            {episode.characters.map((character) => (
+              <GridItem key={character.id} w={500}>
+                <LinkBox>
+                  <LinkOverlay href={`/character/${character.id}`}>
+                    <CharacterCard character={character} />
+                  </LinkOverlay>
+                </LinkBox>
+              </GridItem>
+            ))}
+          </Grid>
+        </Box>
       )}
 
-      <Modal isOpen={isOpenCharacter} onClose={onClosedCharacter}>
+      <Modal isOpen={isOpenCharacter} onClose={onCloseCharacter}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Upload Episode</ModalHeader>
@@ -235,9 +186,8 @@ function page() {
               />
             </FormControl>
           </ModalBody>
-
           <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={onClosedCharacter}>
+            <Button variant="ghost" mr={3} onClick={onCloseCharacter}>
               Close
             </Button>
             <Button colorScheme="blue" onClick={uploadCharacter}>
@@ -250,12 +200,12 @@ function page() {
       <EpisodeModal
         isOpen={isOpenEpisode}
         onClose={onCloseEpisode}
-        characters={episode.characters} // Pasas la lista completa de personajes
-        onSubmit={handleEpisodeSubmit}
-        initialValue={episodeToEdit} // Pasas el episodio a editar si existe
+        characters={episode.characters}
+        getEpisode={getEpisode}
+        initialValue={episodeToEdit}
       />
     </>
   );
 }
 
-export default page;
+export default Page;

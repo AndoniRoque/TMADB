@@ -41,6 +41,7 @@ function Header({
         display={"flex"}
         justifyContent={"space-between"}
         position={"fixed"}
+        top={0}
       >
         <Box flex={1}>
           <Image src="TMA_icon.webp" alt="The Magnus Archive logo" h={70} />

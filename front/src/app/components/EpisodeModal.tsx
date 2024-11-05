@@ -16,43 +16,19 @@ import {
 import dayjs from "dayjs";
 import ReactSelect from "react-select";
 import { useEffect, useState } from "react";
-
-interface Character {
-  id: number;
-  name: string;
-}
-
-interface EpisodeData {
-  title: string;
-  number: number | string;
-  releaseDate: string;
-  description: string;
-  heard: boolean;
-  caseNumber: string;
-  season: number | string;
-  characters: Character[];
-  characterIds: number[];
-}
-
-interface EpisodeModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  characters: Character[];
-  onSubmit: (data: EpisodeData) => void;
-  initialValue?: EpisodeData | null;
-}
+import { EpisodeModalProps, EpisodeData, Episode } from "../types/types";
+import axios from "axios";
+const URL_BACK = "http://localhost:3333/api";
 
 const EpisodeModal: React.FC<EpisodeModalProps> = ({
   isOpen,
   onClose,
   characters,
-  onSubmit,
   initialValue,
+  getEpisode,
 }) => {
   const [title, setTitle] = useState<string>(initialValue?.title || "");
-  const [number, setNumber] = useState<number | string>(
-    initialValue?.season || ""
-  );
+  const [number, setNumber] = useState<number>(initialValue?.season || 1);
   const [releaseDate, setReleaseDate] = useState<string>(
     initialValue?.releaseDate || ""
   );
@@ -63,9 +39,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   const [caseNumber, setCaseNumber] = useState<string>(
     initialValue?.caseNumber || ""
   );
-  const [season, setSeason] = useState<number | string>(
-    initialValue?.season || ""
-  );
+  const [season, setSeason] = useState<number>(initialValue?.season || 1);
   const [selectedCharacter, setSelectedCharacter] = useState<number[]>(
     initialValue?.characterIds || []
   );
@@ -87,7 +61,34 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
     }
   }, [initialValue]);
 
-  const handleSubmit = () => {
+  const uploadEpisode = async (data: EpisodeData) => {
+    try {
+      const upload = await axios.post(`${URL_BACK}/episodes`, data);
+      console.log(upload);
+      alert("El episodio fue cargado exitosamente.");
+      getEpisode();
+      onClose();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const updateEpisode = async (submitEpisode: EpisodeData) => {
+    try {
+      await axios.put(`${URL_BACK}/episodes/${number}`, {
+        ...submitEpisode,
+        number: Number(submitEpisode.number),
+        season: Number(submitEpisode.season),
+      });
+      alert("Episode updated successfully.");
+      getEpisode();
+      onClose();
+    } catch (err) {
+      console.error("Error updating episode:", err);
+    }
+  };
+
+  const handleSubmit = async () => {
     const data: EpisodeData = {
       title,
       number,
@@ -98,8 +99,8 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
       season,
       characterIds: selectedCharacter,
     };
-    onSubmit(data);
-    onClose();
+
+    initialValue ? updateEpisode(data) : uploadEpisode(data);
   };
 
   const handleCharacterChange = (selectedOptions: any) => {
@@ -107,8 +108,6 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
       selectedOptions ? selectedOptions.map((option: any) => option.value) : []
     );
   };
-
-  console.log(releaseDate);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -162,11 +161,11 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
               type="date"
             />
             <FormLabel>Characters in Episode</FormLabel>
+            {/* TODO: verificar que pasa si creo personajes al crear un episodio y enumero otros personajes también, un desastre seguro */}
             <ReactSelect
               options={characterOptions}
               placeholder="Character appearences..."
               isMulti
-              // TODO: verificar que pasa si creo personajes al crear un episodio y enumero otros personajes también, un desastre seguro
               onChange={handleCharacterChange}
               value={characterOptions.filter((option) =>
                 selectedCharacter.includes(option.value)
