@@ -1,4 +1,4 @@
-import {Router} from "express";
+import { Router } from "express";
 import { prisma } from "../db.js";
 import { ensureAuthenticated } from "../controllers/auth.controller.js";
 
@@ -10,8 +10,8 @@ router.get('/characters', async (req, res) => {
   try {
     const characters = await prisma.character.findMany({
       where: {
-        ...(name ? {name: {contains: name, mode: 'insensitive'}}:{}),
-        ...(description ? { description: description} : {})
+        ...(name ? { name: { contains: name, mode: 'insensitive' } } : {}),
+        ...(description ? { description: description } : {})
       },
       orderBy: {
         id: 'asc'
@@ -23,45 +23,45 @@ router.get('/characters', async (req, res) => {
     }
 
     res.status(200).json(characters);
-  } catch(err) {
-    res.status(500).json({error: 'Error getting characters', details: err.message})
+  } catch (err) {
+    res.status(500).json({ error: 'Error getting characters', details: err.message })
   }
 })
-router.post('/characters', async (req,res) => {
+router.post('/characters', async (req, res) => {
   const { name, description, episode } = req.body;
 
   try {
-    if (!name) res.status(400).json({message: "Character name is missing."});
-    if (!description) res.status(400).json({message: "Character description is missing"});
-    
+    if (!name) res.status(400).json({ message: "Character name is missing." });
+    if (!description) res.status(400).json({ message: "Character description is missing" });
+
     const existingCharacter = await prisma.character.findFirst({
       where: {
-        name: {equals: name, mode: 'insensitive'},
-        description: {equals: description},
+        name: { equals: name, mode: 'insensitive' },
+        description: { equals: description },
       }
     });
 
-    if (existingCharacter) res.status(400).json({message: "A character with this values already exists, please upload a new one."});
-    
+    if (existingCharacter) res.status(400).json({ message: "A character with this values already exists, please upload a new one." });
+
     const newCharacter = await prisma.character.create({
       data: {
         name,
         description,
         episodes: {
-          connect: { id: parseInt(episode.connect.id) } 
+          connect: { id: parseInt(episode.connect.id) }
         },
       },
     });
     res.status(200).json(newCharacter);
   } catch (err) {
     console.error(err);
-    res.status(500).json({error: 'Error getting characters', details: err.message});
+    res.status(500).json({ error: 'Error getting characters', details: err.message });
   }
 })
-router.get('/characters/:id', async(req,res) => {
+router.get('/characters/:id', async (req, res) => {
   const id = parseInt(req.params.id, 10);
 
-  if (isNaN(id)) { return res.status(400).json({ error: "Invalid ID format" })}
+  if (isNaN(id)) { return res.status(400).json({ error: "Invalid ID format" }) }
 
   try {
     const character = await prisma.character.findFirst({
@@ -70,9 +70,9 @@ router.get('/characters/:id', async(req,res) => {
       }
     })
 
-    !character ? res.status(400).json({error: 'Character not found.'}) : res.status(200).json(character);
+    !character ? res.status(400).json({ error: 'Character not found.' }) : res.status(200).json(character);
   } catch (err) {
-    res.status(500).json({error: 'Error getting character', details: err.message})
+    res.status(500).json({ error: 'Error getting character', details: err.message })
   }
 })
 router.put('/characters/:id', async (req, res) => {
@@ -84,30 +84,28 @@ router.put('/characters/:id', async (req, res) => {
 
   try {
     const updateCharacter = await prisma.character.update({
-      where: {id},
+      where: { id },
       data: req.body,
     })
     res.status(200).json(updateCharacter);
   } catch (err) {
-    console.log(req.body);
-    res.status(500).json({ error: "Error updating character", details: err.message});
+    res.status(500).json({ error: "Error updating character", details: err.message });
   }
 })
 router.delete('/characters/:id', async (req, res) => {
   const id = parseInt(req.params.id, 10);
 
-  if (isNaN(id)) { return res.send(400).json({error: "Invalid ID format."})}
-  
+  if (isNaN(id)) { return res.send(400).json({ error: "Invalid ID format." }) }
+
   try {
     const deleteCharacter = await prisma.character.delete({
       where: {
         id: id
       }
     })
-    res.status(200).json({message: "The character was deleted successfully"});
-  } catch(err) {
-    console.log(req.body);
-    res.status(500).json({error: "Error deleting character", details: err.message});
+    res.status(200).json({ message: "The character was deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: "Error deleting character", details: err.message });
   }
 })
 

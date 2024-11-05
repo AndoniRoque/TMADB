@@ -10,12 +10,11 @@ passport.use(
           username: username,
         },
       })
-      
+
       const user = rows;
 
-      if(!user) {
-        console.log("entré a !user, no debería.")
-        return done(null, false, {message: "User not found."});
+      if (!user) {
+        return done(null, false, { message: "User not found." });
       }
 
       //const match = await bcrypt.compare(password, user.password);
@@ -24,9 +23,8 @@ passport.use(
       //   done(null, false, {message: "Incorrect passowrd"});
       // } 
 
-      if(user.password !== password) {
-        console.log("unmatching passwords");
-        return done(null, false, {message: "Incorrect password."});
+      if (user.password !== password) {
+        return done(null, false, { message: "Incorrect password." });
       }
 
       return done(null, user);
@@ -56,7 +54,7 @@ passport.deserializeUser(async (id, done) => {
 })
 
 export const ensureAuthenticated = (req, res, next) => {
-  return req.isAuthenticated() ? next() : res.status(401).json({message: "You need to log in to access this resource."});
+  return req.isAuthenticated() ? next() : res.status(401).json({ message: "You need to log in to access this resource." });
 };
 
 export default passport;

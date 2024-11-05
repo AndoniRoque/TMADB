@@ -21,7 +21,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 
-const base_url = process.env.NEXT_PUBLIC_BASE_URL
+const base_url = process.env.NEXT_PUBLIC_BASE_URL;
 
 function Login() {
   const [user, setUser] = useState("");
@@ -37,13 +37,13 @@ function Login() {
       const data = {
         username: user,
         password: password,
-        mail: email
-      }
-      console.log(data);
+        mail: email,
+      };
       const response = await axios.post(`${URL_BACK}/login/`, data, {
         withCredentials: true,
       });
-      if (response.status === 200) {  // Assuming 200 means successful login
+      if (response.status === 200) {
+        // Assuming 200 means successful login
         toast({
           title: "Login successful!",
           status: "success",
@@ -66,20 +66,59 @@ function Login() {
 
   return (
     <>
-      <Box display={"flex"} justifyContent={"space-evenly"} flexDirection={"row"} w={"full"}>
+      <Box
+        display={"flex"}
+        justifyContent={"space-evenly"}
+        flexDirection={"row"}
+        w={"full"}
+      >
         <Box display={"flex"} w={"50%"} backgroundColor={"black"}>
-          <Image src="TMA_Logo.webp" alt="The Magnus Archive logo" h={"100vh"} fit="contain"/>
+          <Image
+            src="TMA_Logo.webp"
+            alt="The Magnus Archive logo"
+            h={"100vh"}
+            fit="contain"
+          />
         </Box>
-        <Box display={"flex"} minW={"50%"} h={"75vh"} p={16} m={20} justifyContent={"center"} alignItems={"center"} fontFamily={"typewriter"}>
-          <FormControl display={"flex"} justifyContent={"center"} flexDirection={"column"}>
+        <Box
+          display={"flex"}
+          minW={"50%"}
+          h={"75vh"}
+          p={16}
+          m={20}
+          justifyContent={"center"}
+          alignItems={"center"}
+          fontFamily={"typewriter"}
+        >
+          <FormControl
+            display={"flex"}
+            justifyContent={"center"}
+            flexDirection={"column"}
+          >
             <Text fontWeight={"bold"}> The Magnus Archive Database </Text>
-            <FormLabel mb={0} mt={4} > User </FormLabel>
-            <Input value={user} onChange={(e) => setUser(e.target.value)}/>
-            <FormLabel mb={0} mt={4}> Password </FormLabel>
-            <Input value={password} onChange={(e) => setPassword(e.target.value)} type="password"/> 
-            <FormLabel mb={0} mt={4}> Email </FormLabel>
-            <Input value={email} onChange={(e) => setEmail(e.target.value)}/> 
-            <Button mt={4} onClick={iniciarSesion}> Log in</Button>
+            <FormLabel mb={0} mt={4}>
+              {" "}
+              User{" "}
+            </FormLabel>
+            <Input value={user} onChange={(e) => setUser(e.target.value)} />
+            <FormLabel mb={0} mt={4}>
+              {" "}
+              Password{" "}
+            </FormLabel>
+            <Input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+            />
+            <FormLabel mb={0} mt={4}>
+              {" "}
+              Email{" "}
+            </FormLabel>
+            <Input value={email} onChange={(e) => setEmail(e.target.value)} />
+            <Button mt={4} onClick={iniciarSesion}>
+              {" "}
+              Log in
+            </Button>
           </FormControl>
         </Box>
       </Box>

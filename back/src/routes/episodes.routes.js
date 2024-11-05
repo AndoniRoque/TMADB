@@ -33,8 +33,6 @@ router.get('/episodes', async (req, res) => {
 })
 router.post('/episodes', async (req, res) => {
   const { title, number, releaseDate, description, caseNumber, season, heard, characterIds } = req.body;
-  console.log(req.body);
-  console.log(characterIds);
 
   try {
     if (!title) return res.status(400).json({ message: "Title is missing" });
@@ -133,7 +131,6 @@ router.put('/episodes/:id', async (req, res) => {
 
     res.status(200).json(updateEpisode);
   } catch (err) {
-    console.log(req.body);
     res.status(500).json({ error: "Error updating episode", details: err.message });
   }
 });
@@ -151,7 +148,6 @@ router.delete('/episodes/:id', async (req, res) => {
     })
     res.status(200).json({ message: "The episode was deleted successfully" });
   } catch (err) {
-    console.log(req.body);
     res.status(500).json({ error: "Error deleting episode", details: err.message });
   }
 })
