@@ -166,6 +166,7 @@ function Page() {
         caseNumber={episode.caseNumber}
         characters={episode.characters}
         description={episode.description}
+        releaseDate={episode.releaseDate}
       />
 
       <EpisodeModal
