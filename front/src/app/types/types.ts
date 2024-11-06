@@ -33,6 +33,11 @@ export interface EpisodeData {
   characterIds: number[];
 }
 
+export interface CharacterData {
+  name: string;
+  description: string;
+}
+
 export interface CharacterCardProps {
   character: Character;
 }
@@ -48,5 +53,12 @@ export interface EpisodeModalProps {
   characters: Character[];
   getEpisode: () => void;
   initialValue?: EpisodeData | null;
+}
+
+export interface CharacterModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  initialValue?: CharacterData | null;
+  id: number;
 }
 

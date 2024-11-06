@@ -1,10 +1,15 @@
 "use client";
+import CharacterCard from "../../components/CharacterCard";
 import {
   Box,
   Button,
   FormControl,
   FormLabel,
+  Grid,
+  GridItem,
   Input,
+  LinkBox,
+  LinkOverlay,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -18,11 +23,12 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import axios from "axios";
+import dayjs from "dayjs";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import EpisodeModal from "@/app/components/EpisodeModal";
-import { Episode, EpisodeData } from "@/app/types/types";
+import { Episode, EpisodeData, Character } from "@/app/types/types";
 import InformationCard from "@/app/components/InformationCard";
 const URL_BACK = "http://localhost:3333/api";
 
@@ -37,8 +43,8 @@ function Page() {
     onOpen: onOpenEpisode,
     onClose: onCloseEpisode,
   } = useDisclosure();
-  const router = useRouter();
   const params = useParams();
+  const router = useRouter();
   const episodeNumber = params.id;
   const [episode, setEpisode] = useState<Episode | null>(null);
   const [message, setMessage] = useState<string>("");
@@ -152,46 +158,15 @@ function Page() {
       </Box>
 
       <InformationCard
+        heard={episode.heard}
         id={episode.id}
         title={episode.title}
         number={episode.number}
-        releaseDate={episode.releaseDate}
-        description={episode.description}
-        caseNumber={episode.caseNumber}
-        heard={episode.heard}
         season={episode.season}
+        caseNumber={episode.caseNumber}
         characters={episode.characters}
+        description={episode.description}
       />
-
-      <Modal isOpen={isOpenCharacter} onClose={onCloseCharacter}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Upload Episode</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FormControl>
-              <FormLabel>Name</FormLabel>
-              <Input
-                placeholder="Character name..."
-                onChange={(e) => setCharacterName(e.target.value)}
-              />
-              <FormLabel>Description</FormLabel>
-              <Textarea
-                placeholder="Character description..."
-                onChange={(e) => setCharacterDescription(e.target.value)}
-              />
-            </FormControl>
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={onCloseCharacter}>
-              Close
-            </Button>
-            <Button colorScheme="blue" onClick={uploadCharacter}>
-              Upload
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
 
       <EpisodeModal
         isOpen={isOpenEpisode}

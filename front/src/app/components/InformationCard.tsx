@@ -27,11 +27,13 @@ const InformationCard: React.FC<Props> = (info) => {
         display={"flex"}
         justifyContent={"center"}
         alignItems={"center"}
-        h={"50vh"}
+        flexDirection={"column"}
+        h={"auto"}
+        mt={"8%"}
       >
         <Box
           display="flex"
-          flexDirection="column"
+          flexDirection={"column"}
           alignItems="center"
           justifyContent="center"
           w={"50%"}
@@ -41,18 +43,24 @@ const InformationCard: React.FC<Props> = (info) => {
           borderRadius={8}
           color={"whitesmoke"}
           boxShadow={"2px 0px 10px rgba(0,0,0,0.5)"}
+          mb={"8%"}
         >
           <Text fontSize="4xl">
             {isInfoEpisode
-              ? `MAG ${info.number} - ${info.title}`
-              : `Name: ${info.name}`}
+              ? // @ts-ignore
+                `MAG ${info.number} - ${info.title}`
+              : // @ts-ignore
+                `Name: ${info.name}`}
           </Text>
           {isInfoEpisode && (
             <>
+              {/* @ts-ignore  */}
               <Text textAlign="right">Season: {info.season}</Text>
               <Text textAlign="right">
+                {/* @ts-ignore  */}
                 Release Date: {dayjs(info.releaseDate).format("DD-MM-YYYY")}
               </Text>
+              {/* @ts-ignore  */}
               <Text as="span">Case Number: #{info.caseNumber}</Text>
             </>
           )}
@@ -73,9 +81,11 @@ const InformationCard: React.FC<Props> = (info) => {
             >
               Characters appearences:
             </Text>
+            {/* @ts-ignore  */}
             {info.characters != undefined && info.characters.length > 0 && (
               <Box display="flex" justifyContent="center">
                 <Grid templateColumns="repeat(3, 1fr)" gap={10} mx="auto">
+                  {/* @ts-ignore  */}
                   {info.characters?.map((character: Character) => (
                     <GridItem key={character.id} w={500}>
                       <LinkBox>
