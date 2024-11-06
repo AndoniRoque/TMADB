@@ -71,6 +71,7 @@ function Login() {
         justifyContent={"space-evenly"}
         flexDirection={"row"}
         w={"full"}
+        color={"whitesmoke"}
       >
         <Box display={"flex"} w={"50%"} backgroundColor={"black"}>
           <Image

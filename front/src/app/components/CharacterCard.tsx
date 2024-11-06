@@ -13,7 +13,7 @@ function CharacterCard({ character }: CharacterCardProps) {
         p={16}
         border={"1px solid gray"}
         borderRadius={8}
-        color={"white"}
+        color={"whitesmoke"}
         fontWeight={400}
         _hover={{
           transform: "scale(1.01)",

@@ -16,6 +16,11 @@ export interface Episode {
   characters: Character[];
 }
 
+
+export interface InfoType { 
+  info: Character | Episode;
+}
+
 export interface EpisodeData {
   title: string;
   number: number;
@@ -44,3 +49,4 @@ export interface EpisodeModalProps {
   getEpisode: () => void;
   initialValue?: EpisodeData | null;
 }
+

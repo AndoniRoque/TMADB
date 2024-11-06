@@ -1,15 +1,10 @@
 "use client";
-import CharacterCard from "../../components/CharacterCard";
 import {
   Box,
   Button,
   FormControl,
   FormLabel,
-  Grid,
-  GridItem,
   Input,
-  LinkBox,
-  LinkOverlay,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -23,12 +18,12 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import axios from "axios";
-import dayjs from "dayjs";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import EpisodeModal from "@/app/components/EpisodeModal";
-import { Episode, EpisodeData, Character } from "@/app/types/types";
+import { Episode, EpisodeData } from "@/app/types/types";
+import InformationCard from "@/app/components/InformationCard";
 const URL_BACK = "http://localhost:3333/api";
 
 function Page() {
@@ -42,8 +37,8 @@ function Page() {
     onOpen: onOpenEpisode,
     onClose: onCloseEpisode,
   } = useDisclosure();
-  const params = useParams();
   const router = useRouter();
+  const params = useParams();
   const episodeNumber = params.id;
   const [episode, setEpisode] = useState<Episode | null>(null);
   const [message, setMessage] = useState<string>("");
@@ -156,45 +151,17 @@ function Page() {
         </Box>
       </Box>
 
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        h="46vh"
-        color="whitesmoke"
-      >
-        <Text fontSize="4xl">
-          MAG {episode.number} - {episode.title}
-        </Text>
-        <Text textAlign="right">Season: {episode.season}</Text>
-        <Text textAlign="right">
-          Release Date: {dayjs(episode.releaseDate).format("DD-MM-YYYY")}
-        </Text>
-        <Text as="span">Case Number: #{episode.caseNumber}</Text>
-        <Text fontSize="2xl">{episode.description}</Text>
-      </Box>
-
-      <Box display={"flex"} justifyContent={"center"} flexDirection={"column"}>
-        <Text fontSize={"2xl"} color={"whitesmoke"} mb={5} textAlign={"center"}>
-          Characters appearences:
-        </Text>
-        {episode.characters.length > 0 && (
-          <Box display="flex" justifyContent="center">
-            <Grid templateColumns="repeat(3, 1fr)" gap={10} mx="auto">
-              {episode.characters.map((character) => (
-                <GridItem key={character.id} w={500}>
-                  <LinkBox>
-                    <LinkOverlay href={`/character/${character.id}`}>
-                      <CharacterCard character={character} />
-                    </LinkOverlay>
-                  </LinkBox>
-                </GridItem>
-              ))}
-            </Grid>
-          </Box>
-        )}
-      </Box>
+      <InformationCard
+        id={episode.id}
+        title={episode.title}
+        number={episode.number}
+        releaseDate={episode.releaseDate}
+        description={episode.description}
+        caseNumber={episode.caseNumber}
+        heard={episode.heard}
+        season={episode.season}
+        characters={episode.characters}
+      />
 
       <Modal isOpen={isOpenCharacter} onClose={onCloseCharacter}>
         <ModalOverlay />

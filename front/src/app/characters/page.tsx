@@ -71,4 +71,3 @@ function characters() {
 }
 
 export default characters;
-// TODO: hacer pagina episode y pagina character componentes reutilizables
