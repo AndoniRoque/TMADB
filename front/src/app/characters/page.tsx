@@ -77,7 +77,11 @@ function characters() {
         </Grid>
       </Box>
 
-      <CharacterModal isOpen={isOpen} onClose={onClose} />
+      <CharacterModal
+        isOpen={isOpen}
+        onClose={onClose}
+        getEpisode={getCharacters}
+      />
     </>
   );
 }

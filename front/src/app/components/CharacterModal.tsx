@@ -53,7 +53,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
     try {
       await axios.post(`${URL_BACK}/characters`, data);
       alert("The character was uploaded successfully.");
-      getEpisode();
+      getEpisode && getEpisode();
       onClose();
     } catch (err) {
       console.error(err);
@@ -64,7 +64,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
     try {
       await axios.put(`${URL_BACK}/characters/${characterId}`, data);
       alert("Episode updated successfully.");
-      getEpisode();
+      getEpisode && getEpisode();
       onClose();
     } catch (err) {
       console.error("Error updating episode:", err);
