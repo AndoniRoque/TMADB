@@ -2,30 +2,16 @@
 import {
   Box,
   Button,
-  Checkbox,
-  FormControl,
-  FormLabel,
   Grid,
   GridItem,
   Heading,
-  Input,
   LinkBox,
   LinkOverlay,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Select,
   Skeleton,
   Text,
-  Textarea,
   useDisclosure,
 } from "@chakra-ui/react";
 import axios from "axios";
-import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import EpisodeCard from "../components/EpisodeCard";
 import EpisodeModal from "../components/EpisodeModal";
@@ -85,7 +71,8 @@ export default function EpisodesPage() {
         flexDirection={"row"}
         m={4}
         p={4}
-        mt={28} // TODO: Responsive shit here.
+        mt={"8%"} // TODO: Responsive shit here.
+        mb={"3%"}
       >
         <Heading fontSize="4xl" color={"whitesmoke"}>
           {" "}
@@ -96,6 +83,7 @@ export default function EpisodesPage() {
       <Box display={"flex"} justifyContent={"center"} alignItems="center">
         {loading ? (
           <>
+            <Skeleton ml={16} height="200px" />
             <Skeleton ml={16} height="200px" />
             <Skeleton ml={16} height="200px" />
             <Skeleton ml={16} height="200px" />
@@ -113,7 +101,17 @@ export default function EpisodesPage() {
           </>
         ) : (
           <>
-            <Grid templateColumns="repeat(3, 1fr)" gap={10} mx="auto">
+            <Grid
+              templateColumns={{
+                base: "repeat(1, 1fr)",
+                sm: "repeat(1, 1fr)",
+                md: "repeat(2, 1fr)",
+                lg: "repeat(3, 1fr)",
+                // xl: "repeat(5, 1fr)",
+              }}
+              gap={10}
+              mx={10}
+            >
               {episodes.map((e: Episode) => (
                 <GridItem key={e.id} w={500}>
                   <LinkBox>

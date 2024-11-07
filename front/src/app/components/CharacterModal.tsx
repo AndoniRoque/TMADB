@@ -13,8 +13,9 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { Character, CharacterData, CharacterModalProps } from "../types/types";
+import { CharacterData, CharacterModalProps } from "../types/types";
 import axios from "axios";
+import { useParams } from "next/navigation";
 const URL_BACK = "http://localhost:3333/api";
 
 const CharacterModal: React.FC<CharacterModalProps> = ({
@@ -22,7 +23,10 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   isOpen,
   initialValue,
   id,
+  getEpisode,
 }) => {
+  const params = useParams();
+  const characterId = params.id;
   const [characterName, setCharacterName] = useState<string>(
     initialValue?.name || ""
   );
@@ -34,27 +38,33 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
     const data: CharacterData = {
       name: characterName,
       description: characterDescription,
+      episode: { connect: { id } },
     };
 
-    initialValue ? updateCharacter(data) : uploadCharacter(data);
+    const updateData: CharacterData = {
+      name: characterName,
+      description: characterDescription,
+    };
+
+    initialValue ? updateCharacter(updateData) : uploadCharacter(data);
   };
 
   const uploadCharacter = async (data: CharacterData) => {
     try {
       await axios.post(`${URL_BACK}/characters`, data);
       alert("The character was uploaded successfully.");
+      getEpisode();
       onClose();
     } catch (err) {
       console.error(err);
     }
   };
 
-  const updateCharacter = async (submitCharacter: CharacterData) => {
+  const updateCharacter = async (data: CharacterData) => {
     try {
-      await axios.put(`${URL_BACK}/characters/${id}`, {
-        submitCharacter,
-      });
+      await axios.put(`${URL_BACK}/characters/${characterId}`, data);
       alert("Episode updated successfully.");
+      getEpisode();
       onClose();
     } catch (err) {
       console.error("Error updating episode:", err);
@@ -74,11 +84,13 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
               <Input
                 placeholder="Character name..."
                 onChange={(e) => setCharacterName(e.target.value)}
+                value={characterName}
               />
               <FormLabel>Description</FormLabel>
               <Textarea
                 placeholder="Character description..."
                 onChange={(e) => setCharacterDescription(e.target.value)}
+                value={characterDescription}
               />
             </FormControl>
           </ModalBody>

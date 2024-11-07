@@ -36,6 +36,7 @@ export interface EpisodeData {
 export interface CharacterData {
   name: string;
   description: string;
+  episode?: Object;
 }
 
 export interface CharacterCardProps {
@@ -59,6 +60,7 @@ export interface CharacterModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialValue?: CharacterData | null;
-  id: number;
+  id?: string;
+  getEpisode?: () => void;
 }
 

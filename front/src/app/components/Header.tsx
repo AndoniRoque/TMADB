@@ -1,16 +1,5 @@
-import {
-  Box,
-  CloseButton,
-  Drawer,
-  DrawerContent,
-  Flex,
-  FlexProps,
-  Icon,
-  Image,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Box, Image, Text } from "@chakra-ui/react";
 import Head from "next/head";
-import { IconType } from "react-icons";
 import React, { ReactNode } from "react";
 import Link from "next/link";
 
@@ -37,25 +26,92 @@ function Header({
         p={4}
         m={0}
         minH={"10vh"}
-        bg={"black"}
+        bg="conic-gradient(from 90deg at 77% 50%, #0f1110, #252b26)"
+        backgroundColor={"black"}
+        boxShadow={"0 4px 15px rgba(0, 0, 0, 0.4)"}
         display={"flex"}
         justifyContent={"space-between"}
         position={"fixed"}
         top={0}
         zIndex={2}
       >
-        <Box flex={1}>
-          <Image src="TMA_icon.webp" alt="The Magnus Archive logo" h={70} />
+        <Box display={"flex"} justifyContent={"start"} alignItems={"center"}>
+          <Image
+            src="/TMA_icon.webp"
+            alt="The Magnus Archive logo"
+            h={90}
+            zIndex={2}
+          />
+        </Box>
+        <Box
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          h={90}
+          flex={1}
+        >
+          <Text
+            color={"rgba(236, 223, 204, 0.8)"}
+            fontSize={"4xl"}
+            fontWeight={"bold"}
+          >
+            The Magnus Archive Database
+          </Text>
         </Box>
         <Box
           display={"flex"}
           flex={2}
-          justifyContent={"space-around"}
-          color={"white"}
+          justifyContent={"end"}
+          color={"rgba(236, 223, 204, 0.8)"}
         >
-          <Link href={"/episodes"}> Episodes </Link>
-          <Link href={"/characters"}> Characters </Link>
-          <Link href={"/mindmap"}> Mindmap </Link>
+          <Link href={"/episodes"}>
+            <Box
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              h={"100%"}
+              w={"15vh"}
+              _hover={{
+                color: "#ECDFCC",
+                transform: "scale(1.05)",
+                transition: "all 0.3s ease-in-out",
+              }}
+            >
+              Episodes
+            </Box>
+          </Link>
+          <Link href="/characters">
+            <Box
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              h={"100%"}
+              w={"15vh"}
+              _hover={{
+                color: "#ECDFCC",
+                transform: "scale(1.05)",
+                transition: "all 0.3s ease-in-out",
+              }}
+            >
+              Characters
+            </Box>
+          </Link>
+          <Link href="/mindmap">
+            <Box
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              h={"100%"}
+              w={"15vh"}
+              _hover={{
+                color: "#ECDFCC",
+                transform: "scale(1.05)",
+                transition: "all 0.3s ease-in-out",
+              }}
+            >
+              Mindmap
+            </Box>
+          </Link>
         </Box>
       </Box>
     </>

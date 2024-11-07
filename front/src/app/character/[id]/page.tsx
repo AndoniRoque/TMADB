@@ -6,6 +6,7 @@ import { Character } from "@/app/types/types";
 import axios from "axios";
 import { Box, Button, useDisclosure } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import CharacterModal from "@/app/components/CharacterModal";
 const URL_BACK = "http://localhost:3333/api";
 
 function character() {
@@ -102,10 +103,18 @@ function character() {
           </Button>
         </Box>
       </Box>
+
       <InformationCard
         description={character.description}
         id={character.id}
         name={character.name}
+      />
+
+      <CharacterModal
+        isOpen={isOpenCharacter}
+        onClose={onCloseCharacter}
+        initialValue={character}
+        getEpisode={getEpisode}
       />
     </>
   );

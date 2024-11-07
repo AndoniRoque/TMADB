@@ -41,18 +41,29 @@ router.post('/characters', async (req, res) => {
       }
     });
 
-    if (existingCharacter) res.status(400).json({ message: "A character with this values already exists, please upload a new one." });
+    if (existingCharacter) return res.status(400).json({ message: "A character with this values already exists, please upload a new one." });
 
-    const newCharacter = await prisma.character.create({
-      data: {
-        name,
-        description,
-        episodes: {
-          connect: { id: parseInt(episode.connect.id) }
+    if (!episode || !episode.connect || !episode.connect.id) {
+      const newCharacter = await prisma.character.create({
+        data: {
+          name,
+          description
+        }
+      })
+      res.status(200).json(newCharacter);
+    } else {
+      const newCharacter = await prisma.character.create({
+        data: {
+          name,
+          description,
+          episodes: {
+            connect: { id: parseInt(episode.connect.id) }
+          },
         },
-      },
-    });
-    res.status(200).json(newCharacter);
+      });
+      res.status(200).json(newCharacter);
+    }
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Error getting characters', details: err.message });

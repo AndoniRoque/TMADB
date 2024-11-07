@@ -1,27 +1,5 @@
 "use client";
-import CharacterCard from "../../components/CharacterCard";
-import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Grid,
-  GridItem,
-  Input,
-  LinkBox,
-  LinkOverlay,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Skeleton,
-  Text,
-  Textarea,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Box, Button, Skeleton, Text, useDisclosure } from "@chakra-ui/react";
 import axios from "axios";
 import dayjs from "dayjs";
 import { useParams, useRouter } from "next/navigation";
@@ -30,6 +8,7 @@ import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import EpisodeModal from "@/app/components/EpisodeModal";
 import { Episode, EpisodeData, Character } from "@/app/types/types";
 import InformationCard from "@/app/components/InformationCard";
+import CharacterModal from "@/app/components/CharacterModal";
 const URL_BACK = "http://localhost:3333/api";
 
 function Page() {
@@ -44,8 +23,8 @@ function Page() {
     onClose: onCloseEpisode,
   } = useDisclosure();
   const params = useParams();
-  const router = useRouter();
   const episodeNumber = params.id;
+  const router = useRouter();
   const [episode, setEpisode] = useState<Episode | null>(null);
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
@@ -87,17 +66,6 @@ function Page() {
       setMessage("The episode couldn't be loaded.");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const uploadCharacter = async () => {
-    try {
-      await axios.post(`${URL_BACK}/characters`, data);
-      alert("The character was uploaded successfully.");
-      getEpisode();
-      onCloseCharacter();
-    } catch (err) {
-      console.error(err);
     }
   };
 
@@ -175,6 +143,14 @@ function Page() {
         characters={episode.characters}
         getEpisode={getEpisode}
         initialValue={episodeToEdit}
+      />
+
+      <CharacterModal
+        isOpen={isOpenCharacter}
+        onClose={onCloseCharacter}
+        initialValue={null}
+        id={episodeNumber.toString()}
+        getEpisode={getEpisode}
       />
     </>
   );
