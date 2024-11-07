@@ -71,6 +71,7 @@ function Header({
               alignItems={"center"}
               h={"100%"}
               w={"15vh"}
+              fontSize={"xl"}
               _hover={{
                 color: "#ECDFCC",
                 transform: "scale(1.05)",
@@ -87,6 +88,7 @@ function Header({
               alignItems={"center"}
               h={"100%"}
               w={"15vh"}
+              fontSize={"xl"}
               _hover={{
                 color: "#ECDFCC",
                 transform: "scale(1.05)",
@@ -101,6 +103,7 @@ function Header({
               display={"flex"}
               justifyContent={"center"}
               alignItems={"center"}
+              fontSize={"xl"}
               h={"100%"}
               w={"15vh"}
               _hover={{
@@ -119,3 +122,5 @@ function Header({
 }
 
 export default Header;
+
+// TODO: si creo personajes se van a agregar al endpoint de personajes y si entro a la pantalla de el episodio, obviamente los personajes no van a estar agregador ahi, pero tendría que poder hacer un Edit Episode para agregar los personajes faltantes.
