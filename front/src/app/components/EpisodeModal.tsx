@@ -32,6 +32,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   initialValue,
   getEpisode,
 }) => {
+    const [id, setId] = useState<number>(initialValue?.id || 0);
   const [title, setTitle] = useState<string>(initialValue?.title || "");
   const [number, setNumber] = useState<number>(initialValue?.season || 1);
   const [releaseDate, setReleaseDate] = useState<string>(
@@ -75,6 +76,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
 
   useEffect(() => {
     if (initialValue) {
+        setId(initialValue.id);
       setTitle(initialValue.title);
       setNumber(initialValue.number);
       setReleaseDate(initialValue.releaseDate);
@@ -97,8 +99,10 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
     }
   };
 
+  
   const updateEpisode = async (submitEpisode: EpisodeData) => {
-    try {
+      try {
+        console.log("------", submitEpisode.number);
       await axios.put(`${URL_BACK}/episodes/${number}`, {
         ...submitEpisode,
         number: Number(submitEpisode.number),
@@ -114,17 +118,19 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
 
   const handleSubmit = async () => {
     const data: EpisodeData = {
-      title,
-      number,
-      releaseDate: dayjs(releaseDate, "YYYY-MM-DD").toISOString(),
-      description,
-      heard,
-      caseNumber,
-      season,
-      characterIds: selectedCharacter,
+        id,
+        title,
+        number,
+        releaseDate: dayjs(releaseDate, "YYYY-MM-DD").toISOString(),
+        description,
+        heard,
+        caseNumber,
+        season,
+        characterIds: selectedCharacter,
     };
 
     initialValue ? updateEpisode(data) : uploadEpisode(data);
+    // TODO: resolver update, le estoy pasando ids que no corresponden con la base de datos o algo asi. que se yo. si justamente el numero del episodio es el que quiero editar, al cambiarlo me descuaraja la bd
   };
 
   const handleCharacterChange = (selectedOptions: any) => {

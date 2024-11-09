@@ -67,26 +67,15 @@ const InformationCard: React.FC<Props> = (info) => {
           <Text fontSize="2xl">{info.description}</Text>
         </Box>
 
-        {isInfoEpisode && (
-          <Box
-            display={"flex"}
-            justifyContent={"center"}
-            flexDirection={"column"}
-          >
-            <Text
-              fontSize={"2xl"}
-              color={"whitesmoke"}
-              mb={5}
-              textAlign={"center"}
-            >
-              Characters appearences:
-            </Text>
-            {/* @ts-ignore  */}
-            {info.characters != undefined && info.characters.length > 0 && (
+        <Box>
+          {isInfoEpisode && info.characters?.length > 0 && (
+            <Box display={"flex"} justifyContent={"center"} flexDirection={"column"}>
+              <Text fontSize={"2xl"} color={"whitesmoke"} mb={5} textAlign={"center"}>
+                Characters appearances:
+              </Text>
               <Box display="flex" justifyContent="center">
                 <Grid templateColumns="repeat(3, 1fr)" gap={10} mx="auto">
-                  {/* @ts-ignore  */}
-                  {info.characters?.map((character: Character) => (
+                  {info.characters.map((character: Character) => (
                     <GridItem key={character.id} w={500}>
                       <LinkBox>
                         <LinkOverlay href={`/character/${character.id}`}>
@@ -97,9 +86,9 @@ const InformationCard: React.FC<Props> = (info) => {
                   ))}
                 </Grid>
               </Box>
-            )}
-          </Box>
-        )}
+            </Box>
+          )}
+        </Box>
       </Box>
     </>
   );

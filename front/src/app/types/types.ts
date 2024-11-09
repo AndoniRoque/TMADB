@@ -22,6 +22,7 @@ export interface InfoType {
 }
 
 export interface EpisodeData {
+  id: number;
   title: string;
   number: number;
   releaseDate: string;

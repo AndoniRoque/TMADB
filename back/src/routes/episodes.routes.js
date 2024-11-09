@@ -95,13 +95,8 @@ router.get('/episodes/:id', async (req, res) => {
   }
 })
 router.put('/episodes/:id', async (req, res) => {
-  const id = parseInt(req.params.id, 10);
-
-  if (isNaN(id)) {
-    return res.status(400).json({ error: "Invalid ID format" });
-  }
-
   const {
+    id,
     title,
     number,
     releaseDate,
@@ -112,7 +107,15 @@ router.put('/episodes/:id', async (req, res) => {
     characterIds, // Extrae `characterIds` del cuerpo de la solicitud
   } = req.body;
 
+  console.log("id>>>><><>", id);
+
+  if (isNaN(id)) {
+    return res.status(400).json({ error: "Invalid ID format" });
+  }
+
+
   try {
+    characterIds.map((characterId) => (console.log(characterId)));
     const updateEpisode = await prisma.episode.update({
       where: { id },
       data: {
@@ -122,10 +125,7 @@ router.put('/episodes/:id', async (req, res) => {
         description,
         heard,
         caseNumber,
-        season,
-        characters: {
-          connect: characterIds.map((characterId) => ({ id: characterId })), // Conecta los IDs de personajes
-        },
+        season
       },
     });
 

@@ -24,6 +24,7 @@ function Page() {
   } = useDisclosure();
   const params = useParams();
   const episodeNumber = params.id;
+  console.log(episodeNumber);
   const router = useRouter();
   const [episode, setEpisode] = useState<Episode | null>(null);
   const [message, setMessage] = useState<string>("");
@@ -43,6 +44,7 @@ function Page() {
   const handleEditEpisode = () => {
     if (episode) {
       setEpisodeToEdit({
+        id: episode.id,
         title: episode.title,
         number: Number(episode.number),
         releaseDate: episode.releaseDate,
@@ -159,3 +161,4 @@ function Page() {
 export default Page;
 
 // TODO: Hace el mismo modal reutilizable para subir y modificar Characters
+// TODO: mostrar distinto mensaje si no hay personaje cargado
