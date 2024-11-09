@@ -27,3 +27,6 @@ export default function RootLayout({
     </html>
   );
 }
+
+// TODO: al editar un episodio para agregar más personajes, no se linkean como corresponde. 
+
