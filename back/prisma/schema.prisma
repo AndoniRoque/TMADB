@@ -17,17 +17,24 @@ model Episode {
   heard       Boolean     @default(false)
   caseNumber  String
   season      Int         @default(1)
-  characters  Character[] @relation("EpisodesOnCharacters") // Sin `references`
+  characters  EpisodesOnCharacters[]
 }
 
 model Character {
   id          Int         @id @default(autoincrement())
   name        String      @unique
   description String
-  episodes    Episode[]   @relation("EpisodesOnCharacters") // Sin `references`
+  episodes    EpisodesOnCharacters[]
 }
 
+model EpisodesOnCharacters {
+  episodeId Int
+  characterId Int
+  episode Episode @relation(fields: [episodeId], references: [id])
+  character Character @relation(fields: [characterId], references: [id])
 
+  @@id([episodeId, characterId])
+}
 
 model User {
   id       Int    @id @default(autoincrement())

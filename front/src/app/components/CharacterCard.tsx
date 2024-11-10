@@ -3,6 +3,7 @@ import React from "react";
 import { CharacterCardProps } from "@/app/types/types";
 
 function CharacterCard({ character }: CharacterCardProps) {
+  console.log("character prop>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><", character);
   return (
     <Stack direction="row" wrap="wrap" minH={"200px"} h={"320px"} w={"100%"}>
       <Box
@@ -31,17 +32,17 @@ function CharacterCard({ character }: CharacterCardProps) {
           >
             <Avatar
               src="/TMA_icon.webp"
-              name={character.name}
+              name={character.character.name}
               size="lg"
               borderRadius="full"
               mr={8}
             />
             <Text textStyle="6xl" fontWeight={600} w={"full"}>
-              {character.name}
+              {character.character.name}
             </Text>
           </Box>
           <Text mt={4} noOfLines={3}>
-            {character.description}
+            {character.character.description}
           </Text>
         </Stack>
       </Box>

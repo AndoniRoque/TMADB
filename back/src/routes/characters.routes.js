@@ -29,7 +29,6 @@ router.get('/characters', async (req, res) => {
 })
 router.post('/characters', async (req, res) => {
   const { name, description, episode } = req.body;
-
   try {
     if (!name) res.status(400).json({ message: "Character name is missing." });
     if (!description) res.status(400).json({ message: "Character description is missing" });
@@ -42,25 +41,22 @@ router.post('/characters', async (req, res) => {
     });
 
     if (existingCharacter) return res.status(400).json({ message: "A character with this values already exists, please upload a new one." });
+    
+    const newCharacter = await prisma.character.create({
+      data: {
+        name,
+        description,
+      },
+    }); 
 
-    if (!episode || !episode.connect || !episode.connect.id) {
-      const newCharacter = await prisma.character.create({
-        data: {
-          name,
-          description
-        }
-      })
+    
+    if (!episode) {
+      console.log("no se proveyó un id de episodio.")
       res.status(200).json(newCharacter);
     } else {
-      const newCharacter = await prisma.character.create({
-        data: {
-          name,
-          description,
-          episodes: {
-            connect: { id: parseInt(episode.connect.id) }
-          },
-        },
-      });
+      console.log("se proveyó un episodeID > ");
+      const association = await addCharacterToEpisode(parseInt(episode), newCharacter.id);
+      console.log(">", association);
       res.status(200).json(newCharacter);
     }
 
@@ -119,6 +115,27 @@ router.delete('/characters/:id', async (req, res) => {
     res.status(500).json({ error: "Error deleting character", details: err.message });
   }
 })
+
+
+async function addCharacterToEpisode(episodeId, characterId) {
+  try {
+    const episodeCharacter = await prisma.episodesOnCharacters.create({
+      data: {
+        episodeId: episodeId,
+        characterId: characterId,
+      },
+      include: {
+        episode: true,
+        character: true,
+      }
+    })
+    console.log(">>>> ",episodeCharacter)
+    return episodeCharacter
+  } catch (error) {
+    console.error('Error adding character to episode:', error)
+    throw error
+  }
+}
 
 
 export default router;

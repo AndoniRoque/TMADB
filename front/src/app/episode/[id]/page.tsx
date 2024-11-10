@@ -127,6 +127,8 @@ function Page() {
         </Box>
       </Box>
 
+      {console.log(episode.characters[0].character)}
+
       <InformationCard
         heard={episode.heard}
         id={episode.id}
@@ -161,4 +163,3 @@ function Page() {
 export default Page;
 
 // TODO: Hace el mismo modal reutilizable para subir y modificar Characters
-// TODO: mostrar distinto mensaje si no hay personaje cargado

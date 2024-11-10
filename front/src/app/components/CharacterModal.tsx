@@ -38,7 +38,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
     const data: CharacterData = {
       name: characterName,
       description: characterDescription,
-      episode: { connect: { id } },
+      episode:  id,
     };
 
     const updateData: CharacterData = {

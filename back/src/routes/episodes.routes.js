@@ -18,7 +18,11 @@ router.get('/episodes', async (req, res) => {
         number: 'asc'
       },
       include: {
-        characters: true,
+        characters: {
+          include: {
+            character: true,
+          }
+        },
       }
     });
 
@@ -63,10 +67,22 @@ router.post('/episodes', async (req, res) => {
         season,
         heard,
         characters: {
-          connect: characterIds ? characterIds.map(id => ({ id })) : []
+          create: characterIds.map(characterId => ({
+            character: {
+              connect: {
+                id: characterId
+              }
+            }
+          }))
         }
       },
-      include: { characters: true }
+      include: {
+        characters: {
+          include: {
+            character: true
+          }
+        }
+      }
     });
     res.status(200).json(newEpisode);
   } catch (err) {
@@ -85,7 +101,11 @@ router.get('/episodes/:id', async (req, res) => {
     const episode = await prisma.episode.findFirst({
       where: { id },
       include: {
-        characters: true,
+        characters: {
+          include: {
+            character: true,
+          }
+        },
       }
     })
 

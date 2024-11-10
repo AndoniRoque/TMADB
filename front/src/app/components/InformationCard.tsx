@@ -68,7 +68,7 @@ const InformationCard: React.FC<Props> = (info) => {
         </Box>
 
         <Box>
-          {isInfoEpisode && info.characters?.length > 0 && (
+          {isInfoEpisode && info.characters.length > 0 && (
             <Box display={"flex"} justifyContent={"center"} flexDirection={"column"}>
               <Text fontSize={"2xl"} color={"whitesmoke"} mb={5} textAlign={"center"}>
                 Characters appearances:
