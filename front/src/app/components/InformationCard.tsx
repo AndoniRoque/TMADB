@@ -14,7 +14,7 @@ import { Character, Episode } from "../types/types";
 type Props = Character | Episode;
 
 const InformationCard: React.FC<Props> = (info) => {
-  console.log(info);
+  console.log( " ---------------", info);
   const [isInfoEpisode, setIsInfoEpisode] = useState<boolean>(true);
 
   useEffect(() => {
@@ -80,7 +80,7 @@ const InformationCard: React.FC<Props> = (info) => {
                   {info.characters.map((character: Character) => (
                     <GridItem key={character.id} w={500}>
                       <LinkBox>
-                        <LinkOverlay href={`/character/${character.character.id}`}>
+                        <LinkOverlay href={`/character/${character.id}`}>
                           <CharacterCard character={character} />
                         </LinkOverlay>
                       </LinkBox>

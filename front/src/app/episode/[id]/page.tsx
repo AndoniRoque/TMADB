@@ -127,8 +127,6 @@ function Page() {
         </Box>
       </Box>
 
-      {console.log(episode.characters[0].character)}
-
       <InformationCard
         heard={episode.heard}
         id={episode.id}
@@ -136,7 +134,7 @@ function Page() {
         number={episode.number}
         season={episode.season}
         caseNumber={episode.caseNumber}
-        characters={episode.characters}
+        characters={ episode.characters}
         description={episode.description}
         releaseDate={episode.releaseDate}
       />
