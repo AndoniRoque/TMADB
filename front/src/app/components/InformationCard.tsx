@@ -14,7 +14,9 @@ import { Character, Episode } from "../types/types";
 type Props = Character | Episode;
 
 const InformationCard: React.FC<Props> = (info) => {
+  console.log(info);
   const [isInfoEpisode, setIsInfoEpisode] = useState<boolean>(true);
+
   useEffect(() => {
     if ("name" in info) {
       setIsInfoEpisode(false);
@@ -68,7 +70,7 @@ const InformationCard: React.FC<Props> = (info) => {
         </Box>
 
         <Box>
-          {isInfoEpisode && info.characters.length > 0 && (
+          {isInfoEpisode && info.characters?.length > 0 && (
             <Box display={"flex"} justifyContent={"center"} flexDirection={"column"}>
               <Text fontSize={"2xl"} color={"whitesmoke"} mb={5} textAlign={"center"}>
                 Characters appearances:
@@ -78,7 +80,7 @@ const InformationCard: React.FC<Props> = (info) => {
                   {info.characters.map((character: Character) => (
                     <GridItem key={character.id} w={500}>
                       <LinkBox>
-                        <LinkOverlay href={`/character/${character.id}`}>
+                        <LinkOverlay href={`/character/${character.character.id}`}>
                           <CharacterCard character={character} />
                         </LinkOverlay>
                       </LinkBox>

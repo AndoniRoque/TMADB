@@ -18,7 +18,6 @@ function character() {
   const router = useRouter();
   const params = useParams();
   const characterNumber = params.id;
-  console.log(characterNumber);
   const [character, setCharacter] = useState<Character | null>(null);
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
@@ -26,7 +25,7 @@ function character() {
     null
   );
 
-  console.log(`${URL_BACK}/characters/${characterNumber}`);
+  console.log(`>>>> ${URL_BACK}/characters/${characterNumber}`);
 
   const getEpisode = async () => {
     try {
