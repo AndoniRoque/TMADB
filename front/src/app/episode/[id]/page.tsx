@@ -158,5 +158,3 @@ function Page() {
 }
 
 export default Page;
-
-// TODO: Hace el mismo modal reutilizable para subir y modificar Characters

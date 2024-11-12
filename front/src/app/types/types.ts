@@ -2,6 +2,9 @@ export interface Character {
   id: number;
   name: string;
   description: string;
+  character: Character;
+  heard: boolean; // Add this line
+  characters: Character[];
 }
 
 export interface Episode {
