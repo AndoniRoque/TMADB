@@ -66,5 +66,6 @@ export interface CharacterModalProps {
   initialValue?: CharacterData | null;
   id?: string;
   getEpisode?: () => void;
+  charactersList: Character[];
 }
 

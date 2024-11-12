@@ -41,7 +41,7 @@ router.post('/characters', async (req, res) => {
       }
     });
 
-    if (existingCharacter) return res.status(400).json({ message: "A character with this values already exists, please upload a new one." });
+    if (existingCharacter) return res.status(409).json({ message: "A character with this values already exists, please upload a new one." });
 
     const newCharacter = await prisma.character.create({
       data: {

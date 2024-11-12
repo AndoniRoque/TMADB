@@ -80,6 +80,7 @@ function characters() {
         isOpen={isOpen}
         onClose={onClose}
         getEpisode={getCharacters}
+        charactersList={charactersList}
       />
     </>
   );
