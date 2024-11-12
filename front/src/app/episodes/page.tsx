@@ -67,7 +67,7 @@ export default function EpisodesPage() {
     <>
       <Box
         display={"flex"}
-        justifyContent={"space-around"}
+        justifyContent={"space-between"}
         flexDirection={"row"}
         m={4}
         p={4}
@@ -75,7 +75,6 @@ export default function EpisodesPage() {
         mb={"3%"}
       >
         <Heading fontSize="4xl" color={"whitesmoke"}>
-          {" "}
           T.M.A Episodes
         </Heading>
         <Button onClick={onOpen}> Upload Episode </Button>

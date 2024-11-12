@@ -113,7 +113,7 @@ const InformationCard: React.FC<Props> = (info) => {
                         >
                           <CharacterCard
                             key={character.character.id}
-                            character={character}
+                            character={character.character}
                           />
                         </LinkOverlay>
                       </LinkBox>

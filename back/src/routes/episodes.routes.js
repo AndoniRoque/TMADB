@@ -135,6 +135,7 @@ router.put('/episodes/:id', async (req, res) => {
     const charactersToDisconnect = existingCharacterIds.filter(
       (characterId) => !characterIds.includes(characterId)
     );
+
     await prisma.episodesOnCharacters.deleteMany({
       where: {
         episodeId: parseInt(id),

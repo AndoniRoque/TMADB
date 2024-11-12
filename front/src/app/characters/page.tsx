@@ -47,7 +47,7 @@ function characters() {
     <>
       <Box
         display={"flex"}
-        justifyContent={"space-around"}
+        justifyContent={"space-between"}
         alignItems={"center"}
         m={4}
         p={4}
