@@ -3,7 +3,6 @@ import React from "react";
 import { CharacterCardProps } from "@/app/types/types";
 
 function CharacterCard({ character }: CharacterCardProps) {
-  console.log("ZZZZZZZZ", character)
   return (
     <Stack direction="row" wrap="wrap" minH={"200px"} h={"320px"} w={"100%"}>
       <Box

@@ -29,7 +29,6 @@ function characters() {
       if (characters.data.message) {
         setCharacterMessage(characters.data.message);
       } else {
-        console.log(characters.data);
         setCharactersList(characters.data);
       }
     } catch (err) {

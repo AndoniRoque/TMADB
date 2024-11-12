@@ -41,22 +41,19 @@ router.post('/characters', async (req, res) => {
     });
 
     if (existingCharacter) return res.status(400).json({ message: "A character with this values already exists, please upload a new one." });
-    
+
     const newCharacter = await prisma.character.create({
       data: {
         name,
         description,
       },
-    }); 
+    });
 
-    
+
     if (!episode) {
-      console.log("no se proveyó un id de episodio.")
       res.status(200).json(newCharacter);
     } else {
-      console.log("se proveyó un episodeID > ");
       const association = await addCharacterToEpisode(parseInt(episode), newCharacter.id);
-      console.log(">", association);
       res.status(200).json(newCharacter);
     }
 
@@ -129,7 +126,6 @@ async function addCharacterToEpisode(episodeId, characterId) {
         character: true,
       }
     })
-    console.log(">>>> ",episodeCharacter)
     return episodeCharacter
   } catch (error) {
     console.error('Error adding character to episode:', error)

@@ -115,46 +115,66 @@ router.get('/episodes/:id', async (req, res) => {
   }
 })
 router.put('/episodes/:id', async (req, res) => {
-  const {
-    id,
-    title,
-    number,
-    releaseDate,
-    description,
-    heard,
-    caseNumber,
-    season,
-    characterIds, // Extrae `characterIds` del cuerpo de la solicitud
-  } = req.body;
+  const { id } = req.params;
+  const { title, number, releaseDate, description, heard, caseNumber, season, characterIds = [] } = req.body;
 
-  console.log("id>>>><><>", id);
-
-  if (isNaN(id)) {
+  if (isNaN(parseInt(id))) {
     return res.status(400).json({ error: "Invalid ID format" });
   }
 
-
   try {
-    characterIds.map((characterId) => (console.log(characterId)));
-    const updateEpisode = await prisma.episode.update({
-      where: { id },
-      data: {
-        title,
-        number,
-        releaseDate,
-        description,
-        heard,
-        caseNumber,
-        season
+    // Fetch the existing character IDs for the episode
+    const existingCharacterIds = (
+      await prisma.episodesOnCharacters.findMany({
+        where: { episodeId: parseInt(id) },
+        select: { characterId: true },
+      })
+    ).map(({ characterId }) => characterId);
+
+    // Disconnect any existing relationships that are not in the provided characterIds array
+    const charactersToDisconnect = existingCharacterIds.filter(
+      (characterId) => !characterIds.includes(characterId)
+    );
+    await prisma.episodesOnCharacters.deleteMany({
+      where: {
+        episodeId: parseInt(id),
+        characterId: { in: charactersToDisconnect },
       },
     });
 
-    res.status(200).json(updateEpisode);
+    // Connect any new character IDs that are not already connected
+    const charactersToConnect = characterIds.filter(
+      (characterId) => !existingCharacterIds.includes(characterId)
+    );
+    await prisma.episodesOnCharacters.createMany({
+      data: charactersToConnect.map((characterId) => ({
+        episodeId: parseInt(id),
+        characterId,
+      })),
+    });
+
+    // Update the episode details
+    const updatedEpisode = await prisma.episode.update({
+      where: { id: parseInt(id) },
+      data: {
+        title: title ?? undefined,
+        number: number ?? undefined,
+        releaseDate: releaseDate ? new Date(releaseDate) : undefined,
+        description: description ?? undefined,
+        heard: heard ?? undefined,
+        caseNumber: caseNumber ?? undefined,
+        season: season ?? undefined,
+      },
+      include: {
+        characters: true,
+      },
+    });
+
+    res.status(200).json(updatedEpisode);
   } catch (err) {
     res.status(500).json({ error: "Error updating episode", details: err.message });
   }
 });
-
 router.delete('/episodes/:id', async (req, res) => {
   const id = parseInt(req.params.id, 10);
 

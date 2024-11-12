@@ -32,7 +32,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   initialValue,
   getEpisode,
 }) => {
-    const [id, setId] = useState<number>(initialValue?.id || 0);
+  const [id, setId] = useState<number>(initialValue?.id || 0);
   const [title, setTitle] = useState<string>(initialValue?.title || "");
   const [number, setNumber] = useState<number>(initialValue?.season || 1);
   const [releaseDate, setReleaseDate] = useState<string>(
@@ -52,6 +52,8 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   const [characterMessage, setCharacterMessage] = useState<string>("");
   const [charactersList, setCharactersList] = useState<Character[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+
+  console.log(charactersList);
 
   const getCharacters = async () => {
     try {
@@ -74,9 +76,11 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
     label: character.name,
   }));
 
+  console.log(characterOptions);
+
   useEffect(() => {
     if (initialValue) {
-        setId(initialValue.id);
+      setId(initialValue.id);
       setTitle(initialValue.title);
       setNumber(initialValue.number);
       setReleaseDate(initialValue.releaseDate);
@@ -99,10 +103,8 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
     }
   };
 
-  
   const updateEpisode = async (submitEpisode: EpisodeData) => {
-      try {
-        console.log("------", submitEpisode.number);
+    try {
       await axios.put(`${URL_BACK}/episodes/${number}`, {
         ...submitEpisode,
         number: Number(submitEpisode.number),
@@ -118,20 +120,20 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
 
   const handleSubmit = async () => {
     const data: EpisodeData = {
-        id,
-        title,
-        number,
-        releaseDate: dayjs(releaseDate, "YYYY-MM-DD").toISOString(),
-        description,
-        heard,
-        caseNumber,
-        season,
-        characterIds: selectedCharacter,
+      id,
+      title,
+      number,
+      releaseDate: dayjs(releaseDate, "YYYY-MM-DD").toISOString(),
+      description,
+      heard,
+      caseNumber,
+      season,
+      characterIds: selectedCharacter,
     };
 
     initialValue ? updateEpisode(data) : uploadEpisode(data);
     // TODO: resolver update, le estoy pasando ids que no corresponden con la base de datos o algo asi.
-    // que se yo. si justamente el numero del episodio es el que quiero editar, al cambiarlo me 
+    // que se yo. si justamente el numero del episodio es el que quiero editar, al cambiarlo me
     // descuaraja la bd
   };
 

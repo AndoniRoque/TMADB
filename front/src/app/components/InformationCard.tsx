@@ -14,7 +14,6 @@ import { Character, Episode } from "../types/types";
 type Props = Character | Episode;
 
 const InformationCard: React.FC<Props> = (info) => {
-  console.log( " ---------------", info);
   const [isInfoEpisode, setIsInfoEpisode] = useState<boolean>(true);
 
   useEffect(() => {
@@ -66,22 +65,56 @@ const InformationCard: React.FC<Props> = (info) => {
               <Text as="span">Case Number: #{info.caseNumber}</Text>
             </>
           )}
-          <Text fontSize="2xl">{info.description}</Text>
+          {isInfoEpisode ? (
+            info.heard ? (
+              <Text fontSize="2xl">{info.description}</Text>
+            ) : (
+              <>
+                <Box
+                  display={"flex"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                  minH={20}
+                >
+                  <Text bg={"black"} fontSize={"xl"} textAlign={"center"}>
+                    [Redacted]
+                  </Text>
+                </Box>
+              </>
+            )
+          ) : (
+            <Text fontSize="2xl">{info.description}</Text>
+          )}
         </Box>
 
         <Box>
           {isInfoEpisode && info.characters?.length > 0 && (
-            <Box display={"flex"} justifyContent={"center"} flexDirection={"column"}>
-              <Text fontSize={"2xl"} color={"whitesmoke"} mb={5} textAlign={"center"}>
+            <Box
+              display={"flex"}
+              justifyContent={"center"}
+              flexDirection={"column"}
+            >
+              <Text
+                fontSize={"2xl"}
+                color={"whitesmoke"}
+                mb={5}
+                textAlign={"center"}
+              >
                 Characters appearances:
               </Text>
               <Box display="flex" justifyContent="center">
                 <Grid templateColumns="repeat(3, 1fr)" gap={10} mx="auto">
                   {info.characters.map((character: Character) => (
-                    <GridItem key={character.id} w={500}>
-                      <LinkBox>
-                        <LinkOverlay href={`/character/${character.id}`}>
-                          <CharacterCard character={character} />
+                    <GridItem key={character.character.id} w={500}>
+                      <LinkBox key={character.character.id}>
+                        <LinkOverlay
+                          key={character.character.id}
+                          href={`/character/${character.character.id}`}
+                        >
+                          <CharacterCard
+                            key={character.character.id}
+                            character={character}
+                          />
                         </LinkOverlay>
                       </LinkBox>
                     </GridItem>

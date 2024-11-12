@@ -25,8 +25,6 @@ function character() {
     null
   );
 
-  console.log(`>>>> ${URL_BACK}/characters/${characterNumber}`);
-
   const getEpisode = async () => {
     try {
       setLoading(true);

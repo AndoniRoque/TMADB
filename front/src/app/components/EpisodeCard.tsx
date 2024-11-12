@@ -1,18 +1,19 @@
 import { Avatar, Box, Button, Checkbox, Stack, Text } from "@chakra-ui/react";
 import axios from "axios";
 import React from "react";
-import { EpisodeCardProps } from "../types/types";
+import { Episode, EpisodeCardProps } from "../types/types";
 const URL_BACK = "http://localhost:3333/api";
 
 function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
-  const heardEpisode = async (heard: boolean, id: number) => {
+  const heardEpisode = async (episode: Episode) => {
     try {
-      const update = await axios.put(`${URL_BACK}/episodes/${id}`, {
-        heard: !heard,
+      const { data } = await axios.put(`${URL_BACK}/episodes/${episode.id}`, {
+        heard: !episode.heard,
       });
       refreshEpisodes();
     } catch (err) {
       console.error(err);
+      throw err;
     }
   };
 
@@ -61,12 +62,22 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
             <Box display={"flex"} w={"100%"} justifyContent={"flex-end"}>
               <Checkbox
                 isChecked={episode.heard}
-                onChange={() => heardEpisode(episode.heard, episode.id)}
+                onChange={() => heardEpisode(episode)}
               />
             </Box>
           </Box>
           <Text mt={4}>
-            <strong>#{episode.caseNumber}</strong> - {episode.description}
+            {episode.heard ? (
+              <>
+                <strong>#{episode.caseNumber}</strong> - {episode.description}
+              </>
+            ) : (
+              <>
+                <Text backgroundColor={"black"} textAlign={"center"}>
+                  [Redacted]
+                </Text>
+              </>
+            )}
           </Text>
         </Stack>
       </Box>

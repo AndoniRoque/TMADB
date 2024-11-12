@@ -52,7 +52,7 @@ function Header({
         >
           <Text
             color={"rgba(236, 223, 204, 0.8)"}
-            fontSize={"4xl"}
+            fontSize={"3xl"}
             fontWeight={"bold"}
           >
             The Magnus Archive Database

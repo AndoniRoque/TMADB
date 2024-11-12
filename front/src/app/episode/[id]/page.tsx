@@ -24,7 +24,6 @@ function Page() {
   } = useDisclosure();
   const params = useParams();
   const episodeNumber = params.id;
-  console.log(episodeNumber);
   const router = useRouter();
   const [episode, setEpisode] = useState<Episode | null>(null);
   const [message, setMessage] = useState<string>("");
@@ -134,7 +133,7 @@ function Page() {
         number={episode.number}
         season={episode.season}
         caseNumber={episode.caseNumber}
-        characters={ episode.characters}
+        characters={episode.characters}
         description={episode.description}
         releaseDate={episode.releaseDate}
       />
