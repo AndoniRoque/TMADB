@@ -27,6 +27,7 @@ router.get('/characters', async (req, res) => {
     res.status(500).json({ error: 'Error getting characters', details: err.message })
   }
 })
+// TODO: exception for characters already created.
 router.post('/characters', async (req, res) => {
   const { name, description, episode } = req.body;
   try {

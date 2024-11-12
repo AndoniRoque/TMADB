@@ -38,7 +38,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
     const data: CharacterData = {
       name: characterName,
       description: characterDescription,
-      episode:  id,
+      episode: id,
     };
 
     const updateData: CharacterData = {
@@ -70,6 +70,8 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
       console.error("Error updating episode:", err);
     }
   };
+
+  // TODO: agregar los personajes ya creados al modal Add Characters para poder seleccionar los que ya estan creados
 
   return (
     <>
