@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "add": "^2.0.6",
+    "chakra": "^0.0.3",
+    "field": "^1.0.1",
+    "snippet": "^0.1.0"
+  }
+}

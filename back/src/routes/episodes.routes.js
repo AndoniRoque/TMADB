@@ -55,7 +55,7 @@ router.post('/episodes', async (req, res) => {
       }
     });
 
-    if (existingEpisode) return res.status(400).json({ message: "An episode with this values already exists, please upload a new one." });
+    if (existingEpisode) return res.status(409).json({ message: "An episode with these values already exists, please upload a new one." });
 
     const newEpisode = await prisma.episode.create({
       data: {

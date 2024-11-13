@@ -87,3 +87,5 @@ function characters() {
 }
 
 export default characters;
+
+// TODO: agregar botón para mostrar en tarjetas o en tabla.

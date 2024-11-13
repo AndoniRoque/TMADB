@@ -11,10 +11,11 @@ import {
   ModalHeader,
   ModalOverlay,
   Textarea,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
+import ReactSelect from "react-select";
 import React, { useState } from "react";
-import { CharacterData, CharacterModalProps } from "../types/types";
+import { Character, CharacterData, CharacterModalProps } from "../types/types";
 import axios from "axios";
 import { useParams } from "next/navigation";
 const URL_BACK = "http://localhost:3333/api";
@@ -25,7 +26,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   initialValue,
   id,
   getEpisode,
-  charactersList
+  charactersList,
 }) => {
   const params = useParams();
   const characterId = params.id;
@@ -35,7 +36,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   const [characterDescription, setCharacterDescription] = useState<string>(
     initialValue?.description || ""
   );
-  const toast = useToast();  
+  const toast = useToast();
 
   const handleSubmit = async () => {
     const data: CharacterData = {
@@ -55,53 +56,54 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   const uploadCharacter = async (data: CharacterData) => {
     try {
       const upload = await axios.post(`${URL_BACK}/characters`, data);
-      console.log(">>>", upload);
-      if(upload.status === 200) {
+      if (upload.status === 200) {
         toast({
           title: "Character added successfully.",
           status: "success",
           duration: 3000,
-          isClosable: true
-        })
+          isClosable: true,
+        });
         getEpisode && getEpisode();
         onClose();
       }
-    } catch (err:any) {
-      if(err.response && err.response.status === 409) {
+    } catch (err: any) {
+      if (err.response && err.response.status === 409) {
         toast({
           title: "Character already exists",
           description: err.response.data.message,
           status: "warning",
           duration: 3000,
           isClosable: true,
-        })
-      } else if ( characterName === "" || characterDescription === "") {
+        });
+      } else if (characterName === "" || characterDescription === "") {
         toast({
           title: "Field name and description must be filled.",
           status: "error",
           duration: 3000,
           isClosable: true,
-        })
+        });
       }
     }
   };
 
   const updateCharacter = async (data: CharacterData) => {
     try {
-      const update = await axios.put(`${URL_BACK}/characters/${characterId}`, data);
-      if(update.status === 200) {
+      const update = await axios.put(
+        `${URL_BACK}/characters/${characterId}`,
+        data
+      );
+      if (update.status === 200) {
         alert("Episode updated successfully.");
         getEpisode && getEpisode();
         onClose();
       } else {
         toast({
-          title:"update.message",
+          title: "update.message",
           status: "error",
           duration: 3000,
           isClosable: true,
         });
       }
-
     } catch (err) {
       console.error("Error updating episode:", err);
     }
@@ -117,7 +119,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
           <ModalHeader>Upload Episode</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <FormControl>
+            <FormControl isRequired>
               <FormLabel mb={0}>Name</FormLabel>
               <Input
                 placeholder="Character name..."
@@ -125,7 +127,9 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
                 value={characterName}
                 mt={0}
               />
-              <FormLabel mt={5} mb={0}>Description</FormLabel>
+              <FormLabel mt={5} mb={0}>
+                Description
+              </FormLabel>
               <Textarea
                 placeholder="Character description..."
                 onChange={(e) => setCharacterDescription(e.target.value)}

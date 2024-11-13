@@ -12,6 +12,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import ReactSelect from "react-select";
@@ -52,8 +53,11 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   const [characterMessage, setCharacterMessage] = useState<string>("");
   const [charactersList, setCharactersList] = useState<Character[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
-  console.log(charactersList);
+  const [isTitleValid, setIsTitleValid] = useState<boolean>(true);
+  const [isReleaseDateValid, setIsReleaseDateValid] = useState<boolean>(true);
+  const [isDescriptionValid, setIsDescriptionValid] = useState<boolean>(true);
+  const [isCaseNumberValid, setIsCaseNumberValid] = useState<boolean>(true);
+  const toast = useToast();
 
   const getCharacters = async () => {
     try {
@@ -76,7 +80,11 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
     label: character.name,
   }));
 
-  console.log(characterOptions);
+  const handleCharacterChange = (selectedOptions: any) => {
+    setSelectedCharacter(
+      selectedOptions ? selectedOptions.map((option: any) => option.value) : []
+    );
+  };
 
   useEffect(() => {
     if (initialValue) {
@@ -95,10 +103,48 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   const uploadEpisode = async (data: EpisodeData) => {
     try {
       const upload = await axios.post(`${URL_BACK}/episodes`, data);
-      alert("El episodio fue cargado exitosamente.");
-      getEpisode();
-      onClose();
-    } catch (err) {
+      if (upload.status === 200) {
+        if (!toast.isActive) {
+          toast({
+            id: data.id,
+            title: "Episode added successfully.",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
+        getEpisode();
+        onClose();
+      }
+    } catch (err: any) {
+      if (err.response && err.response.status === 409) {
+        if (!toast.isActive(id)) {
+          toast({
+            id: data.id,
+            title: "Episode already exists.",
+            description: err.response.data.message,
+            status: "warning",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
+      } else if (
+        title === "" ||
+        releaseDate === "" ||
+        description === "" ||
+        caseNumber === ""
+      ) {
+        if (!toast.isActive(id)) {
+          toast({
+            id: data.id,
+            title:
+              "Fields Title, Number, Release Date, Description & Case Number must be filled.",
+            status: "error",
+            duration: 4000,
+            isClosable: true,
+          });
+        }
+      }
       console.error(err);
     }
   };
@@ -119,6 +165,24 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   };
 
   const handleSubmit = async () => {
+    const isFormValid =
+      title && number && releaseDate && description && caseNumber;
+
+    setIsTitleValid(!!title);
+    setIsReleaseDateValid(!!releaseDate);
+    setIsDescriptionValid(!!description);
+    setIsCaseNumberValid(!!caseNumber);
+
+    if (!isFormValid) {
+      toast({
+        title: "All required fields must be filled.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     const data: EpisodeData = {
       id,
       title,
@@ -137,12 +201,6 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
     // descuaraja la bd
   };
 
-  const handleCharacterChange = (selectedOptions: any) => {
-    setSelectedCharacter(
-      selectedOptions ? selectedOptions.map((option: any) => option.value) : []
-    );
-  };
-
   useEffect(() => {
     getCharacters();
   }, []);
@@ -156,14 +214,17 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <FormControl>
-            <FormLabel>Title</FormLabel>
+          <FormControl isRequired>
+            <FormLabel mb={0}>Title</FormLabel>
             <Input
               placeholder="Episode title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              borderColor={!isTitleValid ? "red.500" : undefined}
             />
-            <FormLabel>Episode Number</FormLabel>
+            <FormLabel mt={5} mb={0}>
+              Episode Number
+            </FormLabel>
             <Input
               placeholder="Episode number"
               value={number}
@@ -171,34 +232,48 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
               type="number"
               min={1}
             />
-            <FormLabel>Season</FormLabel>
+            <FormLabel mt={5} mb={0}>
+              Season
+            </FormLabel>
             <Input
               placeholder="Episode season"
               value={season}
               onChange={(e) => setSeason(parseInt(e.target.value))}
               type="number"
               min={1}
+              max={5}
             />
-            <FormLabel>Case #</FormLabel>
+            <FormLabel mt={5} mb={0}>
+              Case #
+            </FormLabel>
             <Input
               placeholder="Case number"
               value={caseNumber}
               onChange={(e) => setCaseNumber(e.target.value)}
+              borderColor={!isCaseNumberValid ? "red.500" : undefined}
             />
-            <FormLabel>Description</FormLabel>
+            <FormLabel mt={5} mb={0}>
+              Description
+            </FormLabel>
             <Textarea
               placeholder="Case description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              borderColor={!isDescriptionValid ? "red.500" : undefined}
             />
-            <FormLabel>Release Date</FormLabel>
+            <FormLabel mt={5} mb={0}>
+              Release Date
+            </FormLabel>
             <Input
               placeholder="Release date"
               value={dayjs(releaseDate).format("YYYY-MM-DD")}
               onChange={(e) => setReleaseDate(e.target.value)}
               type="date"
+              borderColor={!isReleaseDateValid ? "red.500" : undefined}
             />
-            <FormLabel>Characters in Episode</FormLabel>
+            <FormLabel mt={5} mb={0}>
+              Characters in Episode
+            </FormLabel>
             {/* TODO: verificar que pasa si creo personajes al crear un episodio y enumero otros 
             // personajes también, un desastre seguro */}
             <ReactSelect
@@ -210,7 +285,9 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
                 selectedCharacter.includes(option.value)
               )}
             />
-            <FormLabel>Heard Episode </FormLabel>
+            <FormLabel mt={5} mb={0}>
+              Heard Episode{" "}
+            </FormLabel>
             <Checkbox
               isChecked={heard}
               onChange={(e) => setHeard(e.target.checked)}
