@@ -16,6 +16,7 @@ import React, { useEffect, useState } from "react";
 import EpisodeCard from "../components/EpisodeCard";
 import EpisodeModal from "../components/EpisodeModal";
 import { Character, Episode } from "../types/types";
+import CustomTable from "../components/CustomTable";
 const URL_BACK = "http://localhost:3333/api";
 
 export default function EpisodesPage() {
@@ -25,6 +26,7 @@ export default function EpisodesPage() {
   const [characterMessage, setCharacterMessage] = useState<string>("");
   const [characters, setCharacters] = useState<Character[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [showTable, setShowTable] = useState<boolean>(false);
 
   const getEpisodes = async () => {
     try {
@@ -100,27 +102,37 @@ export default function EpisodesPage() {
           </>
         ) : (
           <>
-            <Grid
-              templateColumns={{
-                base: "repeat(1, 1fr)",
-                sm: "repeat(1, 1fr)",
-                md: "repeat(2, 1fr)",
-                lg: "repeat(3, 1fr)",
-                // xl: "repeat(5, 1fr)",
-              }}
-              gap={10}
-              mx={10}
-            >
-              {episodes.map((e: Episode) => (
-                <GridItem key={e.id} w={500}>
-                  <LinkBox>
-                    <LinkOverlay href={`/episode/${e.id}`}>
-                      <EpisodeCard episode={e} refreshEpisodes={getEpisodes} />
-                    </LinkOverlay>
-                  </LinkBox>
-                </GridItem>
-              ))}
-            </Grid>
+            <Button onClick={() => setShowTable(true)}></Button>
+            {showTable ? (
+              <Grid
+                templateColumns={{
+                  base: "repeat(1, 1fr)",
+                  sm: "repeat(1, 1fr)",
+                  md: "repeat(2, 1fr)",
+                  lg: "repeat(3, 1fr)",
+                  // xl: "repeat(5, 1fr)",
+                }}
+                gap={10}
+                mx={10}
+              >
+                {episodes.map((e: Episode) => (
+                  <GridItem key={e.id} w={500}>
+                    <LinkBox>
+                      <LinkOverlay href={`/episode/${e.id}`}>
+                        <EpisodeCard
+                          episode={e}
+                          refreshEpisodes={getEpisodes}
+                        />
+                      </LinkOverlay>
+                    </LinkBox>
+                  </GridItem>
+                ))}
+              </Grid>
+            ) : (
+              <>
+                <CustomTable list={characters} />
+              </>
+            )}
           </>
         )}
       </Box>
