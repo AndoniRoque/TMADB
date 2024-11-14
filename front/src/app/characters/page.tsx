@@ -7,6 +7,7 @@ import {
   Heading,
   LinkBox,
   LinkOverlay,
+  Skeleton,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -15,6 +16,7 @@ import { Character } from "../types/types";
 import axios from "axios";
 import CharacterCard from "../components/CharacterCard";
 import CharacterModal from "../components/CharacterModal";
+import CustomTable from "../components/CustomTable";
 const URL_BACK = "http://localhost:3333/api";
 
 function characters() {
@@ -22,6 +24,7 @@ function characters() {
   const [charactersList, setCharactersList] = useState<Character[]>([]);
   const [characterMessage, setCharacterMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [showTable, setShowTable] = useState<boolean>(false);
 
   const getCharacters = async () => {
     try {
@@ -54,26 +57,67 @@ function characters() {
         mt={"8%"} // TODO: Responsive shit here.
         mb={"3%"}
       >
-        <Heading fontSize="4xl" color={"whitesmoke"}>
+        <Heading fontSize="4xl" color={"whitesmoke"} flex={1}>
           {" "}
           T.M.A Characters
         </Heading>
-        <Button onClick={onOpen}> Upload Character </Button>
+        <Button onClick={onOpen} mr={2}>
+          {" "}
+          Upload Character{" "}
+        </Button>
+        <Box
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          flexDirection={"row"}
+        >
+          <Button onClick={() => setShowTable(!showTable)}>
+            {showTable ? "Show Table" : "Show Grid"}
+          </Button>
+        </Box>
       </Box>
-      <Box display={"flex"}>
-        <Grid templateColumns="repeat(3, 1fr)" gap={10} mx="auto">
-          {charactersList.map((char: Character) => (
-            <>
-              <GridItem key={char.id} w={500}>
-                <LinkBox>
-                  <LinkOverlay href={`/character/${char.id}`}>
-                    <CharacterCard character={char} />
-                  </LinkOverlay>
-                </LinkBox>
-              </GridItem>
-            </>
-          ))}
-        </Grid>
+      <Box display={"flex"} justifyContent={"center"} alignItems="center">
+        {loading ? (
+          <>
+            <Skeleton ml={16} height={"20vh"} />
+            <Skeleton ml={16} height={"20vh"} />
+            <Skeleton ml={16} height={"20vh"} />
+            <Skeleton ml={16} height={"20vh"} />
+          </>
+        ) : characterMessage ? (
+          <>
+            <Box
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              h={"70vh"}
+            >
+              <Text color={"whitesmoke"}>{characterMessage}</Text>
+            </Box>
+          </>
+        ) : (
+          <>
+            {showTable ? (
+              <Grid templateColumns="repeat(3, 1fr)" gap={10} mx="auto">
+                {charactersList.map((char: Character) => (
+                  <>
+                    <GridItem key={char.id} w={500}>
+                      <LinkBox>
+                        <LinkOverlay href={`/character/${char.id}`}>
+                          <CharacterCard character={char} />
+                        </LinkOverlay>
+                      </LinkBox>
+                    </GridItem>
+                  </>
+                ))}
+              </Grid>
+            ) : (
+              <>
+                <CustomTable data={charactersList} type="character" />
+              </>
+            )}
+          </>
+        )}
       </Box>
 
       <CharacterModal

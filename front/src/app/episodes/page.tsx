@@ -76,10 +76,22 @@ export default function EpisodesPage() {
         mt={"8%"} // TODO: Responsive shit here.
         mb={"3%"}
       >
-        <Heading fontSize="4xl" color={"whitesmoke"}>
+        <Heading fontSize="4xl" color={"whitesmoke"} flex={1}>
           T.M.A Episodes
         </Heading>
-        <Button onClick={onOpen}> Upload Episode </Button>
+        <Button onClick={onOpen} mr={2}>
+          Upload Episode
+        </Button>
+        <Box
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          flexDirection={"row"}
+        >
+          <Button onClick={() => setShowTable(!showTable)}>
+            {showTable ? "Show Table" : "Show Grid"}
+          </Button>
+        </Box>
       </Box>
       <Box display={"flex"} justifyContent={"center"} alignItems="center">
         {loading ? (
@@ -102,7 +114,6 @@ export default function EpisodesPage() {
           </>
         ) : (
           <>
-            <Button onClick={() => setShowTable(true)}></Button>
             {showTable ? (
               <Grid
                 templateColumns={{
@@ -130,7 +141,11 @@ export default function EpisodesPage() {
               </Grid>
             ) : (
               <>
-                <CustomTable list={characters} />
+                <CustomTable
+                  data={episodes}
+                  type="episode"
+                  refreshEpisodes={getEpisodes}
+                />
               </>
             )}
           </>

@@ -1,6 +1,7 @@
 import React from "react";
-import { Character, Episode } from "../types/types";
+import { Character, CharacterOrEpisode, Episode } from "../types/types";
 import {
+  Checkbox,
   Table,
   TableCaption,
   TableContainer,
@@ -11,23 +12,36 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
+import dayjs from "dayjs";
+import axios from "axios";
+const URL_BACK = "http://localhost:3333/api";
 
-type Props = {
-  item: Character[] | Episode;
+type TableData = {
+  data: Character[] | Episode[];
+  type: "character" | "episode";
+  refreshEpisodes: () => void;
 };
 
-const CustomTable: React.FC<Props> = (item) => {
-  const isCharacter = Array.isArray(item);
-  console.log(isCharacter);
+const CustomTable: React.FC<TableData> = ({ data, type, refreshEpisodes }) => {
+  const heardEpisode = async (episode: Episode) => {
+    try {
+      const { data } = await axios.put(`${URL_BACK}/episodes/${episode.id}`, {
+        heard: !episode.heard,
+      });
+      refreshEpisodes();
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
 
   return (
     <>
       <TableContainer>
         <Table variant="simple" color={"whitesmoke"}>
-          <TableCaption>Imperial to metric conversion factors</TableCaption>
           <Thead>
             <Tr>
-              {isCharacter ? (
+              {type === "character" ? (
                 <>
                   <Th isNumeric color={"whitesmoke"}>
                     Character id
@@ -37,49 +51,59 @@ const CustomTable: React.FC<Props> = (item) => {
                 </>
               ) : (
                 <>
-                  <Th isNumeric>Episode id</Th>
-                  <Th> Episode Title </Th>
-                  <Th> Case Number </Th>
-                  <Th> Description </Th>
-                  <Th> Release Date </Th>
-                  <Th isNumeric> Season </Th>
-                  <Th> Heard </Th>
+                  <Th isNumeric color={"whitesmoke"}>
+                    Episode id
+                  </Th>
+                  <Th color={"whitesmoke"}> Episode Title </Th>
+                  <Th color={"whitesmoke"}> Case Number </Th>
+                  <Th color={"whitesmoke"}> Description </Th>
+                  <Th color={"whitesmoke"}> Release Date </Th>
+                  <Th isNumeric color={"whitesmoke"}>
+                    {" "}
+                    Season{" "}
+                  </Th>
+                  <Th color={"whitesmoke"}> Heard </Th>
                 </>
               )}
             </Tr>
           </Thead>
           <Tbody>
-            {!isCharacter ? (
-              <>
-                <Tr>
-                  {item.map((character: Character) => (
-                    <>
+            {type === "character"
+              ? (data as Character[]).map((character) => (
+                  <>
+                    <Tr>
                       <Td>{character.id}</Td>
                       <Td>{character.name}</Td>
-                      <Td isNumeric>{character.description}</Td>
-                    </>
-                  ))}
-                </Tr>
-              </>
-            ) : (
-              <>
-                <Tr>
-                  <Td>inches</Td>
-                  <Td>millimetres (mm)</Td>
-                  <Td isNumeric>25.4</Td>
-                </Tr>
-                <Tr>
-                  <Td>feet</Td>
-                  <Td>centimetres (cm)</Td>
-                  <Td isNumeric>30.48</Td>
-                </Tr>
-                <Tr>
-                  <Td>yards</Td>
-                  <Td>metres (m)</Td>
-                  <Td isNumeric>0.91444</Td>
-                </Tr>
-              </>
-            )}
+                      <Td>{character.description}</Td>
+                    </Tr>
+                  </>
+                ))
+              : (data as Episode[]).map((episode) => (
+                  <>
+                    <Tr>
+                      <Td>M.A.G {episode.number}</Td>
+                      <Td>{episode.title}</Td>
+                      <Td>{episode.caseNumber}</Td>
+                      <Td minW={"50vw"}>
+                        {episode.heard ? (
+                          episode.description
+                        ) : (
+                          <Text backgroundColor={"black"} textAlign={"center"}>
+                            [Redacted]
+                          </Text>
+                        )}
+                      </Td>
+                      <Td>{dayjs(episode.releaseDate).format("DD-MM-YYYY")}</Td>
+                      <Td>{episode.season}</Td>
+                      <Td>
+                        <Checkbox
+                          isChecked={episode.heard}
+                          onChange={() => heardEpisode(episode)}
+                        ></Checkbox>
+                      </Td>
+                    </Tr>
+                  </>
+                ))}
           </Tbody>
         </Table>
       </TableContainer>

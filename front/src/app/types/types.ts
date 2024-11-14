@@ -69,3 +69,17 @@ export interface CharacterModalProps {
   charactersList: Character[];
 }
 
+export interface CharacterOrEpisode {
+  id: number;
+  title: string;
+  number: number;
+  releaseDate: string;
+  description: string;
+  caseNumber: string;
+  heard: boolean;
+  season: number;
+  characters: Character[];
+  name: string;
+  character: Character;
+  item?: any;
+}
