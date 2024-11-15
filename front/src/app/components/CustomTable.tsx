@@ -46,16 +46,28 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
     }
   };
 
-  const handleSortList = () => {
+  const handleSortList = (orderBy: string) => {
     if (type === "character") {
-      const sortedList = [...(data as Character[])].sort((a, b) =>
-        sortOrder ? a.id - b.id : b.id - a.id
-      );
+      const sortedList = [...(data as Character[])].sort((a, b) => {
+        if (orderBy === "id") {
+          return sortOrder ? a.id - b.id : b.id - a.id;
+        } else {
+          return sortOrder
+            ? a.name.localeCompare(b.name)
+            : b.name.localeCompare(a.name);
+        }
+      });
       setSortList(sortedList);
     } else {
-      const sortedList = [...(data as Episode[])].sort((a, b) =>
-        sortOrder ? a.id - b.id : b.id - a.id
-      );
+      const sortedList = [...(data as Episode[])].sort((a, b) => {
+        if (orderBy === "id") {
+          return sortOrder ? a.id - b.id : b.id - a.id;
+        } else {
+          return sortOrder
+            ? a.title.localeCompare(b.title)
+            : b.title.localeCompare(a.title);
+        }
+      });
       setSortList(sortedList);
     }
     setSortOrder(!sortOrder);
@@ -73,18 +85,37 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
             <Tr>
               {type === "character" ? (
                 <>
-                  <Th isNumeric color={"whitesmoke"} onClick={handleSortList}>
+                  <Th
+                    isNumeric
+                    color={"whitesmoke"}
+                    onClick={() => handleSortList("id")}
+                  >
                     Character id {sortOrder ? "▲" : "▼"}
                   </Th>
-                  <Th color={"whitesmoke"}>Character Name</Th>
+                  <Th
+                    color={"whitesmoke"}
+                    onClick={() => handleSortList("title")}
+                  >
+                    Character Name
+                  </Th>
                   <Th color={"whitesmoke"}>Character Description</Th>
                 </>
               ) : (
                 <>
-                  <Th isNumeric color={"whitesmoke"} onClick={handleSortList}>
+                  <Th
+                    isNumeric
+                    color={"whitesmoke"}
+                    onClick={() => handleSortList("id")}
+                  >
                     Episode id {sortOrder ? "▲" : "▼"}
                   </Th>
-                  <Th color={"whitesmoke"}> Episode Title </Th>
+                  <Th
+                    color={"whitesmoke"}
+                    onClick={() => handleSortList("title")}
+                  >
+                    {" "}
+                    Episode Title{" "}
+                  </Th>
                   <Th color={"whitesmoke"}> Case Number </Th>
                   <Th color={"whitesmoke"}> Description </Th>
                   <Th color={"whitesmoke"}> Release Date </Th>

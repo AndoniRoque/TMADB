@@ -5,6 +5,7 @@ export interface Character {
   character: Character;
   heard: boolean; // Add this line
   characters: Character[];
+  [key: string]: any;
 }
 
 export interface Episode {
@@ -17,6 +18,7 @@ export interface Episode {
   heard: boolean;
   season: number;
   characters: Character[];
+  [key: string]: any;
 }
 
 
