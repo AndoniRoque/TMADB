@@ -182,11 +182,18 @@ router.delete('/episodes/:id', async (req, res) => {
   if (isNaN(id)) { return res.send(400).json({ error: "Invalid ID format." }) }
 
   try {
-    const deleteEpisode = await prisma.episode.delete({
+    await prisma.episodesOnCharacters.deleteMany({
+      where: {
+        episodeId: id,
+      }
+    });
+
+    await prisma.episode.delete({
       where: {
         id: id
       }
     })
+
     res.status(200).json({ message: "The episode was deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: "Error deleting episode", details: err.message });

@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Character, CharacterOrEpisode, Episode } from "../types/types";
 import {
   Checkbox,
+  LinkBox,
+  LinkOverlay,
   Table,
   TableCaption,
   TableContainer,
@@ -14,26 +16,54 @@ import {
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 const URL_BACK = "http://localhost:3333/api";
 
 type TableData = {
   data: Character[] | Episode[];
   type: "character" | "episode";
-  refreshEpisodes: () => void;
+  refreshList: () => void;
 };
 
-const CustomTable: React.FC<TableData> = ({ data, type, refreshEpisodes }) => {
+const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
+  const navigate = useRouter();
+  const [sortList, setSortList] = useState<Character[] | Episode[]>(data);
+  const [sortOrder, setSortOrder] = useState<boolean>(false);
+
+  const handleNavigation = (path: string) => {
+    navigate.push(path);
+  };
+
   const heardEpisode = async (episode: Episode) => {
     try {
-      const { data } = await axios.put(`${URL_BACK}/episodes/${episode.id}`, {
+      await axios.put(`${URL_BACK}/episodes/${episode.id}`, {
         heard: !episode.heard,
       });
-      refreshEpisodes();
+      refreshList();
     } catch (err) {
       console.error(err);
       throw err;
     }
   };
+
+  const handleSortList = () => {
+    if (type === "character") {
+      const sortedList = [...(data as Character[])].sort((a, b) =>
+        sortOrder ? a.id - b.id : b.id - a.id
+      );
+      setSortList(sortedList);
+    } else {
+      const sortedList = [...(data as Episode[])].sort((a, b) =>
+        sortOrder ? a.id - b.id : b.id - a.id
+      );
+      setSortList(sortedList);
+    }
+    setSortOrder(!sortOrder);
+  };
+
+  useEffect(() => {
+    setSortList(data);
+  }, [data]);
 
   return (
     <>
@@ -43,16 +73,16 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshEpisodes }) => {
             <Tr>
               {type === "character" ? (
                 <>
-                  <Th isNumeric color={"whitesmoke"}>
-                    Character id
+                  <Th isNumeric color={"whitesmoke"} onClick={handleSortList}>
+                    Character id {sortOrder ? "▲" : "▼"}
                   </Th>
                   <Th color={"whitesmoke"}>Character Name</Th>
                   <Th color={"whitesmoke"}>Character Description</Th>
                 </>
               ) : (
                 <>
-                  <Th isNumeric color={"whitesmoke"}>
-                    Episode id
+                  <Th isNumeric color={"whitesmoke"} onClick={handleSortList}>
+                    Episode id {sortOrder ? "▲" : "▼"}
                   </Th>
                   <Th color={"whitesmoke"}> Episode Title </Th>
                   <Th color={"whitesmoke"}> Case Number </Th>
@@ -69,22 +99,62 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshEpisodes }) => {
           </Thead>
           <Tbody>
             {type === "character"
-              ? (data as Character[]).map((character) => (
+              ? (sortList as Character[]).map((character) => (
                   <>
-                    <Tr>
+                    <Tr
+                      onClick={() =>
+                        handleNavigation(`/character/${character.id}`)
+                      }
+                      _hover={{
+                        cursor: "pointer",
+                        bg: "gray.300",
+                        opacity: 0.2,
+                        color: "black",
+                      }}
+                    >
                       <Td>{character.id}</Td>
                       <Td>{character.name}</Td>
                       <Td>{character.description}</Td>
                     </Tr>
                   </>
                 ))
-              : (data as Episode[]).map((episode) => (
+              : (sortList as Episode[]).map((episode) => (
                   <>
-                    <Tr>
-                      <Td>M.A.G {episode.number}</Td>
-                      <Td>{episode.title}</Td>
-                      <Td>{episode.caseNumber}</Td>
-                      <Td minW={"50vw"}>
+                    <Tr
+                      _hover={{
+                        cursor: "pointer",
+                        bg: "gray.300",
+                        opacity: 0.2,
+                        color: "black",
+                      }}
+                    >
+                      <Td
+                        onClick={() =>
+                          handleNavigation(`/episode/${episode.id}`)
+                        }
+                      >
+                        M.A.G {episode.number}
+                      </Td>
+                      <Td
+                        onClick={() =>
+                          handleNavigation(`/episode/${episode.id}`)
+                        }
+                      >
+                        {episode.title}
+                      </Td>
+                      <Td
+                        onClick={() =>
+                          handleNavigation(`/episode/${episode.id}`)
+                        }
+                      >
+                        {episode.caseNumber}
+                      </Td>
+                      <Td
+                        minW={"50vw"}
+                        onClick={() =>
+                          handleNavigation(`/episode/${episode.id}`)
+                        }
+                      >
                         {episode.heard ? (
                           episode.description
                         ) : (
@@ -93,12 +163,27 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshEpisodes }) => {
                           </Text>
                         )}
                       </Td>
-                      <Td>{dayjs(episode.releaseDate).format("DD-MM-YYYY")}</Td>
-                      <Td>{episode.season}</Td>
+                      <Td
+                        onClick={() =>
+                          handleNavigation(`/episode/${episode.id}`)
+                        }
+                      >
+                        {dayjs(episode.releaseDate).format("DD-MM-YYYY")}
+                      </Td>
+                      <Td
+                        onClick={() =>
+                          handleNavigation(`/episode/${episode.id}`)
+                        }
+                      >
+                        {episode.season}
+                      </Td>
                       <Td>
                         <Checkbox
                           isChecked={episode.heard}
-                          onChange={() => heardEpisode(episode)}
+                          onChange={(e) => {
+                            e.preventDefault();
+                            heardEpisode(episode);
+                          }}
                         ></Checkbox>
                       </Td>
                     </Tr>

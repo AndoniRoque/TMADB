@@ -144,7 +144,7 @@ export default function EpisodesPage() {
                 <CustomTable
                   data={episodes}
                   type="episode"
-                  refreshEpisodes={getEpisodes}
+                  refreshList={getEpisodes}
                 />
               </>
             )}
@@ -162,7 +162,5 @@ export default function EpisodesPage() {
     </>
   );
 }
-
-// TODO: Responsive grid
 // TODO: Agregar botones de ordenamiento, por número de episodio, por fecha de lanzamiento (igual a número de episodio?) y por case number!
 // Tener en cuenta que case number es una fecha, los primeros tres digitos son el año, el del medio el día y el ultimo el mes. Por ejemplo el caso 0122204 transcurrió el 22 de Abril del 2012.

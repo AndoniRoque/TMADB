@@ -8,30 +8,30 @@ datasource db {
 }
 
 model Episode {
-  id          Int         @id @default(autoincrement())
-  title       String      @unique
+  id          Int                    @id @default(autoincrement())
+  title       String                 @unique
   number      Int
   releaseDate DateTime
-  createdAt   DateTime    @default(now())
+  createdAt   DateTime               @default(now())
   description String
-  heard       Boolean     @default(false)
+  heard       Boolean                @default(false)
   caseNumber  String
-  season      Int         @default(1)
+  season      Int                    @default(1)
   characters  EpisodesOnCharacters[]
 }
 
 model Character {
-  id          Int         @id @default(autoincrement())
-  name        String      @unique
+  id          Int                    @id @default(autoincrement())
+  name        String                 @unique
   description String
   episodes    EpisodesOnCharacters[]
 }
 
 model EpisodesOnCharacters {
-  episodeId Int
+  episodeId   Int
   characterId Int
-  episode Episode @relation(fields: [episodeId], references: [id])
-  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  episode     Episode   @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
 
   @@id([episodeId, characterId])
 }

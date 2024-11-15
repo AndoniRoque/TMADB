@@ -113,7 +113,11 @@ function characters() {
               </Grid>
             ) : (
               <>
-                <CustomTable data={charactersList} type="character" />
+                <CustomTable
+                  data={charactersList}
+                  type="character"
+                  refreshList={getCharacters}
+                />
               </>
             )}
           </>
@@ -131,5 +135,3 @@ function characters() {
 }
 
 export default characters;
-
-// TODO: agregar botón para mostrar en tarjetas o en tabla.
