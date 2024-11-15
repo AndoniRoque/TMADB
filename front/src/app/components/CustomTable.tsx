@@ -100,8 +100,6 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
     return formattedDate.toISOString();
   }
 
-  console.log(converCaseNumberToDate("9220611"));
-
   useEffect(() => {
     setSortList(data);
   }, [data]);
