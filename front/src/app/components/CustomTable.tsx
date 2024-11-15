@@ -46,6 +46,8 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
     }
   };
 
+  console.log(data);
+
   const handleSortList = (orderBy: string) => {
     if (type === "character") {
       const sortedList = [...(data as Character[])].sort((a, b: any) => {
@@ -59,7 +61,7 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
     } else {
       const sortedList = [...(data as Episode[])].sort((a, b: any) => {
         if (orderBy === "id") {
-          return sortOrder ? a.id - b.id : b.id - a.id;
+          return sortOrder ? a.number - b.number : b.number - a.number;
         } else if (orderBy === "title") {
           return sortOrder
             ? a.title.localeCompare(b.title)
