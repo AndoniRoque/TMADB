@@ -27,3 +27,4 @@ export default function RootLayout({
     </html>
   );
 }
+// TODO: Cambiar todos los alerts por toasts.

@@ -49,9 +49,7 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
   const handleSortList = (orderBy: string) => {
     if (type === "character") {
       const sortedList = [...(data as Character[])].sort((a, b: any) => {
-        if (orderBy === "id") {
-          return sortOrder ? a.id - b.id : b.id - a.id;
-        } else if (orderBy === "name") {
+        if (orderBy === "name") {
           return sortOrder
             ? a.name.localeCompare(b.name)
             : b.name.localeCompare(a.name);
@@ -70,6 +68,8 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
           return sortOrder
             ? a.releaseDate.localeCompare(b.releaseDate)
             : b.releaseDate.localeCompare(a.releaseDate);
+        } else if (orderBy === "season") {
+          return sortOrder ? a.season - b.season : b.season - a.season;
         }
       });
       setSortList(sortedList);
@@ -89,14 +89,6 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
             <Tr>
               {type === "character" ? (
                 <>
-                  <Th
-                    isNumeric
-                    color={"whitesmoke"}
-                    onClick={() => handleSortList("id")}
-                    _hover={{ cursor: "pointer" }}
-                  >
-                    Character id {sortOrder ? "▲" : "▼"}
-                  </Th>
                   <Th
                     color={"whitesmoke"}
                     onClick={() => handleSortList("name")}
@@ -131,11 +123,14 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
                     onClick={() => handleSortList("date")}
                   >
                     {" "}
-                    Release Date{" "}
+                    Release Date {sortOrder ? "▲" : "▼"}
                   </Th>
-                  <Th isNumeric color={"whitesmoke"}>
-                    {" "}
-                    Season{" "}
+                  <Th
+                    isNumeric
+                    color={"whitesmoke"}
+                    onClick={() => handleSortList("season")}
+                  >
+                    Season {sortOrder ? "▲" : "▼"}
                   </Th>
                   <Th color={"whitesmoke"}> Heard </Th>
                 </>
@@ -157,7 +152,6 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
                         color: "black",
                       }}
                     >
-                      <Td>{character.id}</Td>
                       <Td>{character.name}</Td>
                       <Td>{character.description}</Td>
                     </Tr>
