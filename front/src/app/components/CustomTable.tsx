@@ -48,10 +48,10 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
 
   const handleSortList = (orderBy: string) => {
     if (type === "character") {
-      const sortedList = [...(data as Character[])].sort((a, b) => {
+      const sortedList = [...(data as Character[])].sort((a, b: any) => {
         if (orderBy === "id") {
           return sortOrder ? a.id - b.id : b.id - a.id;
-        } else {
+        } else if (orderBy === "name") {
           return sortOrder
             ? a.name.localeCompare(b.name)
             : b.name.localeCompare(a.name);
@@ -59,13 +59,17 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
       });
       setSortList(sortedList);
     } else {
-      const sortedList = [...(data as Episode[])].sort((a, b) => {
+      const sortedList = [...(data as Episode[])].sort((a, b: any) => {
         if (orderBy === "id") {
           return sortOrder ? a.id - b.id : b.id - a.id;
-        } else {
+        } else if (orderBy === "title") {
           return sortOrder
             ? a.title.localeCompare(b.title)
             : b.title.localeCompare(a.title);
+        } else if (orderBy === "date") {
+          return sortOrder
+            ? a.releaseDate.localeCompare(b.releaseDate)
+            : b.releaseDate.localeCompare(a.releaseDate);
         }
       });
       setSortList(sortedList);
@@ -89,14 +93,16 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
                     isNumeric
                     color={"whitesmoke"}
                     onClick={() => handleSortList("id")}
+                    _hover={{ cursor: "pointer" }}
                   >
                     Character id {sortOrder ? "▲" : "▼"}
                   </Th>
                   <Th
                     color={"whitesmoke"}
-                    onClick={() => handleSortList("title")}
+                    onClick={() => handleSortList("name")}
+                    _hover={{ cursor: "pointer" }}
                   >
-                    Character Name
+                    Character Name {sortOrder ? "▲" : "▼"}
                   </Th>
                   <Th color={"whitesmoke"}>Character Description</Th>
                 </>
@@ -106,19 +112,27 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
                     isNumeric
                     color={"whitesmoke"}
                     onClick={() => handleSortList("id")}
+                    _hover={{ cursor: "pointer" }}
                   >
                     Episode id {sortOrder ? "▲" : "▼"}
                   </Th>
                   <Th
                     color={"whitesmoke"}
                     onClick={() => handleSortList("title")}
+                    _hover={{ cursor: "pointer" }}
                   >
                     {" "}
-                    Episode Title{" "}
+                    Episode Title {sortOrder ? "▲" : "▼"}
                   </Th>
                   <Th color={"whitesmoke"}> Case Number </Th>
                   <Th color={"whitesmoke"}> Description </Th>
-                  <Th color={"whitesmoke"}> Release Date </Th>
+                  <Th
+                    color={"whitesmoke"}
+                    onClick={() => handleSortList("date")}
+                  >
+                    {" "}
+                    Release Date{" "}
+                  </Th>
                   <Th isNumeric color={"whitesmoke"}>
                     {" "}
                     Season{" "}
