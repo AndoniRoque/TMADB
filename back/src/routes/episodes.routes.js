@@ -203,3 +203,4 @@ router.delete('/episodes/:id', async (req, res) => {
 export default router;
 
 // TODO: agregar validaciones para cuando llegan campos que nada que ver. Ejemplo: season: 1 y llega "aoijda"
+// TODO: arreglar update de episodios con characters, no anda ni pa atras

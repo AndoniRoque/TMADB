@@ -70,12 +70,37 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
             : b.releaseDate.localeCompare(a.releaseDate);
         } else if (orderBy === "season") {
           return sortOrder ? a.season - b.season : b.season - a.season;
+        } else if (orderBy === "caseNumber") {
+          return sortOrder
+            ? converCaseNumberToDate(a.caseNumber).localeCompare(
+                converCaseNumberToDate(b.caseNumber)
+              )
+            : converCaseNumberToDate(b.caseNumber).localeCompare(
+                converCaseNumberToDate(a.caseNumber)
+              );
         }
       });
       setSortList(sortedList);
     }
     setSortOrder(!sortOrder);
   };
+
+  function converCaseNumberToDate(caseNumber: string) {
+    const year = caseNumber.slice(0, 3);
+    const day = caseNumber.slice(3, 5);
+    const month = caseNumber.slice(5);
+    console.log(year, month, day);
+
+    const fullYear =
+      parseInt(year.slice(0, 1)) === 0
+        ? 2000 + parseInt(year)
+        : 1000 + parseInt(year);
+
+    const formattedDate = new Date(fullYear, parseInt(month), parseInt(day));
+    return formattedDate.toISOString();
+  }
+
+  console.log(converCaseNumberToDate("9220611"));
 
   useEffect(() => {
     setSortList(data);
@@ -116,7 +141,13 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
                     {" "}
                     Episode Title {sortOrder ? "▲" : "▼"}
                   </Th>
-                  <Th color={"whitesmoke"}> Case Number </Th>
+                  <Th
+                    color={"whitesmoke"}
+                    onClick={() => handleSortList("caseNumber")}
+                  >
+                    {" "}
+                    Case Number {sortOrder ? "▲" : "▼"}
+                  </Th>
                   <Th color={"whitesmoke"}> Description </Th>
                   <Th
                     color={"whitesmoke"}
