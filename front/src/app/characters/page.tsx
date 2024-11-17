@@ -54,7 +54,7 @@ function characters() {
         alignItems={"center"}
         m={4}
         p={4}
-        mt={"8%"} // TODO: Responsive shit here.
+        mt={"8%"}
         mb={"3%"}
       >
         <Heading fontSize="4xl" color={"whitesmoke"} flex={1}>
@@ -98,7 +98,16 @@ function characters() {
         ) : (
           <>
             {showTable ? (
-              <Grid templateColumns="repeat(3, 1fr)" gap={10} mx="auto">
+              <Grid
+                templateColumns={{
+                  base: "repeat(1, 1fr)",
+                  md: "repeat(1, 1fr)",
+                  lg: "repeat(2, 1fr)",
+                  xl: "repeat(3, 1fr)",
+                }}
+                gap={{ base: 2, md: 4, lg: 6, xl: 8 }}
+                mx={{ base: 2, md: 4, lg: 6, xl: 8 }}
+              >
                 {charactersList.map((char: Character) => (
                   <>
                     <GridItem key={char.id} w={500}>

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Character } from "@/app/types/types";
 import axios from "axios";
-import { Box, Button, useDisclosure } from "@chakra-ui/react";
+import { Box, Button, useDisclosure, useToast } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import CharacterModal from "@/app/components/CharacterModal";
 const URL_BACK = "http://localhost:3333/api";
@@ -24,6 +24,7 @@ function character() {
   const [characterToEdit, setCharacterToEdit] = useState<Character | null>(
     null
   );
+  const toast = useToast();
 
   const getEpisode = async () => {
     try {
@@ -45,12 +46,25 @@ function character() {
       const delCharacter = await axios.delete(
         `${URL_BACK}/characters/${characterNumber}`
       );
-      setCharacter(delCharacter.data);
-      alert("The character was deleted successfully");
+      if (delCharacter.status === 200) {
+        toast({
+          title: "The character was deleted successfully",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
       router.push("/characters");
-    } catch (err) {
-      console.error(err);
-      setMessage("The character couldn't be deleted. Please try again.");
+    } catch (err: any) {
+      if (err.response && err.response.status === 409) {
+        toast({
+          title: "The character couldn't be deleted. Please try again.",
+          description: err.response.data.message,
+          status: "warning",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
     } finally {
       setLoading(true);
     }
@@ -62,6 +76,9 @@ function character() {
         id: character.id,
         name: character.name,
         description: character.description,
+        character: character,
+        heard: false,
+        characters: [],
       });
       onOpenCharacter();
     }

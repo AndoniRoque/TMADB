@@ -32,5 +32,6 @@
   ],
   "rainbowIndent.guides": {
     "space": "#FFFFFF00"
-  }
+  },
+  "editor.formatOnSave": true
 }

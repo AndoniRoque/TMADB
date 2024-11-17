@@ -9,7 +9,7 @@ function Header({
   onClose,
   onOpen,
 }: {
-  children: ReactNode;
+  children?: ReactNode;
   isOpen?: any;
   onClose?: any;
   onOpen?: any;

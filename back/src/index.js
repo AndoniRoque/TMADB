@@ -33,4 +33,7 @@ app.listen(3333, () => {
 });
 
 // TODO: agregar autenticación
-
+// TODO: agregar validaciones para cuando llegan campos que nada que ver. Ejemplo: season: 1 y llega "aoijda"
+// TODO: arreglar update de episodios con characters, no anda ni pa atras
+// TODO: exception for characters already created.
+// TODO: agregar validaciones para cuando llegan campos que nada que ver. Ejemplo: season: 1 y llega "aoijda"

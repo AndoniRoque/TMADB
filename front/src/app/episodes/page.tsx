@@ -73,15 +73,22 @@ export default function EpisodesPage() {
         flexDirection={"row"}
         m={4}
         p={4}
-        mt={"8%"} // TODO: Responsive shit here.
+        mt={"8%"}
         mb={"3%"}
       >
         <Heading fontSize="4xl" color={"whitesmoke"} flex={1}>
           T.M.A Episodes
         </Heading>
-        <Button onClick={onOpen} mr={2}>
-          Upload Episode
-        </Button>
+        <Box
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          flexDirection={"row"}
+        >
+          <Button onClick={onOpen} mr={2}>
+            Upload Episode
+          </Button>
+        </Box>
         <Box
           display={"flex"}
           justifyContent={"center"}
@@ -118,16 +125,18 @@ export default function EpisodesPage() {
               <Grid
                 templateColumns={{
                   base: "repeat(1, 1fr)",
-                  sm: "repeat(1, 1fr)",
-                  md: "repeat(2, 1fr)",
-                  lg: "repeat(3, 1fr)",
-                  // xl: "repeat(5, 1fr)",
+                  md: "repeat(1, 1fr)",
+                  lg: "repeat(2, 1fr)",
+                  xl: "repeat(3, 1fr)",
                 }}
-                gap={10}
-                mx={10}
+                gap={{ base: 2, md: 4, lg: 6, xl: 8 }}
+                mx={{ base: 2, md: 4, lg: 6, xl: 8 }}
               >
                 {episodes.map((e: Episode) => (
-                  <GridItem key={e.id} w={500}>
+                  <GridItem
+                    key={e.id}
+                    minW={{ base: 300, md: 500, lg: 500, xl: 500 }}
+                  >
                     <LinkBox>
                       <LinkOverlay href={`/episode/${e.id}`}>
                         <EpisodeCard
@@ -162,5 +171,3 @@ export default function EpisodesPage() {
     </>
   );
 }
-// TODO: Agregar botones de ordenamiento, por número de episodio, por fecha de lanzamiento (igual a número de episodio?) y por case number!
-// Tener en cuenta que case number es una fecha, los primeros tres digitos son el año, el del medio el día y el ultimo el mes. Por ejemplo el caso 0122204 transcurrió el 22 de Abril del 2012.

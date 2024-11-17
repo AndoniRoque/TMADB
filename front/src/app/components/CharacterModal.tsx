@@ -93,7 +93,12 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
         data
       );
       if (update.status === 200) {
-        alert("Episode updated successfully.");
+        toast({
+          title: "Character updated successfully.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
         getEpisode && getEpisode();
         onClose();
       } else {
@@ -104,12 +109,18 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
           isClosable: true,
         });
       }
-    } catch (err) {
+    } catch (err: any) {
+      if (err.response && err.response.status === 409) {
+        toast({
+          title: "No characters found.",
+          status: "warning",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
       console.error("Error updating episode:", err);
     }
   };
-
-  // TODO: agregar los personajes ya creados al modal Add Characters para poder seleccionar los que ya estan creados
 
   return (
     <>

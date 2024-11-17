@@ -196,9 +196,6 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
     };
 
     initialValue ? updateEpisode(data) : uploadEpisode(data);
-    // TODO: resolver update, le estoy pasando ids que no corresponden con la base de datos o algo asi.
-    // que se yo. si justamente el numero del episodio es el que quiero editar, al cambiarlo me
-    // descuaraja la bd
   };
 
   useEffect(() => {
@@ -274,8 +271,6 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
             <FormLabel mt={5} mb={0}>
               Characters in Episode
             </FormLabel>
-            {/* TODO: verificar que pasa si creo personajes al crear un episodio y enumero otros 
-            // personajes también, un desastre seguro */}
             <ReactSelect
               options={characterOptions}
               placeholder="Character appearences..."
