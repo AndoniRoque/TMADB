@@ -1,12 +1,18 @@
 "use client";
-import { Box, Button, Skeleton, Text, useDisclosure } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Skeleton,
+  Text,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 import axios from "axios";
-import dayjs from "dayjs";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import EpisodeModal from "@/app/components/EpisodeModal";
-import { Episode, EpisodeData, Character } from "@/app/types/types";
+import { Episode, EpisodeData } from "@/app/types/types";
 import InformationCard from "@/app/components/InformationCard";
 import CharacterModal from "@/app/components/CharacterModal";
 const URL_BACK = "http://localhost:3333/api";
@@ -25,6 +31,7 @@ function Page() {
   const params = useParams();
   const episodeNumber = params.id;
   const router = useRouter();
+  const toast = useToast();
   const [episode, setEpisode] = useState<Episode | null>(null);
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
@@ -75,11 +82,26 @@ function Page() {
       const delEpisode = await axios.delete(
         `${URL_BACK}/episodes/${episodeNumber}`
       );
-      setEpisode(delEpisode.data);
-      alert("The episode was deleted successfully");
-      router.push("/episodes");
-    } catch (err) {
-      console.error(err);
+      if (delEpisode.status === 200) {
+        toast({
+          title: "Episode deleted successfully",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        setEpisode(delEpisode.data);
+        router.push("/episodes");
+      }
+    } catch (err: any) {
+      if (err.response && err.response.status === 404) {
+        toast({
+          title: "Episode doesn't exists.",
+          description: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
       setMessage("The episode couldn't be deleted. Please try again.");
     } finally {
       setLoading(true);
@@ -152,6 +174,7 @@ function Page() {
         initialValue={null}
         id={episodeNumber.toString()}
         getEpisode={getEpisode}
+        charactersList={episode.characters}
       />
     </>
   );

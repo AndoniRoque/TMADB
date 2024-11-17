@@ -151,16 +151,51 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
 
   const updateEpisode = async (submitEpisode: EpisodeData) => {
     try {
-      await axios.put(`${URL_BACK}/episodes/${number}`, {
+      const updateEp = await axios.put(`${URL_BACK}/episodes/${number}`, {
         ...submitEpisode,
         number: Number(submitEpisode.number),
         season: Number(submitEpisode.season),
       });
-      alert("Episode updated successfully.");
-      getEpisode();
-      onClose();
-    } catch (err) {
-      console.error("Error updating episode:", err);
+      if (updateEp.status === 200) {
+        toast({
+          id: submitEpisode.id,
+          title: "Episode added successfully.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        getEpisode();
+        onClose();
+      }
+    } catch (err: any) {
+      if (err.response && err.response.status === 409) {
+        if (!toast.isActive(id)) {
+          toast({
+            id: submitEpisode.id,
+            title: "Episode already exists.",
+            description: err.response.data.message,
+            status: "warning",
+            duration: 3000,
+            isClosable: true,
+          });
+        } else if (
+          title === "" ||
+          releaseDate === "" ||
+          description === "" ||
+          caseNumber === ""
+        ) {
+          if (!toast.isActive(id)) {
+            toast({
+              id: submitEpisode.id,
+              title:
+                "Fields Title, Number, Release Date, Description & Case Number must be filled.",
+              status: "error",
+              duration: 4000,
+              isClosable: true,
+            });
+          }
+        }
+      }
     }
   };
 
