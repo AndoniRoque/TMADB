@@ -32,7 +32,6 @@ export default function RootLayout({
 
 // TODO: Cambiar todos los alerts por toasts.
 // TODO: agregar los personajes ya creados al modal Add Characters para poder seleccionar los que ya estan creados
-// TODO: agregar limite de caracteres a la descripción del card.
 // TODO: ensanchar la tabla de personajes para que ocupe (mas o menos) el mismo espacio que la de episodios.
 // TODO: Agregar buscador para poder filtrar los episodios y personajes.
 // TODO: Cambiar la variable showtable para que inicialice en false.
