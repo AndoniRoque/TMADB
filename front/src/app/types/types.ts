@@ -69,6 +69,7 @@ export interface CharacterModalProps {
   id?: string;
   getEpisode?: () => void;
   charactersList: Character[];
+  characters: Character[];
 }
 
 export interface CharacterOrEpisode {

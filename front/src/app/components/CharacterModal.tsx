@@ -10,6 +10,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Text,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
@@ -27,14 +28,19 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   id,
   getEpisode,
   charactersList,
+  characters,
 }) => {
   const params = useParams();
   const characterId = params.id;
+  const [allCharacters, setAllCharacters] = useState<Character[]>(characters);
   const [characterName, setCharacterName] = useState<string>(
     initialValue?.name || ""
   );
   const [characterDescription, setCharacterDescription] = useState<string>(
     initialValue?.description || ""
+  );
+  const [selectedCharacter, setSelectedCharacter] = useState<number[]>(
+    charactersList?.map((character) => character.characterId) || []
   );
   const toast = useToast();
 
@@ -122,6 +128,20 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
     }
   };
 
+  const characterOptions = allCharacters?.map((character) => ({
+    value: character.id,
+    label: character.name,
+  }));
+
+  console.log("characterOptions", characters);
+
+  const handleCharacterChange = (selectedOptions: any) => {
+    const selectedValue = selectedOptions
+      ? selectedOptions.map((option: any) => option.value)
+      : [];
+    setSelectedCharacter(selectedValue);
+  };
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -132,6 +152,17 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
           <ModalBody>
             <FormControl isRequired>
               <FormLabel mb={0}>Name</FormLabel>
+              <ReactSelect
+                options={characterOptions}
+                isMulti
+                placeholder="Select characters..."
+                onChange={handleCharacterChange}
+                value={characterOptions?.filter((option) =>
+                  selectedCharacter.includes(option.value)
+                )}
+              />
+
+              <Text> Or add a new character </Text>
               <Input
                 placeholder="Character name..."
                 onChange={(e) => setCharacterName(e.target.value)}

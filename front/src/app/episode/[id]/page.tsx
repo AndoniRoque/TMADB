@@ -12,7 +12,7 @@ import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import EpisodeModal from "@/app/components/EpisodeModal";
-import { Episode, EpisodeData } from "@/app/types/types";
+import { Character, Episode, EpisodeData } from "@/app/types/types";
 import InformationCard from "@/app/components/InformationCard";
 import CharacterModal from "@/app/components/CharacterModal";
 const URL_BACK = "http://localhost:3333/api";
@@ -38,6 +38,7 @@ function Page() {
   const [characterName, setCharacterName] = useState<string>("");
   const [characterDescription, setCharacterDescription] = useState<string>("");
   const [episodeToEdit, setEpisodeToEdit] = useState<EpisodeData | null>(null);
+  const [characters, setCharacters] = useState<Character[]>([]);
 
   const data = {
     name: characterName,
@@ -77,6 +78,21 @@ function Page() {
     }
   };
 
+  const getCharacters = async () => {
+    try {
+      const response = await axios.get(`${URL_BACK}/characters/`);
+      setCharacters(response.data);
+    } catch (err) {
+      console.error(err);
+      toast({
+        title: "Characters couldn't be fetched.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
   const deleteEpisode = async () => {
     try {
       const delEpisode = await axios.delete(
@@ -110,6 +126,7 @@ function Page() {
 
   useEffect(() => {
     getEpisode();
+    getCharacters();
   }, [episodeNumber]);
 
   if (loading) {
@@ -175,6 +192,7 @@ function Page() {
         id={episodeNumber.toString()}
         getEpisode={getEpisode}
         charactersList={episode.characters}
+        characters={characters}
       />
     </>
   );
