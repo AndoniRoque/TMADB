@@ -26,7 +26,7 @@ export default function EpisodesPage() {
   const [characterMessage, setCharacterMessage] = useState<string>("");
   const [characters, setCharacters] = useState<Character[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [showTable, setShowTable] = useState<boolean>(false);
+  const [showTable, setShowTable] = useState<boolean>(true);
 
   const getEpisodes = async () => {
     try {

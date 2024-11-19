@@ -30,6 +30,7 @@ router.get('/characters', async (req, res) => {
 
 router.post('/characters', async (req, res) => {
   const { name, description, episode } = req.body;
+  console.log(req.body);
   try {
     if (!name) res.status(400).json({ message: "Character name is missing." });
     if (!description) res.status(400).json({ message: "Character description is missing" });
