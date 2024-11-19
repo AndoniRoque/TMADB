@@ -149,9 +149,9 @@ function Page() {
     <>
       <Box position="fixed" m={4} top="15%" left="88%" zIndex={1000}>
         <Box display="flex" flexDirection="column" gap={2}>
-          <Button onClick={onOpenCharacter} leftIcon={<AddIcon />}>
+          {/* <Button onClick={onOpenCharacter} leftIcon={<AddIcon />}>
             Add Characters
-          </Button>
+          </Button> */}
           <Button onClick={handleEditEpisode} leftIcon={<EditIcon />}>
             Edit Episode
           </Button>
@@ -184,7 +184,7 @@ function Page() {
         getEpisode={getEpisode}
         initialValue={episodeToEdit}
       />
-
+      {/* 
       <CharacterModal
         isOpen={isOpenCharacter}
         onClose={onCloseCharacter}
@@ -193,7 +193,7 @@ function Page() {
         getEpisode={getEpisode}
         charactersList={episode.characters}
         characters={characters}
-      />
+      /> */}
     </>
   );
 }

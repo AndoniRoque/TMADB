@@ -89,7 +89,6 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
     const year = caseNumber.slice(0, 3);
     const day = caseNumber.slice(3, 5);
     const month = caseNumber.slice(5);
-    console.log(year, month, day);
 
     const fullYear =
       parseInt(year.slice(0, 1)) === 0

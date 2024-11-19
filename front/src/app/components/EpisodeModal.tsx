@@ -80,6 +80,11 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
     label: character.name,
   }));
 
+  const initialSelectedCharacters = characters.map((characterEntry) => ({
+    value: characterEntry.character?.id,
+    label: characterEntry.character?.name,
+  }));
+
   const handleCharacterChange = (selectedOptions: any) => {
     setSelectedCharacter(
       selectedOptions ? selectedOptions.map((option: any) => option.value) : []
@@ -99,6 +104,10 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
       setSelectedCharacter(initialValue.characterIds);
     }
   }, [initialValue]);
+
+  useEffect(() => {
+    getCharacters();
+  }, []);
 
   const uploadEpisode = async (data: EpisodeData) => {
     try {
@@ -308,12 +317,10 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
             </FormLabel>
             <ReactSelect
               options={characterOptions}
-              placeholder="Character appearences..."
               isMulti
+              placeholder="Character appearances..."
               onChange={handleCharacterChange}
-              value={characterOptions.filter((option) =>
-                selectedCharacter.includes(option.value)
-              )}
+              defaultValue={initialSelectedCharacters}
             />
             <FormLabel mt={5} mb={0}>
               Heard Episode{" "}
