@@ -2,6 +2,7 @@
 import {
   Box,
   Button,
+  Flex,
   Grid,
   GridItem,
   Heading,
@@ -24,7 +25,7 @@ function characters() {
   const [charactersList, setCharactersList] = useState<Character[]>([]);
   const [characterMessage, setCharacterMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [showTable, setShowTable] = useState<boolean>(false);
+  const [showTable, setShowTable] = useState<boolean>(true);
 
   const getCharacters = async () => {
     try {
@@ -48,8 +49,7 @@ function characters() {
 
   return (
     <>
-      <Box
-        display={"flex"}
+      <Flex
         justifyContent={"space-between"}
         alignItems={"center"}
         m={4}
@@ -65,7 +65,7 @@ function characters() {
           {" "}
           Upload Character{" "}
         </Button>
-        <Box
+        <Flex
           display={"flex"}
           justifyContent={"center"}
           alignItems={"center"}
@@ -74,9 +74,9 @@ function characters() {
           <Button onClick={() => setShowTable(!showTable)}>
             {showTable ? "Show Table" : "Show Grid"}
           </Button>
-        </Box>
-      </Box>
-      <Box display={"flex"} justifyContent={"center"} alignItems="center">
+        </Flex>
+      </Flex>
+      <Flex display={"flex"} justifyContent={"center"} alignItems="center">
         {loading ? (
           <>
             <Skeleton ml={16} height={"20vh"} />
@@ -86,14 +86,9 @@ function characters() {
           </>
         ) : characterMessage ? (
           <>
-            <Box
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
-              h={"70vh"}
-            >
+            <Flex justifyContent={"center"} alignItems={"center"} h={"70vh"}>
               <Text color={"whitesmoke"}>{characterMessage}</Text>
-            </Box>
+            </Flex>
           </>
         ) : (
           <>
@@ -110,7 +105,10 @@ function characters() {
               >
                 {charactersList.map((char: Character) => (
                   <>
-                    <GridItem key={char.id} w={500}>
+                    <GridItem
+                      key={char.id}
+                      minW={{ base: 300, md: 500, lg: 500, xl: 500 }}
+                    >
                       <LinkBox>
                         <LinkOverlay href={`/character/${char.id}`}>
                           <CharacterCard character={char} />
@@ -131,13 +129,14 @@ function characters() {
             )}
           </>
         )}
-      </Box>
+      </Flex>
 
       <CharacterModal
         isOpen={isOpen}
         onClose={onClose}
         getEpisode={getCharacters}
         charactersList={charactersList}
+        characters={charactersList}
       />
     </>
   );
