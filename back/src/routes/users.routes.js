@@ -23,15 +23,23 @@ router.post('/login', (req, res, next) => {
   })(req, res, next);
 });
 
-
-router.get("/logout", async (req, res, next) => {
+router.get("/logout", async (req, res) => {
   try {
-    await req.logout();
+    // Usa el método logout correctamente con await
+    await new Promise((resolve, reject) => {
+      req.logout((err) => {
+        if (err) return reject(err);
+        resolve();
+      });
+    });
+
     res.status(200).json({ message: "Logout successful" });
   } catch (err) {
-    res.status(500).json({ message: "An error ocurred during logout", error: err })
+    console.error("Logout error:", err);
+    res.status(500).json({ message: "An error occurred during logout.", error: err });
   }
 });
+
 
 router.get('/status', (req, res) => {
   if (req.isAuthenticated()) {
