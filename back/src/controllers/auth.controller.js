@@ -1,10 +1,12 @@
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
 import { prisma } from "../db.js";
+import bcrypt from 'bcrypt';
 
 passport.use(
   new LocalStrategy(async (username, password, done) => {
     try {
+      console.log("Authenticating user: ", username);
       const rows = await prisma.user.findUnique({
         where: {
           username: username,
@@ -12,19 +14,18 @@ passport.use(
       })
 
       const user = rows;
+      console.log("User", user);
 
       if (!user) {
         return done(null, false, { message: "User not found." });
       }
 
-      //const match = await bcrypt.compare(password, user.password);
+      const match = await bcrypt.compare(password, user.password);
 
-      // if(!match) {
-      //   done(null, false, {message: "Incorrect passowrd"});
-      // } 
+      console.log("match", match);
 
-      if (user.password !== password) {
-        return done(null, false, { message: "Incorrect password." });
+      if (!match) {
+        done(null, false, { message: "Incorrect passowrd" });
       }
 
       return done(null, user);

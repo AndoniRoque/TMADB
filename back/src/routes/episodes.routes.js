@@ -4,7 +4,7 @@ import { ensureAuthenticated } from "../controllers/auth.controller.js";
 
 const router = Router();
 
-router.get('/episodes', async (req, res) => {
+router.get('/episodes', ensureAuthenticated, async (req, res) => {
   const { title, number, caseNumber } = req.query;
 
   try {

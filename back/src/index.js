@@ -14,7 +14,7 @@ app.use(session({ secret: "cats", resave: false, saveUninitialized: false, cooki
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({ origin: "http://localhost:3001", credentials: true }));
 
 app.use('/api', usersRoutes);
 app.use('/api', episodesRoutes);
@@ -26,6 +26,7 @@ app.use((req, res, next) => {
 });
 
 // Rutas protegidas
+app.use('/auth', usersRoutes);
 
 
 app.listen(3333, () => {
