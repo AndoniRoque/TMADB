@@ -15,23 +15,33 @@ import {
   Icon,
   Button,
   useToast,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
 import Head from "next/head";
-import React, { ReactNode, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { FaUser } from "react-icons/fa";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-const URL_BACK = "http://localhost:3333/api";
+import { useAuthStore } from "../store/useAuthStore";
+const URL_BACK = "http://localhost:3333/auth";
 
 function Header() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isLoggedIn, username, logout, checkAuthStatus } = useAuthStore();
   const btnRef = useRef();
   const toast = useToast();
   const router = useRouter();
 
-  const logout = async () => {
+  useEffect(() => {
+    checkAuthStatus();
+  }, [checkAuthStatus]);
+
+  const handleLogout = async () => {
     try {
       const out = await axios.get(`${URL_BACK}/logout`);
       if (out.status === 200) {
@@ -128,20 +138,27 @@ function Header() {
             ))}
           </Flex>
         </Box>
-        <Flex justifyContent={"end"}>
-          <Button
-            onClick={logout}
-            backgroundColor={"transparent"}
-            _hover={{
-              backgrdounColor: "transparent",
-              cursor: "pointer",
-            }}
-          >
-            <Icon as={FaUser} boxSize={6} color={"whitesmoke"}></Icon>
-            <Text color={"whitesmoke"} ml={2}>
-              user
-            </Text>
-          </Button>
+        <Flex justifyContent={"end"} alignItems="center">
+          <Menu>
+            <MenuButton
+              as={Button}
+              backgroundColor={"transparent"}
+              _hover={{
+                backgrdounColor: "transparent",
+                cursor: "pointer",
+              }}
+              rightIcon={
+                <Icon as={FaUser} boxSize={6} color={"whitesmoke"}></Icon>
+              }
+            >
+              <Text color={"whitesmoke"} ml={2}>
+                {username}
+              </Text>
+            </MenuButton>
+            <MenuList>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            </MenuList>
+          </Menu>
         </Flex>
       </Flex>
 
