@@ -49,7 +49,9 @@ export default function EpisodesPage() {
 
   const getCharacters = async () => {
     try {
-      const characters = await axios.get(`${URL_BACK}/characters`);
+      const characters = await axios.get(`${URL_BACK}/characters`, {
+        withCredentials: true,
+      });
       if (characters.data.message) {
         setCharacterMessage(characters.data.message);
       } else {

@@ -30,7 +30,10 @@ function character() {
     try {
       setLoading(true);
       const response = await axios.get(
-        `${URL_BACK}/characters/${characterNumber}`
+        `${URL_BACK}/characters/${characterNumber}`,
+        {
+          withCredentials: true,
+        }
       );
       setCharacter(response.data);
     } catch (err) {
@@ -44,7 +47,10 @@ function character() {
   const deleteCharacter = async () => {
     try {
       const delCharacter = await axios.delete(
-        `${URL_BACK}/characters/${characterNumber}`
+        `${URL_BACK}/characters/${characterNumber}`,
+        {
+          withCredentials: true,
+        }
       );
       if (delCharacter.status === 200) {
         toast({

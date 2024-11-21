@@ -68,7 +68,12 @@ function Page() {
 
   const getEpisode = async () => {
     try {
-      const response = await axios.get(`${URL_BACK}/episodes/${episodeNumber}`);
+      const response = await axios.get(
+        `${URL_BACK}/episodes/${episodeNumber}`,
+        {
+          withCredentials: true,
+        }
+      );
       setEpisode(response.data);
     } catch (err) {
       console.error(err);
@@ -80,7 +85,9 @@ function Page() {
 
   const getCharacters = async () => {
     try {
-      const response = await axios.get(`${URL_BACK}/characters/`);
+      const response = await axios.get(`${URL_BACK}/characters/`, {
+        withCredentials: true,
+      });
       setCharacters(response.data);
     } catch (err) {
       console.error(err);
@@ -96,7 +103,10 @@ function Page() {
   const deleteEpisode = async () => {
     try {
       const delEpisode = await axios.delete(
-        `${URL_BACK}/episodes/${episodeNumber}`
+        `${URL_BACK}/episodes/${episodeNumber}`,
+        {
+          withCredentials: true,
+        }
       );
       if (delEpisode.status === 200) {
         toast({

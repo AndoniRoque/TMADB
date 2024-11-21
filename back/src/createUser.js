@@ -12,12 +12,6 @@ const createUser = async () => {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const findUser = await prisma.user.findFirst({
-      where: {
-        username: { equals: username }
-      },
-    })
-
     const newUser = await prisma.user.create({
       data: {
         username: username,

@@ -4,7 +4,7 @@ import { ensureAuthenticated } from "../controllers/auth.controller.js";
 
 const router = Router();
 
-router.get('/characters', async (req, res) => {
+router.get('/characters', ensureAuthenticated, async (req, res) => {
   const { name, description } = req.query;
 
   try {
@@ -28,7 +28,7 @@ router.get('/characters', async (req, res) => {
   }
 })
 
-router.post('/characters', async (req, res) => {
+router.post('/characters', ensureAuthenticated, async (req, res) => {
   const { name, description, episode } = req.body;
   console.log(req.body);
   try {
@@ -64,7 +64,7 @@ router.post('/characters', async (req, res) => {
     res.status(500).json({ error: 'Error getting characters', details: err.message });
   }
 })
-router.get('/characters/:id', async (req, res) => {
+router.get('/characters/:id', ensureAuthenticated, async (req, res) => {
   const id = parseInt(req.params.id, 10);
 
   if (isNaN(id)) { return res.status(400).json({ error: "Invalid ID format" }) }
@@ -81,7 +81,7 @@ router.get('/characters/:id', async (req, res) => {
     res.status(500).json({ error: 'Error getting character', details: err.message })
   }
 })
-router.put('/characters/:id', async (req, res) => {
+router.put('/characters/:id', ensureAuthenticated, async (req, res) => {
   const id = parseInt(req.params.id, 10);
 
   if (isNaN(id)) {
@@ -98,7 +98,7 @@ router.put('/characters/:id', async (req, res) => {
     res.status(500).json({ error: "Error updating character", details: err.message });
   }
 })
-router.delete('/characters/:id', async (req, res) => {
+router.delete('/characters/:id', ensureAuthenticated, async (req, res) => {
   const id = parseInt(req.params.id, 10);
 
   if (isNaN(id)) { return res.send(400).json({ error: "Invalid ID format." }) }

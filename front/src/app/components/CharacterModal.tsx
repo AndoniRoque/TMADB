@@ -72,7 +72,9 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
 
   const uploadCharacter = async (data: CharacterData) => {
     try {
-      const response = await axios.post(`${URL_BACK}/characters`, data);
+      const response = await axios.post(`${URL_BACK}/characters`, data, {
+        withCredentials: true,
+      });
       if (response.status === 200) {
         const updatedCharactersResponse = await axios.get(
           `${URL_BACK}/characters`
@@ -105,7 +107,10 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
     try {
       const response = await axios.put(
         `${URL_BACK}/characters/${initialValue?.id}`,
-        data
+        data,
+        {
+          withCredentials: true,
+        }
       );
       if (response.status === 200) {
         toast({

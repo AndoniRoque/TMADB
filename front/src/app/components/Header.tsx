@@ -12,15 +12,47 @@ import {
   DrawerCloseButton,
   useDisclosure,
   IconButton,
+  Icon,
+  Button,
+  useToast,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import React, { ReactNode, useRef } from "react";
 import Link from "next/link";
 import { HamburgerIcon } from "@chakra-ui/icons";
+import { FaUser } from "react-icons/fa";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+const URL_BACK = "http://localhost:3333/api";
 
 function Header() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef();
+  const toast = useToast();
+  const router = useRouter();
+
+  const logout = async () => {
+    try {
+      const out = await axios.get(`${URL_BACK}/logout`);
+      if (out.status === 200) {
+        toast({
+          title: "Logout successfull.",
+          description: "Goodbye",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        router.push("/");
+      }
+    } catch (err) {
+      toast({
+        title: "Couldn't be logged out.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
 
   return (
     <>
@@ -35,7 +67,7 @@ function Header() {
         w="100%"
         p={4}
         minH="10vh"
-        bg="conic-gradient(from 90deg at 77% 50%, #0f1110, #252b26)"
+        bg="conic-gradient(from 90deg at 50% 50%, #0f1110, #252b26)"
         backgroundColor="black"
         boxShadow="0 4px 15px rgba(0, 0, 0, 0.4)"
         justifyContent="space-between"
@@ -56,7 +88,7 @@ function Header() {
         </Flex>
 
         {/* Title */}
-        <Flex justifyContent="center" alignItems="center" flex={1}>
+        <Flex justifyContent="start" ml={4} alignItems="center" flex={1}>
           <Text
             color="rgba(236, 223, 204, 0.8)"
             fontSize="3xl"
@@ -96,6 +128,21 @@ function Header() {
             ))}
           </Flex>
         </Box>
+        <Flex justifyContent={"end"}>
+          <Button
+            onClick={logout}
+            backgroundColor={"transparent"}
+            _hover={{
+              backgrdounColor: "transparent",
+              cursor: "pointer",
+            }}
+          >
+            <Icon as={FaUser} boxSize={6} color={"whitesmoke"}></Icon>
+            <Text color={"whitesmoke"} ml={2}>
+              user
+            </Text>
+          </Button>
+        </Flex>
       </Flex>
 
       {/* Mobile Header */}

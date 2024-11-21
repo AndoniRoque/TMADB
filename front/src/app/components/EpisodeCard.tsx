@@ -15,9 +15,15 @@ const URL_BACK = "http://localhost:3333/api";
 function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
   const heardEpisode = async (episode: Episode) => {
     try {
-      const { data } = await axios.put(`${URL_BACK}/episodes/${episode.id}`, {
-        heard: !episode.heard,
-      });
+      const { data } = await axios.put(
+        `${URL_BACK}/episodes/${episode.id}`,
+        {
+          heard: !episode.heard,
+        },
+        {
+          withCredentials: true,
+        }
+      );
       refreshEpisodes();
     } catch (err) {
       console.error(err);

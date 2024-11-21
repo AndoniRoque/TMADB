@@ -36,9 +36,15 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
 
   const heardEpisode = async (episode: Episode) => {
     try {
-      await axios.put(`${URL_BACK}/episodes/${episode.id}`, {
-        heard: !episode.heard,
-      });
+      await axios.put(
+        `${URL_BACK}/episodes/${episode.id}`,
+        {
+          heard: !episode.heard,
+        },
+        {
+          withCredentials: true,
+        }
+      );
       refreshList();
     } catch (err) {
       console.error(err);

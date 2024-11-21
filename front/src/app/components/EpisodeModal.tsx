@@ -61,7 +61,9 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
 
   const getCharacters = async () => {
     try {
-      const characters = await axios.get(`${URL_BACK}/characters`);
+      const characters = await axios.get(`${URL_BACK}/characters`, {
+        withCredentials: true,
+      });
       if (characters.data.message) {
         setCharacterMessage(characters.data.message);
       } else {
@@ -111,7 +113,9 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
 
   const uploadEpisode = async (data: EpisodeData) => {
     try {
-      const upload = await axios.post(`${URL_BACK}/episodes`, data);
+      const upload = await axios.post(`${URL_BACK}/episodes`, data, {
+        withCredentials: true,
+      });
       if (upload.status === 200) {
         if (!toast.isActive) {
           toast({
@@ -160,11 +164,17 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
 
   const updateEpisode = async (submitEpisode: EpisodeData) => {
     try {
-      const updateEp = await axios.put(`${URL_BACK}/episodes/${number}`, {
-        ...submitEpisode,
-        number: Number(submitEpisode.number),
-        season: Number(submitEpisode.season),
-      });
+      const updateEp = await axios.put(
+        `${URL_BACK}/episodes/${number}`,
+        {
+          ...submitEpisode,
+          number: Number(submitEpisode.number),
+          season: Number(submitEpisode.season),
+        },
+        {
+          withCredentials: true,
+        }
+      );
       if (updateEp.status === 200) {
         toast({
           id: submitEpisode.id,
