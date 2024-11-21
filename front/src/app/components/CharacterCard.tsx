@@ -6,22 +6,19 @@ function CharacterCard({ character }: CharacterCardProps) {
   return (
     <Stack direction="row" wrap="wrap" minH={"200px"} h={"320px"} w={"100%"}>
       <Box
-        display={"flex"}
-        justifyContent={"start"}
-        minW={"100%"}
-        maxH={"90%"}
         p={16}
         border={"1px solid gray"}
         borderRadius={8}
-        color={"whitesmoke"}
+        color={"white"}
         fontWeight={400}
+        w={"100%"}
         _hover={{
           transform: "scale(1.01)",
           transition: "transform 0.2s",
           boxShadow: "2px 0px 10px rgba(0,0,0,0.5)",
         }}
       >
-        <Stack spacing={2} w={"full"}>
+        <Stack spacing={2}>
           <Box
             display={"flex"}
             justifyContent={"start"}
@@ -40,7 +37,13 @@ function CharacterCard({ character }: CharacterCardProps) {
               {character.name}
             </Text>
           </Box>
-          <Text mt={4} noOfLines={3}>
+          <Text
+            mt={4}
+            overflow={"hidden"}
+            whiteSpace={"nowrap"}
+            textOverflow={"ellipsis"}
+            marginTop={"12%"}
+          >
             {character.description}
           </Text>
         </Stack>

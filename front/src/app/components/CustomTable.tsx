@@ -210,14 +210,15 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
                     <Td
                       onClick={() => handleNavigation(`/episode/${episode.id}`)}
                     >
-                      {episode.caseNumber}
+                      #{episode.caseNumber}
                     </Td>
                     <Td
-                      maxW={{
-                        base: "10vw",
-                        sm: "30vw",
-                        md: "40vw",
-                        lg: "50vw",
+                      minW={{
+                        base: 100,
+                        sm: 200,
+                        md: 300,
+                        lg: 400,
+                        xl: 1000,
                       }}
                       onClick={() => handleNavigation(`/episode/${episode.id}`)}
                       overflow={"hidden"}
@@ -227,7 +228,17 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
                       {episode.heard ? (
                         episode.description
                       ) : (
-                        <Text backgroundColor={"black"} textAlign={"center"}>
+                        <Text
+                          backgroundColor={"black"}
+                          textAlign={"center"}
+                          minW={{
+                            base: 100,
+                            sm: 200,
+                            md: 300,
+                            lg: 400,
+                            xl: 1000,
+                          }}
+                        >
                           [Redacted]
                         </Text>
                       )}

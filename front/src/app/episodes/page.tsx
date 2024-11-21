@@ -2,6 +2,7 @@
 import {
   Box,
   Button,
+  Flex,
   Grid,
   GridItem,
   Heading,
@@ -30,7 +31,9 @@ export default function EpisodesPage() {
 
   const getEpisodes = async () => {
     try {
-      const response = await axios.get(`${URL_BACK}/episodes`);
+      const response = await axios.get(`${URL_BACK}/episodes`, {
+        withCredentials: true,
+      });
       if (response.data.message) {
         setMessage(response.data.message);
       } else {
@@ -67,8 +70,7 @@ export default function EpisodesPage() {
 
   return (
     <>
-      <Box
-        display={"flex"}
+      <Flex
         justifyContent={"space-between"}
         flexDirection={"row"}
         m={4}
@@ -79,8 +81,7 @@ export default function EpisodesPage() {
         <Heading fontSize="4xl" color={"whitesmoke"} flex={1}>
           T.M.A Episodes
         </Heading>
-        <Box
-          display={"flex"}
+        <Flex
           justifyContent={"center"}
           alignItems={"center"}
           flexDirection={"row"}
@@ -88,9 +89,8 @@ export default function EpisodesPage() {
           <Button onClick={onOpen} mr={2}>
             Upload Episode
           </Button>
-        </Box>
-        <Box
-          display={"flex"}
+        </Flex>
+        <Flex
           justifyContent={"center"}
           alignItems={"center"}
           flexDirection={"row"}
@@ -98,9 +98,9 @@ export default function EpisodesPage() {
           <Button onClick={() => setShowTable(!showTable)}>
             {showTable ? "Show Table" : "Show Grid"}
           </Button>
-        </Box>
-      </Box>
-      <Box display={"flex"} justifyContent={"center"} alignItems="center">
+        </Flex>
+      </Flex>
+      <Flex justifyContent={"center"} alignItems="center">
         {loading ? (
           <>
             <Skeleton ml={16} height="200px" />
@@ -110,14 +110,9 @@ export default function EpisodesPage() {
           </>
         ) : message ? (
           <>
-            <Box
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
-              h={"70vh"}
-            >
+            <Flex justifyContent={"center"} alignItems={"center"} h={"70vh"}>
               <Text color={"whitesmoke"}>{message}</Text>
-            </Box>
+            </Flex>
           </>
         ) : (
           <>
@@ -149,17 +144,15 @@ export default function EpisodesPage() {
                 ))}
               </Grid>
             ) : (
-              <>
-                <CustomTable
-                  data={episodes}
-                  type="episode"
-                  refreshList={getEpisodes}
-                />
-              </>
+              <CustomTable
+                data={episodes}
+                type="episode"
+                refreshList={getEpisodes}
+              />
             )}
           </>
         )}
-      </Box>
+      </Flex>
 
       <EpisodeModal
         isOpen={isOpen}

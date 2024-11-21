@@ -1,5 +1,9 @@
 import { Router } from "express";
 import passport from "../config/passport.config.js";
+import bcrypt from 'bcrypt';
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 const router = Router();
 
@@ -46,6 +50,38 @@ router.get('/status', (req, res) => {
     return res.status(200).json({ authenticated: true, user: req.user });
   }
   res.status(401).json({ authenticated: false })
+})
+
+router.post("/register", async (req, res) => {
+  const { username, mail, password } = req.body;
+  console.log("req.body >", req.body);
+  console.log(username, mail, password);
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+
+    const findUser = await prisma.user.findFirst({
+      where: {
+        username: { equals: username }
+      },
+    })
+
+    if (findUser) return res.status(409).json({ message: "A user with that username already exists." });
+
+    const newUser = await prisma.user.create({
+      data: {
+        username,
+        mail,
+        password: hashedPassword
+      },
+    });
+
+    console.log("user created successfully", newUser);
+    return res.status(200).json({ message: "User created successfully" })
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "An error ocurred, the user couldn't be created" });
+  }
 })
 
 router.use((req, res, next) => {

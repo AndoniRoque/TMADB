@@ -1,30 +1,21 @@
 "use client";
-
-import axios from "axios";
-import { useRouter } from "next/navigation";
 import {
   Box,
   Button,
-  Center,
-  Divider,
   Flex,
   FormControl,
   FormLabel,
-  HStack,
-  IconButton,
   Image,
   Input,
   Link,
   Text,
-  useColorModeValue,
-  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
-const base_url = process.env.NEXT_PUBLIC_BASE_URL;
-
-function Login() {
+function Register() {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -32,7 +23,7 @@ function Login() {
   const router = useRouter();
   const URL_BACK = "http://localhost:3333/api";
 
-  const iniciarSesion = async (event: any) => {
+  const register = async (event: any) => {
     event.preventDefault();
     try {
       const data = {
@@ -40,34 +31,38 @@ function Login() {
         password: password,
         mail: email,
       };
-      const response = await axios.post(`${URL_BACK}/login/`, data, {
-        withCredentials: true,
-      });
+      const response = await axios.post(`${URL_BACK}/register/`, data);
       if (response.status === 200) {
         toast({
-          title: "Login successful!",
+          title: "Sign in successful!",
           status: "success",
           duration: 3000,
           isClosable: true,
         });
-        router.push("/episodes");
+        router.push("/");
       }
-    } catch (error) {
-      console.error(error);
-      toast({
-        title: "Login failed.",
-        description: "Please check your credentials and try again.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+    } catch (error: any) {
+      console.error(">", error);
+      if (error.response.status === 409) {
+        console.log("hola");
+        toast({
+          title: "Register failed.",
+          description: error.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
     }
   };
 
+  console.log("email >", email);
+  console.log("user >", user);
+  console.log("passwprd >", password);
+
   return (
     <>
-      <Box
-        display={"flex"}
+      <Flex
         justifyContent={"space-evenly"}
         flexDirection={"row"}
         w={"full"}
@@ -125,15 +120,15 @@ function Login() {
               Email{" "}
             </FormLabel>
             <Input value={email} onChange={(e) => setEmail(e.target.value)} />
-            <Button mt={4} onClick={iniciarSesion}>
+            <Button mt={4} onClick={register}>
               {" "}
-              Log in
+              Sign in
             </Button>
           </FormControl>
         </Box>
-      </Box>
+      </Flex>
     </>
   );
 }
 
-export default Login;
+export default Register;

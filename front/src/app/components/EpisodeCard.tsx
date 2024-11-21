@@ -1,4 +1,12 @@
-import { Avatar, Box, Button, Checkbox, Stack, Text } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Checkbox,
+  Flex,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import axios from "axios";
 import React from "react";
 import { Episode, EpisodeCardProps } from "../types/types";
@@ -18,18 +26,11 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
   };
 
   return (
-    <Stack
-      gap="14"
-      direction="row"
-      wrap="wrap"
-      minH={"200px"}
-      h={"300px"}
-      w={"100%"}
-    >
+    <Stack direction="row" wrap="wrap" h={"320px"} minH={"200px"} w={"100%"}>
       <Box
-        p={16}
         border={"1px solid gray"}
         borderRadius={8}
+        p={16}
         color={"white"}
         fontWeight={400}
         w={"100%"}
@@ -40,8 +41,7 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
         }}
       >
         <Stack spacing={2}>
-          <Box
-            display={"flex"}
+          <Flex
             justifyContent={"start"}
             flexDirection={"row"}
             alignItems={"center"}
@@ -59,13 +59,13 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
               {episode.number < 10 ? `0${episode.number}` : episode.number}:{" "}
               {episode.title}
             </Text>
-            <Box display={"flex"} w={"100%"} justifyContent={"flex-end"}>
+            <Flex w={"100%"} justifyContent={"flex-end"}>
               <Checkbox
                 isChecked={episode.heard}
                 onChange={() => heardEpisode(episode)}
               />
-            </Box>
-          </Box>
+            </Flex>
+          </Flex>
           <Text
             mt={4}
             overflow={"hidden"}
