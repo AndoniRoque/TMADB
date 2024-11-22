@@ -46,6 +46,7 @@ router.get("/logout", async (req, res) => {
 
 
 router.get('/status', (req, res) => {
+  console.log(">", req.isAuthenticated());
   if (req.isAuthenticated()) {
     return res.status(200).json({ authenticated: true, user: req.user });
   }

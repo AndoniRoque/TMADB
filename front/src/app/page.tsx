@@ -21,6 +21,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { useAuthStore } from "./store/useAuthStore";
 
 const base_url = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -31,6 +32,7 @@ function Login() {
   const toast = useToast();
   const router = useRouter();
   const URL_BACK = "http://localhost:3333/api";
+  const { checkAuthStatus } = useAuthStore();
 
   const iniciarSesion = async (event: any) => {
     event.preventDefault();
@@ -44,12 +46,14 @@ function Login() {
         withCredentials: true,
       });
       if (response.status === 200) {
+        setUser(response.data.user.username);
         toast({
           title: "Login successful!",
           status: "success",
           duration: 3000,
           isClosable: true,
         });
+        checkAuthStatus();
         router.push("/episodes");
       }
     } catch (error) {

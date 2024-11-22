@@ -19,10 +19,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   checkAuthStatus: async () => {
     try{
       const response = await axios.get(`${URL_BACK}/status`, {withCredentials: true});
-      console.log(response);
       if(response.data.authenticated) {
-        console.log("entré");
-        set({username: response.data.user.username, isLoggedIn: true});
+        set({username: response.data.user.username, isLoggedIn: response.data.authenticated});
       } else {
         set({username: "Annonymous User", isLoggedIn: false});
       }

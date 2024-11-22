@@ -10,7 +10,7 @@ import cors from "cors";
 const app = express();
 
 app.use(express.json());
-app.use(session({ secret: "cats", resave: false, saveUninitialized: false, cookie: { secure: false } }));
+app.use(session({ secret: "cats", resave: false, saveUninitialized: false, cookie: { httpOnly: true, secure: false } }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));

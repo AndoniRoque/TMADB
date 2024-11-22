@@ -45,6 +45,7 @@ function Header() {
     try {
       const out = await axios.get(`${URL_BACK}/logout`);
       if (out.status === 200) {
+        logout();
         toast({
           title: "Logout successfull.",
           description: "Goodbye",
@@ -55,6 +56,7 @@ function Header() {
         router.push("/");
       }
     } catch (err) {
+      console.log(err);
       toast({
         title: "Couldn't be logged out.",
         status: "error",
@@ -138,28 +140,30 @@ function Header() {
             ))}
           </Flex>
         </Box>
-        <Flex justifyContent={"end"} alignItems="center">
-          <Menu>
-            <MenuButton
-              as={Button}
-              backgroundColor={"transparent"}
-              _hover={{
-                backgrdounColor: "transparent",
-                cursor: "pointer",
-              }}
-              rightIcon={
-                <Icon as={FaUser} boxSize={6} color={"whitesmoke"}></Icon>
-              }
-            >
-              <Text color={"whitesmoke"} ml={2}>
-                {username}
-              </Text>
-            </MenuButton>
-            <MenuList>
-              <MenuItem onClick={handleLogout}>Logout</MenuItem>
-            </MenuList>
-          </Menu>
-        </Flex>
+        {isLoggedIn && (
+          <Flex justifyContent={"end"} alignItems="center">
+            <Menu>
+              <MenuButton
+                as={Button}
+                backgroundColor={"transparent"}
+                _hover={{
+                  backgrdounColor: "transparent",
+                  cursor: "pointer",
+                }}
+                rightIcon={
+                  <Icon as={FaUser} boxSize={6} color={"whitesmoke"}></Icon>
+                }
+              >
+                <Text color={"whitesmoke"} ml={2}>
+                  {username}
+                </Text>
+              </MenuButton>
+              <MenuList>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </MenuList>
+            </Menu>
+          </Flex>
+        )}
       </Flex>
 
       {/* Mobile Header */}
