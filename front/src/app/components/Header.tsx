@@ -41,6 +41,16 @@ function Header() {
     checkAuthStatus();
   }, [checkAuthStatus]);
 
+  // useEffect(() => {
+  //   const checkAuth = async () => {
+  //     await checkAuthStatus();
+  //     if (!isLoggedIn) {
+  //       router.push("/");
+  //     }
+  //   };
+  //   checkAuth();
+  // }, [isLoggedIn, checkAuthStatus, router]);
+
   const handleLogout = async () => {
     try {
       const out = await axios.get(`${URL_BACK}/logout`);
