@@ -7,6 +7,7 @@ import axios from "axios";
 import { Box, Button, useDisclosure, useToast } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import CharacterModal from "@/app/components/CharacterModal";
+import { useAuthStore } from "@/app/store/useAuthStore";
 const URL_BACK = "http://localhost:3333/api";
 
 function character() {
@@ -24,7 +25,15 @@ function character() {
   const [characterToEdit, setCharacterToEdit] = useState<Character | null>(
     null
   );
+  const { isLoggedIn, logout } = useAuthStore();
   const toast = useToast();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      logout();
+      router.push("/");
+    }
+  }, [isLoggedIn]);
 
   const getEpisode = async () => {
     try {

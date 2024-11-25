@@ -56,10 +56,6 @@ function Register() {
     }
   };
 
-  console.log("email >", email);
-  console.log("user >", user);
-  console.log("passwprd >", password);
-
   return (
     <>
       <Flex

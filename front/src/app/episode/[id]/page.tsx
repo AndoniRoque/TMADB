@@ -10,19 +10,14 @@ import {
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import EpisodeModal from "@/app/components/EpisodeModal";
 import { Character, Episode, EpisodeData } from "@/app/types/types";
 import InformationCard from "@/app/components/InformationCard";
-import CharacterModal from "@/app/components/CharacterModal";
+import { useAuthStore } from "@/app/store/useAuthStore";
 const URL_BACK = "http://localhost:3333/api";
 
 function Page() {
-  const {
-    isOpen: isOpenCharacter,
-    onOpen: onOpenCharacter,
-    onClose: onCloseCharacter,
-  } = useDisclosure();
   const {
     isOpen: isOpenEpisode,
     onOpen: onOpenEpisode,
@@ -39,14 +34,11 @@ function Page() {
   const [characterDescription, setCharacterDescription] = useState<string>("");
   const [episodeToEdit, setEpisodeToEdit] = useState<EpisodeData | null>(null);
   const [characters, setCharacters] = useState<Character[]>([]);
+  const { isLoggedIn } = useAuthStore();
 
-  const data = {
-    name: characterName,
-    description: characterDescription,
-    episode: {
-      connect: { id: episodeNumber },
-    },
-  };
+  if (!isLoggedIn) {
+    router.push("/");
+  }
 
   const handleEditEpisode = () => {
     if (episode) {

@@ -18,6 +18,8 @@ import EpisodeCard from "../components/EpisodeCard";
 import EpisodeModal from "../components/EpisodeModal";
 import { Character, Episode } from "../types/types";
 import CustomTable from "../components/CustomTable";
+import { useAuthStore } from "../store/useAuthStore";
+import { useRouter } from "next/navigation";
 const URL_BACK = "http://localhost:3333/api";
 
 export default function EpisodesPage() {
@@ -28,6 +30,12 @@ export default function EpisodesPage() {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showTable, setShowTable] = useState<boolean>(true);
+  const { isLoggedIn } = useAuthStore();
+  const router = useRouter();
+
+  if (!isLoggedIn) {
+    router.push("/");
+  }
 
   const getEpisodes = async () => {
     try {

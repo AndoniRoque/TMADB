@@ -18,6 +18,8 @@ import axios from "axios";
 import CharacterCard from "../components/CharacterCard";
 import CharacterModal from "../components/CharacterModal";
 import CustomTable from "../components/CustomTable";
+import { useAuthStore } from "../store/useAuthStore";
+import { useRouter } from "next/navigation";
 const URL_BACK = "http://localhost:3333/api";
 
 function characters() {
@@ -26,6 +28,12 @@ function characters() {
   const [characterMessage, setCharacterMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [showTable, setShowTable] = useState<boolean>(true);
+  const { isLoggedIn } = useAuthStore();
+  const router = useRouter();
+
+  if (!isLoggedIn) {
+    router.push("/");
+  }
 
   const getCharacters = async () => {
     try {
