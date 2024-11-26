@@ -1,4 +1,4 @@
-import { Avatar, Box, Stack, Text } from "@chakra-ui/react";
+import { Avatar, Box, Flex, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 import { CharacterCardProps } from "@/app/types/types";
 
@@ -6,10 +6,10 @@ function CharacterCard({ character }: CharacterCardProps) {
   return (
     <Stack direction="row" wrap="wrap" minH={"200px"} h={"320px"} w={"100%"}>
       <Box
-        p={16}
         border={"1px solid gray"}
         borderRadius={8}
-        color={"white"}
+        p={16}
+        color={"whitesmoke"}
         fontWeight={400}
         w={"100%"}
         _hover={{
@@ -19,8 +19,7 @@ function CharacterCard({ character }: CharacterCardProps) {
         }}
       >
         <Stack spacing={2}>
-          <Box
-            display={"flex"}
+          <Flex
             justifyContent={"start"}
             flexDirection={"row"}
             alignItems={"center"}
@@ -36,7 +35,7 @@ function CharacterCard({ character }: CharacterCardProps) {
             <Text textStyle="6xl" fontWeight={600} w={"full"}>
               {character.name}
             </Text>
-          </Box>
+          </Flex>
           <Text
             mt={4}
             overflow={"hidden"}

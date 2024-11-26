@@ -25,17 +25,9 @@ function character() {
   const [characterToEdit, setCharacterToEdit] = useState<Character | null>(
     null
   );
-  const { isLoggedIn, logout } = useAuthStore();
   const toast = useToast();
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      logout();
-      router.push("/");
-    }
-  }, [isLoggedIn]);
-
-  const getEpisode = async () => {
+  const getCharacter = async () => {
     try {
       setLoading(true);
       const response = await axios.get(
@@ -100,20 +92,19 @@ function character() {
   };
 
   useEffect(() => {
-    getEpisode();
+    getCharacter();
   }, [characterNumber]);
 
   if (loading) {
-    return <div>Loading...</div>; // Mostrar algo mientras se carga
+    return <div>Loading...</div>;
   }
 
   if (message) {
-    return <div>{message}</div>; // Mostrar mensaje de error si es necesario
+    return <div>{message}</div>;
   }
 
-  // Asegurarte de que `character` está cargado antes de pasar las props
   if (!character) {
-    return <div>No character data found</div>; // Mensaje de no encontrado si no hay datos
+    return <div>No character data found</div>;
   }
 
   return (
@@ -143,7 +134,7 @@ function character() {
         isOpen={isOpenCharacter}
         onClose={onCloseCharacter}
         initialValue={character}
-        getEpisode={getEpisode}
+        getEpisode={getCharacter}
       />
     </>
   );

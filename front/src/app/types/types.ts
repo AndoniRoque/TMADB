@@ -86,3 +86,10 @@ export interface CharacterOrEpisode {
   character: Character;
   item?: any;
 }
+
+export interface CharacterStore {
+  characters: Character[];
+  loading: boolean;
+  error: string | null;
+  getCharacters: () => void;
+}

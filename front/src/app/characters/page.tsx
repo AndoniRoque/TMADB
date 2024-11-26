@@ -20,38 +20,18 @@ import CharacterModal from "../components/CharacterModal";
 import CustomTable from "../components/CustomTable";
 import { useAuthStore } from "../store/useAuthStore";
 import { useRouter } from "next/navigation";
+import { useCharacterStore } from "../store/useCharacterStore";
 const URL_BACK = "http://localhost:3333/api";
 
 function characters() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [charactersList, setCharactersList] = useState<Character[]>([]);
   const [characterMessage, setCharacterMessage] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
   const [showTable, setShowTable] = useState<boolean>(true);
-  const { isLoggedIn } = useAuthStore();
-  const router = useRouter();
-
-  if (!isLoggedIn) {
-    router.push("/");
-  }
-
-  const getCharacters = async () => {
-    try {
-      const characters = await axios.get(`${URL_BACK}/characters`, {
-        withCredentials: true,
-      });
-      if (characters.data.message) {
-        setCharacterMessage(characters.data.message);
-      } else {
-        setCharactersList(characters.data);
-      }
-    } catch (err) {
-      setCharacterMessage("Characters not found.");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    characters,
+    getCharacters,
+    loading: charactersLoading,
+  } = useCharacterStore();
 
   useEffect(() => {
     getCharacters();
@@ -87,7 +67,7 @@ function characters() {
         </Flex>
       </Flex>
       <Flex display={"flex"} justifyContent={"center"} alignItems="center">
-        {loading ? (
+        {charactersLoading ? (
           <>
             <Skeleton ml={16} height={"20vh"} />
             <Skeleton ml={16} height={"20vh"} />
@@ -113,7 +93,7 @@ function characters() {
                 gap={{ base: 2, md: 4, lg: 6, xl: 8 }}
                 mx={{ base: 2, md: 4, lg: 6, xl: 8 }}
               >
-                {charactersList.map((char: Character) => (
+                {characters.map((char: Character) => (
                   <>
                     <GridItem
                       key={char.id}
@@ -131,7 +111,7 @@ function characters() {
             ) : (
               <>
                 <CustomTable
-                  data={charactersList}
+                  data={characters}
                   type="character"
                   refreshList={getCharacters}
                 />
@@ -145,8 +125,8 @@ function characters() {
         isOpen={isOpen}
         onClose={onClose}
         getEpisode={getCharacters}
-        charactersList={charactersList}
-        characters={charactersList}
+        charactersList={characters}
+        characters={characters}
       />
     </>
   );

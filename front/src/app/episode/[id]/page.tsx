@@ -14,7 +14,7 @@ import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import EpisodeModal from "@/app/components/EpisodeModal";
 import { Character, Episode, EpisodeData } from "@/app/types/types";
 import InformationCard from "@/app/components/InformationCard";
-import { useAuthStore } from "@/app/store/useAuthStore";
+import { useCharacterStore } from "@/app/store/useCharacterStore";
 const URL_BACK = "http://localhost:3333/api";
 
 function Page() {
@@ -30,15 +30,10 @@ function Page() {
   const [episode, setEpisode] = useState<Episode | null>(null);
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
-  const [characterName, setCharacterName] = useState<string>("");
-  const [characterDescription, setCharacterDescription] = useState<string>("");
   const [episodeToEdit, setEpisodeToEdit] = useState<EpisodeData | null>(null);
-  const [characters, setCharacters] = useState<Character[]>([]);
-  const { isLoggedIn } = useAuthStore();
+  const {characters, getCharacters, loading: charactersLoading} = useCharacterStore();
 
-  if (!isLoggedIn) {
-    router.push("/");
-  }
+
 
   const handleEditEpisode = () => {
     if (episode) {
@@ -72,23 +67,6 @@ function Page() {
       setMessage("The episode couldn't be loaded.");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const getCharacters = async () => {
-    try {
-      const response = await axios.get(`${URL_BACK}/characters/`, {
-        withCredentials: true,
-      });
-      setCharacters(response.data);
-    } catch (err) {
-      console.error(err);
-      toast({
-        title: "Characters couldn't be fetched.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
     }
   };
 
@@ -151,9 +129,6 @@ function Page() {
     <>
       <Box position="fixed" m={4} top="15%" left="88%" zIndex={1000}>
         <Box display="flex" flexDirection="column" gap={2}>
-          {/* <Button onClick={onOpenCharacter} leftIcon={<AddIcon />}>
-            Add Characters
-          </Button> */}
           <Button onClick={handleEditEpisode} leftIcon={<EditIcon />}>
             Edit Episode
           </Button>
@@ -186,16 +161,6 @@ function Page() {
         getEpisode={getEpisode}
         initialValue={episodeToEdit}
       />
-      {/* 
-      <CharacterModal
-        isOpen={isOpenCharacter}
-        onClose={onCloseCharacter}
-        initialValue={null}
-        id={episodeNumber.toString()}
-        getEpisode={getEpisode}
-        charactersList={episode.characters}
-        characters={characters}
-      /> */}
     </>
   );
 }

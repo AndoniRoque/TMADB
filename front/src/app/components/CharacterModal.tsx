@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   FormControl,
   FormLabel,
+  Input,
+  List,
+  ListItem,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -10,13 +13,18 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Popover,
+  PopoverBody,
+  PopoverTrigger,
   Textarea,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import CreatableSelect from "react-select/creatable";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import { Character, CharacterData, CharacterModalProps } from "../types/types";
+import { useCharacterStore } from "../store/useCharacterStore";
 
 const URL_BACK = "http://localhost:3333/api";
 
@@ -26,9 +34,12 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   initialValue,
   id,
   getEpisode,
-  charactersList = [],
-  characters = [],
 }) => {
+  const {
+    characters,
+    getCharacters,
+    loading: charactersLoading,
+  } = useCharacterStore();
   const params = useParams();
   const characterId = params.id;
   const [allCharacters, setAllCharacters] = useState<Character[]>(
@@ -41,12 +52,38 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
     initialValue?.description || ""
   );
   const [selectedCharacter, setSelectedCharacter] = useState<number[]>(
-    charactersList?.map((character) => character.characterId) || []
+    characters?.map((character) => character.characterId) || []
   );
   const toast = useToast();
+  const [displayList, setDisplayList] = useState<string>("none");
+
+  const characterOptions = allCharacters.map((character) => character.name);
+
+  const {
+    isOpen: isOpenInput,
+    onOpen: onOpenInput,
+    onClose: onCloseInput,
+  } = useDisclosure();
+  const [inputValue, setInputValue] = useState<string>("");
+  const [options, setOptions] = useState<string[]>(
+    characters.map((char) => char.name) || []
+  );
+
+  const handleCharacterChange = (
+    selectedOptions: Array<{ value: number; label: string }> | null
+  ) => {
+    const selectedValue = selectedOptions
+      ? selectedOptions.map((option) => option.value)
+      : [];
+    setSelectedCharacter(selectedValue);
+
+    if (selectedOptions && selectedOptions.length > 0) {
+      setCharacterName(selectedOptions[0].label);
+    }
+  };
 
   const handleSubmit = async () => {
-    if (!characterName || !characterDescription) {
+    if (!inputValue || !characterDescription) {
       toast({
         title: "Field name and description must be filled.",
         status: "error",
@@ -58,12 +95,12 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
 
     if (initialValue) {
       await updateCharacter({
-        name: characterName,
+        name: inputValue,
         description: characterDescription,
       });
     } else {
       await uploadCharacter({
-        name: characterName,
+        name: inputValue,
         description: characterDescription,
         ...(id && { episode: id }),
       });
@@ -76,10 +113,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
         withCredentials: true,
       });
       if (response.status === 200) {
-        const updatedCharactersResponse = await axios.get(
-          `${URL_BACK}/characters`
-        );
-        setAllCharacters(updatedCharactersResponse.data);
+        getCharacters();
 
         toast({
           title: "Character added successfully.",
@@ -106,7 +140,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   const updateCharacter = async (data: CharacterData) => {
     try {
       const response = await axios.put(
-        `${URL_BACK}/characters/${initialValue?.id}`,
+        `${URL_BACK}/characters/${characterId}`,
         data,
         {
           withCredentials: true,
@@ -133,24 +167,34 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
     }
   };
 
-  const characterOptions = allCharacters.map((character) => ({
-    value: character.id,
-    label: character.name,
-  }));
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
 
-  const handleCharacterChange = (
-    selectedOptions: Array<{ value: number; label: string }> | null
-  ) => {
-    const selectedValue = selectedOptions
-      ? selectedOptions.map((option) => option.value)
-      : [];
-    setSelectedCharacter(selectedValue);
+    const filteredOptions = characters
+      .map((char) => char.name)
+      .filter((name) =>
+        name.toLowerCase().includes(e.target.value.toLowerCase())
+      );
 
-    // If an existing character is selected, set its name
-    if (selectedOptions && selectedOptions.length > 0) {
-      setCharacterName(selectedOptions[0].label);
+    setOptions(filteredOptions);
+
+    if (e.target.value) {
+      setDisplayList("");
+      onOpenInput();
+    } else {
+      setDisplayList("none");
+      onCloseInput();
     }
   };
+
+  useEffect(() => {
+    getCharacters();
+  }, []);
+
+  useEffect(() => {
+    setAllCharacters(characters);
+    setOptions(characters.map((char) => char.name));
+  }, [characters]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -163,7 +207,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
         <ModalBody>
           <FormControl isRequired>
             <FormLabel mb={0}>Characters</FormLabel>
-            <CreatableSelect
+            {/* <CreatableSelect
               options={characterOptions}
               isMulti
               placeholder="Select or create characters..."
@@ -172,7 +216,51 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
               value={characterOptions.filter((option) =>
                 selectedCharacter.includes(option.value)
               )}
-            />
+            /> */}
+
+            <Popover isOpen={isOpenInput} onClose={onCloseInput} matchWidth>
+              <PopoverTrigger>
+                <Input
+                  placeholder="Character name..."
+                  value={inputValue}
+                  onChange={handleInputChange}
+                />
+              </PopoverTrigger>
+              <PopoverBody
+                display={displayList}
+                position="absolute"
+                zIndex="overlay"
+                maxH="200px"
+                overflowY="auto"
+                boxShadow="md"
+                bg="white"
+                border="1px solid"
+                borderColor="gray.200"
+                borderRadius="md"
+                w={"full"}
+              >
+                <List display={displayList}>
+                  {options
+                    .filter((option) =>
+                      option.toLowerCase().includes(inputValue.toLowerCase())
+                    )
+                    .map((option, index) => (
+                      <ListItem
+                        key={index}
+                        p="2"
+                        _hover={{ bg: "gray.100", cursor: "pointer" }}
+                        onClick={() => {
+                          setInputValue(option);
+                          setCharacterName(option); // Actualiza el nombre del personaje
+                          onCloseInput();
+                        }}
+                      >
+                        {option}
+                      </ListItem>
+                    ))}
+                </List>
+              </PopoverBody>
+            </Popover>
 
             <FormLabel mt={5} mb={0}>
               Description

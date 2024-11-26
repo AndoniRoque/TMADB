@@ -46,7 +46,6 @@ router.get("/logout", async (req, res) => {
 
 
 router.get('/status', (req, res) => {
-  console.log(">", req.isAuthenticated());
   if (req.isAuthenticated()) {
     return res.status(200).json({ authenticated: true, user: req.user });
   }
@@ -55,8 +54,6 @@ router.get('/status', (req, res) => {
 
 router.post("/register", async (req, res) => {
   const { username, mail, password } = req.body;
-  console.log("req.body >", req.body);
-  console.log(username, mail, password);
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -77,7 +74,6 @@ router.post("/register", async (req, res) => {
       },
     });
 
-    console.log("user created successfully", newUser);
     return res.status(200).json({ message: "User created successfully" })
   } catch (err) {
     console.error(err);

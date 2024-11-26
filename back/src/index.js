@@ -16,10 +16,6 @@ app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
-app.use('/api', usersRoutes);
-app.use('/api', episodesRoutes);
-app.use('/api', charactersRoutes);
-
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   next();
@@ -27,6 +23,10 @@ app.use((req, res, next) => {
 
 // Rutas protegidas
 app.use('/auth', usersRoutes);
+
+app.use('/api', usersRoutes);
+app.use('/api', episodesRoutes);
+app.use('/api', charactersRoutes);
 
 
 app.listen(3333, () => {

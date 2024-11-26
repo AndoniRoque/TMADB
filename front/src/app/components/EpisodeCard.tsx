@@ -37,7 +37,7 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
         border={"1px solid gray"}
         borderRadius={8}
         p={16}
-        color={"white"}
+        color={"whitesmoke"}
         fontWeight={400}
         w={"100%"}
         _hover={{

@@ -20,18 +20,18 @@ import { Character, Episode } from "../types/types";
 import CustomTable from "../components/CustomTable";
 import { useAuthStore } from "../store/useAuthStore";
 import { useRouter } from "next/navigation";
+import { useCharacterStore } from "../store/useCharacterStore";
 const URL_BACK = "http://localhost:3333/api";
 
 export default function EpisodesPage() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [message, setMessage] = useState<string>("");
-  const [characterMessage, setCharacterMessage] = useState<string>("");
-  const [characters, setCharacters] = useState<Character[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showTable, setShowTable] = useState<boolean>(true);
   const { isLoggedIn } = useAuthStore();
   const router = useRouter();
+  const { characters, getCharacters, loading: charactersLoading} = useCharacterStore();
 
   if (!isLoggedIn) {
     router.push("/");
@@ -49,24 +49,6 @@ export default function EpisodesPage() {
       }
     } catch (err) {
       setMessage("Episodes not found.");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getCharacters = async () => {
-    try {
-      const characters = await axios.get(`${URL_BACK}/characters`, {
-        withCredentials: true,
-      });
-      if (characters.data.message) {
-        setCharacterMessage(characters.data.message);
-      } else {
-        setCharacters(characters.data);
-      }
-    } catch (err) {
-      setCharacterMessage("Characters not found.");
       console.error(err);
     } finally {
       setLoading(false);
