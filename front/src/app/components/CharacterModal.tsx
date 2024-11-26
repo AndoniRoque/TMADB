@@ -20,10 +20,9 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import CreatableSelect from "react-select/creatable";
 import { useParams } from "next/navigation";
 import axios from "axios";
-import { Character, CharacterData, CharacterModalProps } from "../types/types";
+import { CharacterData, CharacterModalProps } from "../types/types";
 import { useCharacterStore } from "../store/useCharacterStore";
 
 const URL_BACK = "http://localhost:3333/api";
@@ -42,22 +41,11 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   } = useCharacterStore();
   const params = useParams();
   const characterId = params.id;
-  const [allCharacters, setAllCharacters] = useState<Character[]>(
-    Array.isArray(characters) ? characters : []
-  );
-  const [characterName, setCharacterName] = useState<string>(
-    initialValue?.name || ""
-  );
   const [characterDescription, setCharacterDescription] = useState<string>(
     initialValue?.description || ""
   );
-  const [selectedCharacter, setSelectedCharacter] = useState<number[]>(
-    characters?.map((character) => character.characterId) || []
-  );
   const toast = useToast();
   const [displayList, setDisplayList] = useState<string>("none");
-
-  const characterOptions = allCharacters.map((character) => character.name);
 
   const {
     isOpen: isOpenInput,
@@ -68,19 +56,6 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   const [options, setOptions] = useState<string[]>(
     characters.map((char) => char.name) || []
   );
-
-  const handleCharacterChange = (
-    selectedOptions: Array<{ value: number; label: string }> | null
-  ) => {
-    const selectedValue = selectedOptions
-      ? selectedOptions.map((option) => option.value)
-      : [];
-    setSelectedCharacter(selectedValue);
-
-    if (selectedOptions && selectedOptions.length > 0) {
-      setCharacterName(selectedOptions[0].label);
-    }
-  };
 
   const handleSubmit = async () => {
     if (!inputValue || !characterDescription) {
@@ -192,7 +167,6 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   }, []);
 
   useEffect(() => {
-    setAllCharacters(characters);
     setOptions(characters.map((char) => char.name));
   }, [characters]);
 
@@ -207,16 +181,6 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
         <ModalBody>
           <FormControl isRequired>
             <FormLabel mb={0}>Characters</FormLabel>
-            {/* <CreatableSelect
-              options={characterOptions}
-              isMulti
-              placeholder="Select or create characters..."
-              onChange={handleCharacterChange}
-              onCreateOption={(inputValue) => setCharacterName(inputValue)}
-              value={characterOptions.filter((option) =>
-                selectedCharacter.includes(option.value)
-              )}
-            /> */}
 
             <Popover isOpen={isOpenInput} onClose={onCloseInput} matchWidth>
               <PopoverTrigger>
@@ -251,7 +215,6 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
                         _hover={{ bg: "gray.100", cursor: "pointer" }}
                         onClick={() => {
                           setInputValue(option);
-                          setCharacterName(option); // Actualiza el nombre del personaje
                           onCloseInput();
                         }}
                       >
