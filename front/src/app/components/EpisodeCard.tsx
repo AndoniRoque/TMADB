@@ -80,6 +80,7 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
                 whiteSpace={"nowrap"}
                 textOverflow={"ellipsis"}
                 mt={4}
+                minW={400}
               >
                 <strong>#{episode.caseNumber}</strong> - {episode.description}
               </Text>

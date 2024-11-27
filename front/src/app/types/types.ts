@@ -89,3 +89,10 @@ export interface CharacterStore {
   error: string | null;
   getCharacters: () => void;
 }
+
+export type TableData = {
+  data: Character[] | Episode[];
+  type: "character" | "episode";
+  refreshList: () => void;
+  searchTerm: string;
+};

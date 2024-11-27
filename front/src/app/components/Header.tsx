@@ -56,7 +56,6 @@ function Header() {
         router.push("/");
       }
     } catch (err) {
-      console.log(err);
       toast({
         title: "Couldn't be logged out.",
         status: "error",
@@ -198,7 +197,7 @@ function Header() {
         </Text>
 
         <IconButton
-          ref={btnRef}
+          // ref={btnRef}
           onClick={onOpen}
           icon={<HamburgerIcon />}
           variant="outline"
@@ -212,7 +211,7 @@ function Header() {
         isOpen={isOpen}
         placement="right"
         onClose={onClose}
-        finalFocusRef={btnRef}
+        // finalFocusRef={btnRef}
       >
         <DrawerOverlay />
         <DrawerContent bg="black" color="rgba(236, 223, 204, 0.8)">

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Character, Episode } from "../types/types";
+import { Character, Episode, TableData } from "../types/types";
 import {
   Checkbox,
   LinkBox,
@@ -19,13 +19,12 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 const URL_BACK = "http://localhost:3333/api";
 
-type TableData = {
-  data: Character[] | Episode[];
-  type: "character" | "episode";
-  refreshList: () => void;
-};
-
-const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
+const CustomTable: React.FC<TableData> = ({
+  data,
+  type,
+  refreshList,
+  searchTerm,
+}) => {
   const navigate = useRouter();
   const [sortList, setSortList] = useState<Character[] | Episode[]>(data);
   const [sortOrder, setSortOrder] = useState<boolean>(false);
@@ -90,6 +89,26 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
     }
     setSortOrder(!sortOrder);
   };
+
+  useEffect(() => {
+    if (searchTerm) {
+      const sortedList = data.filter(
+        (item) =>
+          item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.caseNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.number.toString().includes(searchTerm.toLowerCase()) ||
+          item.characters.some((characterEntry: any) =>
+            characterEntry.character?.name
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+          )
+      );
+      setSortList(sortedList);
+    } else {
+      setSortList(data);
+    }
+  }, [searchTerm]);
 
   function converCaseNumberToDate(caseNumber: string) {
     const year = caseNumber.slice(0, 3);

@@ -6,6 +6,7 @@ import {
   Grid,
   GridItem,
   Heading,
+  Input,
   LinkBox,
   LinkOverlay,
   Skeleton,
@@ -29,9 +30,15 @@ export default function EpisodesPage() {
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [showTable, setShowTable] = useState<boolean>(true);
+  const [search, setSearch] = useState<string>("");
   const { isLoggedIn } = useAuthStore();
   const router = useRouter();
-  const { characters, getCharacters, loading: charactersLoading} = useCharacterStore();
+
+  const {
+    characters,
+    getCharacters,
+    loading: charactersLoading,
+  } = useCharacterStore();
 
   if (!isLoggedIn) {
     router.push("/");
@@ -65,10 +72,11 @@ export default function EpisodesPage() {
       <Flex
         justifyContent={"space-between"}
         flexDirection={"row"}
-        m={4}
+        ml={4}
+        mr={4}
+        marginTop={4}
         p={4}
         mt={"8%"}
-        mb={"3%"}
       >
         <Heading fontSize="4xl" color={"whitesmoke"} flex={1}>
           T.M.A Episodes
@@ -90,6 +98,19 @@ export default function EpisodesPage() {
           <Button onClick={() => setShowTable(!showTable)}>
             {showTable ? "Show Table" : "Show Grid"}
           </Button>
+        </Flex>
+      </Flex>
+      <Flex justifyContent={"end"} mb={8} mr={8}>
+        <Flex justifyContent={"center"} alignItems={"center"} width={400}>
+          <Input
+            placeholder="Search..."
+            mr={2}
+            onChange={(e) => setSearch(e.target.value)}
+            value={search}
+            _focus={{
+              backgroundColor: "whitesmoke",
+            }}
+          ></Input>
         </Flex>
       </Flex>
       <Flex justifyContent={"center"} alignItems="center">
@@ -140,6 +161,7 @@ export default function EpisodesPage() {
                 data={episodes}
                 type="episode"
                 refreshList={getEpisodes}
+                searchTerm={search}
               />
             )}
           </>

@@ -6,7 +6,6 @@ import bcrypt from 'bcrypt';
 passport.use(
   new LocalStrategy(async (username, password, done) => {
     try {
-      console.log("Authenticating user: ", username);
       const rows = await prisma.user.findUnique({
         where: {
           username: username,
@@ -14,15 +13,12 @@ passport.use(
       })
 
       const user = rows;
-      console.log("User", user);
 
       if (!user) {
         return done(null, false, { message: "User not found." });
       }
 
       const match = await bcrypt.compare(password, user.password);
-
-      console.log("match", match);
 
       if (!match) {
         done(null, false, { message: "Incorrect passowrd" });

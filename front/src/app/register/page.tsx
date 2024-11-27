@@ -44,7 +44,6 @@ function Register() {
     } catch (error: any) {
       console.error(">", error);
       if (error.response.status === 409) {
-        console.log("hola");
         toast({
           title: "Register failed.",
           description: error.response.data.message,

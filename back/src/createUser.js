@@ -19,7 +19,6 @@ const createUser = async () => {
         password: hashedPassword
       },
     });
-    console.log('User created successfully:', newUser);
   } catch (error) {
     console.error("Error creating user: ", error);
   } finally {

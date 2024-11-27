@@ -17,12 +17,7 @@ import {
 import dayjs from "dayjs";
 import ReactSelect from "react-select";
 import { useEffect, useState } from "react";
-import {
-  EpisodeModalProps,
-  EpisodeData,
-  Episode,
-  Character,
-} from "../types/types";
+import { EpisodeModalProps, EpisodeData, Character } from "../types/types";
 import axios from "axios";
 const URL_BACK = "http://localhost:3333/api";
 
