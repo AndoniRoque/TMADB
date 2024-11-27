@@ -41,6 +41,7 @@ router.post('/episodes', async (req, res) => {
   try {
     if (!title) return res.status(400).json({ message: "Title is missing" });
     if (!number) return res.status(400).json({ message: "Episode number is missing" });
+    if (!Number.isInteger(number)) return res.status(400).json({message: "Episode number must be an integer."});
     if (!releaseDate) return res.status(400).json({ message: "Release date is missing." });
     if (!description) return res.status(400).json({ message: "The episode description is missing." });
     if (!caseNumber) return res.status(400).json({ message: "Case number is missing." });
@@ -50,7 +51,6 @@ router.post('/episodes', async (req, res) => {
         title: { equals: title, mode: 'insensitive' },
         number: { equals: number },
         releaseDate: { equals: releaseDate },
-        description: { equals: description },
         caseNumber: { equals: caseNumber }
       }
     });
@@ -123,7 +123,6 @@ router.put('/episodes/:id', async (req, res) => {
   }
 
   try {
-    // Fetch the existing character IDs for the episode
     const existingCharacterIds = (
       await prisma.episodesOnCharacters.findMany({
         where: { episodeId: parseInt(id) },
@@ -131,7 +130,6 @@ router.put('/episodes/:id', async (req, res) => {
       })
     ).map(({ characterId }) => characterId);
 
-    // Disconnect any existing relationships that are not in the provided characterIds array
     const charactersToDisconnect = existingCharacterIds.filter(
       (characterId) => !characterIds.includes(characterId)
     );
@@ -143,7 +141,6 @@ router.put('/episodes/:id', async (req, res) => {
       },
     });
 
-    // Connect any new character IDs that are not already connected
     const charactersToConnect = characterIds.filter(
       (characterId) => !existingCharacterIds.includes(characterId)
     );
@@ -154,7 +151,6 @@ router.put('/episodes/:id', async (req, res) => {
       })),
     });
 
-    // Update the episode details
     const updatedEpisode = await prisma.episode.update({
       where: { id: parseInt(id) },
       data: {

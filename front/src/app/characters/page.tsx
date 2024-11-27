@@ -6,6 +6,7 @@ import {
   Grid,
   GridItem,
   Heading,
+  Input,
   LinkBox,
   LinkOverlay,
   Skeleton,
@@ -27,6 +28,7 @@ function characters() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [characterMessage, setCharacterMessage] = useState<string>("");
   const [showTable, setShowTable] = useState<boolean>(true);
+  const [search, setSearch] = useState<string>("");
   const {
     characters,
     getCharacters,
@@ -41,11 +43,12 @@ function characters() {
     <>
       <Flex
         justifyContent={"space-between"}
-        alignItems={"center"}
-        m={4}
+        flexDirection={"row"}
+        ml={4}
+        mr={4}
+        marginTop={4}
         p={4}
         mt={"8%"}
-        mb={"3%"}
       >
         <Heading fontSize="4xl" color={"whitesmoke"} flex={1}>
           {" "}
@@ -64,6 +67,19 @@ function characters() {
           <Button onClick={() => setShowTable(!showTable)}>
             {showTable ? "Show Table" : "Show Grid"}
           </Button>
+        </Flex>
+      </Flex>
+      <Flex justifyContent={"end"} mb={8} mr={8}>
+        <Flex justifyContent={"center"} alignItems={"center"} width={400}>
+          <Input
+            placeholder="Search..."
+            mr={2}
+            onChange={(e) => setSearch(e.target.value)}
+            value={search}
+            _focus={{
+              backgroundColor: "whitesmoke",
+            }}
+          ></Input>
         </Flex>
       </Flex>
       <Flex display={"flex"} justifyContent={"center"} alignItems="center">
@@ -114,6 +130,7 @@ function characters() {
                   data={characters}
                   type="character"
                   refreshList={getCharacters}
+                  searchTerm={search}
                 />
               </>
             )}
@@ -125,7 +142,7 @@ function characters() {
         isOpen={isOpen}
         onClose={onClose}
         getEpisode={getCharacters}
-        charactersList={characters}
+        initialValue={characters}
         characters={characters}
       />
     </>

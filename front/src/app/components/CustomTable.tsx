@@ -2,10 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Character, Episode, TableData } from "../types/types";
 import {
   Checkbox,
-  LinkBox,
-  LinkOverlay,
   Table,
-  TableCaption,
   TableContainer,
   Tbody,
   Td,
@@ -92,17 +89,18 @@ const CustomTable: React.FC<TableData> = ({
 
   useEffect(() => {
     if (searchTerm) {
-      const sortedList = data.filter(
+      const sortedList: any = data.filter(
         (item) =>
-          item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.caseNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.number.toString().includes(searchTerm.toLowerCase()) ||
-          item.characters.some((characterEntry: any) =>
+          item.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.caseNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.number?.toString().includes(searchTerm.toLowerCase()) ||
+          item.characters?.some((characterEntry: any) =>
             characterEntry.character?.name
               .toLowerCase()
               .includes(searchTerm.toLowerCase())
-          )
+          ) ||
+          item.name?.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setSortList(sortedList);
     } else {
@@ -194,8 +192,17 @@ const CustomTable: React.FC<TableData> = ({
             </Tr>
           </Thead>
           <Tbody>
-            {type === "character"
-              ? (sortList as Character[]).map((character) => (
+            {type === "character" ? (
+              sortList.length === 0 ? (
+                <Tr>
+                  <Td colSpan={2}>
+                    <Text textAlign={"center"} p={4} width={"full"}>
+                      No characters found
+                    </Text>
+                  </Td>
+                </Tr>
+              ) : (
+                (sortList as Character[]).map((character) => (
                   <Tr
                     key={character.id}
                     onClick={() =>
@@ -212,83 +219,94 @@ const CustomTable: React.FC<TableData> = ({
                     <Td>{character.description}</Td>
                   </Tr>
                 ))
-              : (sortList as Episode[]).map((episode) => (
-                  <Tr
-                    key={episode.id}
-                    _hover={{
-                      cursor: "pointer",
-                      bg: "gray.300",
-                      opacity: 0.2,
-                      color: "black",
-                    }}
+              )
+            ) : sortList.length === 0 ? (
+              <Tr>
+                <Td colSpan={7}>
+                  <Text textAlign={"center"} p={4} width={"full"}>
+                    No characters found
+                  </Text>
+                </Td>
+              </Tr>
+            ) : (
+              (sortList as Episode[]).map((episode) => (
+                <Tr
+                  key={episode.id}
+                  _hover={{
+                    cursor: "pointer",
+                    bg: "gray.300",
+                    opacity: 0.2,
+                    color: "black",
+                  }}
+                >
+                  <Td
+                    onClick={() => handleNavigation(`/episode/${episode.id}`)}
                   >
-                    <Td
-                      onClick={() => handleNavigation(`/episode/${episode.id}`)}
-                    >
-                      M.A.G {episode.number}
-                    </Td>
-                    <Td
-                      onClick={() => handleNavigation(`/episode/${episode.id}`)}
-                    >
-                      {episode.title}
-                    </Td>
-                    <Td
-                      onClick={() => handleNavigation(`/episode/${episode.id}`)}
-                    >
-                      #{episode.caseNumber}
-                    </Td>
-                    <Td
-                      minW={{
-                        base: 100,
-                        sm: 200,
-                        md: 300,
-                        lg: 400,
-                        xl: 1000,
-                      }}
-                      onClick={() => handleNavigation(`/episode/${episode.id}`)}
-                      overflow={"hidden"}
-                      whiteSpace={"nowrap"}
-                      textOverflow={"ellipsis"}
-                    >
-                      {episode.heard ? (
-                        episode.description
-                      ) : (
-                        <Text
-                          backgroundColor={"black"}
-                          textAlign={"center"}
-                          minW={{
-                            base: 100,
-                            sm: 200,
-                            md: 300,
-                            lg: 400,
-                            xl: 1000,
-                          }}
-                        >
-                          [Redacted]
-                        </Text>
-                      )}
-                    </Td>
-                    <Td
-                      onClick={() => handleNavigation(`/episode/${episode.id}`)}
-                    >
-                      {dayjs(episode.releaseDate).format("DD-MM-YYYY")}
-                    </Td>
-                    <Td
-                      onClick={() => handleNavigation(`/episode/${episode.id}`)}
-                    >
-                      {episode.season}
-                    </Td>
-                    <Td>
-                      <Checkbox
-                        isChecked={episode.heard}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          heardEpisode(episode);
+                    M.A.G {episode.number}
+                  </Td>
+                  <Td
+                    onClick={() => handleNavigation(`/episode/${episode.id}`)}
+                  >
+                    {episode.title}
+                  </Td>
+                  <Td
+                    onClick={() => handleNavigation(`/episode/${episode.id}`)}
+                  >
+                    #{episode.caseNumber}
+                  </Td>
+                  <Td
+                    minW={{
+                      base: 100,
+                      sm: 200,
+                      md: 300,
+                      lg: 400,
+                      xl: 1000,
+                    }}
+                    onClick={() => handleNavigation(`/episode/${episode.id}`)}
+                    overflow={"hidden"}
+                    whiteSpace={"nowrap"}
+                    textOverflow={"ellipsis"}
+                  >
+                    {episode.heard ? (
+                      episode.description
+                    ) : (
+                      <Text
+                        backgroundColor={"black"}
+                        textAlign={"center"}
+                        minW={{
+                          base: 100,
+                          sm: 200,
+                          md: 300,
+                          lg: 400,
+                          xl: 1000,
                         }}
-                      ></Checkbox>
-                    </Td>
-                  </Tr>
-                ))}
+                      >
+                        [Redacted]
+                      </Text>
+                    )}
+                  </Td>
+                  <Td
+                    onClick={() => handleNavigation(`/episode/${episode.id}`)}
+                  >
+                    {dayjs(episode.releaseDate).format("DD-MM-YYYY")}
+                  </Td>
+                  <Td
+                    onClick={() => handleNavigation(`/episode/${episode.id}`)}
+                  >
+                    {episode.season}
+                  </Td>
+                  <Td>
+                    <Checkbox
+                      isChecked={episode.heard}
+                      onChange={(e) => {
+                        e.preventDefault();
+                        heardEpisode(episode);
+                      }}
+                    ></Checkbox>
+                  </Td>
+                </Tr>
+              ))
+            )}
           </Tbody>
         </Table>
       </TableContainer>
