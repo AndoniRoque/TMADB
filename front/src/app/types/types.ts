@@ -3,8 +3,7 @@ export interface Character {
   name: string;
   description: string;
   character: Character;
-  heard: boolean; // Add this line
-  characters: Character[];
+  heard: boolean;
   [key: string]: any;
 }
 
@@ -21,8 +20,7 @@ export interface Episode {
   [key: string]: any;
 }
 
-
-export interface InfoType { 
+export interface InfoType {
   info: Character | Episode;
 }
 
@@ -68,8 +66,6 @@ export interface CharacterModalProps {
   initialValue?: CharacterData | null;
   id?: string;
   getEpisode?: () => void;
-  charactersList: Character[];
-  characters: Character[];
 }
 
 export interface CharacterOrEpisode {

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
+  Flex,
   Grid,
   GridItem,
   LinkBox,
@@ -14,29 +15,19 @@ import { Character, Episode } from "../types/types";
 type Props = Character | Episode;
 
 const InformationCard: React.FC<Props> = (info) => {
-  const [isInfoEpisode, setIsInfoEpisode] = useState<boolean>(true);
-
-  useEffect(() => {
-    if ("name" in info) {
-      setIsInfoEpisode(false);
-    }
-  }, [info]);
+  const isEpisode = (info: Props): info is Episode => "title" in info;
 
   return (
     <>
-      <Box
-        display={"flex"}
+      <Flex
         justifyContent={"center"}
         alignItems={"center"}
         flexDirection={"column"}
         h={"auto"}
         mt={"8%"}
       >
-        <Box
-          display="flex"
+        <Flex
           flexDirection={"column"}
-          alignItems="center"
-          justifyContent="center"
           w={"50%"}
           h="50%"
           p={16}
@@ -44,30 +35,27 @@ const InformationCard: React.FC<Props> = (info) => {
           borderRadius={8}
           color={"whitesmoke"}
           boxShadow={"2px 0px 10px rgba(0,0,0,0.5)"}
-          mb={"8%"}
+          mb={16}
         >
-          <Text fontSize="4xl">
-            {isInfoEpisode
-              ? // @ts-ignore
-                `MAG ${info.number} - ${info.title}`
-              : // @ts-ignore
-                `Name: ${info.name}`}
+          <Text fontSize="4xl" textAlign={"left"}>
+            {isEpisode(info)
+              ? `MAG ${info.number} - ${info.title}`
+              : `Name: ${info.name}`}
           </Text>
-          {isInfoEpisode && (
-            <>
-              {/* @ts-ignore  */}
+          {isEpisode(info) && (
+            <Flex flexDirection={"column"} alignItems={"start"} w={"43%"}>
               <Text textAlign="right">Season: {info.season}</Text>
               <Text textAlign="right">
-                {/* @ts-ignore  */}
                 Release Date: {dayjs(info.releaseDate).format("DD-MM-YYYY")}
               </Text>
-              {/* @ts-ignore  */}
               <Text as="span">Case Number: #{info.caseNumber}</Text>
-            </>
+            </Flex>
           )}
-          {isInfoEpisode ? (
+          {isEpisode(info) ? (
             info.heard ? (
-              <Text fontSize="2xl">{info.description}</Text>
+              <Text fontSize="2xl" mt={8}>
+                {info.description}
+              </Text>
             ) : (
               <>
                 <Box
@@ -85,10 +73,10 @@ const InformationCard: React.FC<Props> = (info) => {
           ) : (
             <Text fontSize="2xl">{info.description}</Text>
           )}
-        </Box>
+        </Flex>
 
         <Box>
-          {isInfoEpisode && info.characters?.length > 0 && (
+          {isEpisode(info) && info.characters?.length > 0 && (
             <Box
               display={"flex"}
               justifyContent={"center"}
@@ -124,7 +112,7 @@ const InformationCard: React.FC<Props> = (info) => {
             </Box>
           )}
         </Box>
-      </Box>
+      </Flex>
     </>
   );
 };

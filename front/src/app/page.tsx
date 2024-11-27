@@ -70,30 +70,28 @@ function Login() {
 
   return (
     <>
-      <Box
-        display={"flex"}
+      <Flex
         justifyContent={"space-evenly"}
         flexDirection={"row"}
         w={"full"}
         color={"whitesmoke"}
       >
-        <Box display={"flex"} w={"50%"} backgroundColor={"black"}>
+        <Flex w={"50%"} backgroundColor={"black"}>
           <Image
             src="TMA_Logo.webp"
             alt="The Magnus Archive logo"
             h={"100vh"}
             fit="contain"
           />
-        </Box>
-        <Box
-          display={"flex"}
+        </Flex>
+        <Flex
+          fontFamily={"typewriter"}
+          justifyContent={"center"}
+          alignItems={"center"}
           minW={"50%"}
           h={"75vh"}
           p={16}
           m={20}
-          justifyContent={"center"}
-          alignItems={"center"}
-          fontFamily={"typewriter"}
         >
           <FormControl
             display={"flex"}
@@ -134,8 +132,8 @@ function Login() {
               Log in
             </Button>
           </FormControl>
-        </Box>
-      </Box>
+        </Flex>
+      </Flex>
     </>
   );
 }

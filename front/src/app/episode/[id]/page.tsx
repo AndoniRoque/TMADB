@@ -2,6 +2,7 @@
 import {
   Box,
   Button,
+  Flex,
   Skeleton,
   Text,
   useDisclosure,
@@ -31,9 +32,11 @@ function Page() {
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [episodeToEdit, setEpisodeToEdit] = useState<EpisodeData | null>(null);
-  const {characters, getCharacters, loading: charactersLoading} = useCharacterStore();
-
-
+  const {
+    characters,
+    getCharacters,
+    loading: charactersLoading,
+  } = useCharacterStore();
 
   const handleEditEpisode = () => {
     if (episode) {
@@ -128,7 +131,7 @@ function Page() {
   return (
     <>
       <Box position="fixed" m={4} top="15%" left="88%" zIndex={1000}>
-        <Box display="flex" flexDirection="column" gap={2}>
+        <Flex flexDirection="column" gap={2}>
           <Button onClick={handleEditEpisode} leftIcon={<EditIcon />}>
             Edit Episode
           </Button>
@@ -139,20 +142,10 @@ function Page() {
           >
             Delete Episode
           </Button>
-        </Box>
+        </Flex>
       </Box>
 
-      <InformationCard
-        heard={episode.heard}
-        id={episode.id}
-        title={episode.title}
-        number={episode.number}
-        season={episode.season}
-        caseNumber={episode.caseNumber}
-        characters={episode.characters}
-        description={episode.description}
-        releaseDate={episode.releaseDate}
-      />
+      <InformationCard {...episode} />
 
       <EpisodeModal
         isOpen={isOpenEpisode}

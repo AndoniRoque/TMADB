@@ -72,23 +72,23 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
               />
             </Flex>
           </Flex>
-          <Text
-            mt={4}
-            overflow={"hidden"}
-            whiteSpace={"nowrap"}
-            textOverflow={"ellipsis"}
-            marginTop={"12%"}
-          >
+          <Flex marginTop={"12%"}>
             {episode.heard ? (
-              <>
+              <Text
+                textAlign={"center"}
+                overflow={"hidden"}
+                whiteSpace={"nowrap"}
+                textOverflow={"ellipsis"}
+                mt={4}
+              >
                 <strong>#{episode.caseNumber}</strong> - {episode.description}
-              </>
+              </Text>
             ) : (
-              <Text backgroundColor={"black"} textAlign={"center"}>
+              <Text backgroundColor={"black"} textAlign={"center"} minW={400}>
                 [Redacted]
               </Text>
             )}
-          </Text>
+          </Flex>
         </Stack>
       </Box>
     </Stack>
