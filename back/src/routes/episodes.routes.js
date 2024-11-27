@@ -118,14 +118,13 @@ router.put('/episodes/:id', async (req, res) => {
   const { id } = req.params;
   const { title, number, releaseDate, description, heard, caseNumber, season, characterIds = [] } = req.body;
 
-  if (isNaN(parseInt(id))) {
+  if (isNaN(parseInt(id, 10))) {
     return res.status(400).json({ error: "Invalid ID format" });
   }
 
   try {
     const existingCharacterIds = (
       await prisma.episodesOnCharacters.findMany({
-        where: { episodeId: parseInt(id) },
         select: { characterId: true },
       })
     ).map(({ characterId }) => characterId);
@@ -133,6 +132,8 @@ router.put('/episodes/:id', async (req, res) => {
     const charactersToDisconnect = existingCharacterIds.filter(
       (characterId) => !characterIds.includes(characterId)
     );
+
+    console.log(charactersToDisconnect);
 
     await prisma.episodesOnCharacters.deleteMany({
       where: {
@@ -144,6 +145,9 @@ router.put('/episodes/:id', async (req, res) => {
     const charactersToConnect = characterIds.filter(
       (characterId) => !existingCharacterIds.includes(characterId)
     );
+
+    console.log("Characters to connect > ", charactersToConnect);
+    
     await prisma.episodesOnCharacters.createMany({
       data: charactersToConnect.map((characterId) => ({
         episodeId: parseInt(id),
@@ -166,6 +170,8 @@ router.put('/episodes/:id', async (req, res) => {
         characters: true,
       },
     });
+
+    console.log("updatedEpisode", updatedEpisode);
 
     res.status(200).json(updatedEpisode);
   } catch (err) {
