@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
@@ -16,7 +16,7 @@ const createUser = async () => {
       data: {
         username: username,
         mail: email,
-        password: hashedPassword
+        password: hashedPassword,
       },
     });
   } catch (error) {
@@ -24,6 +24,6 @@ const createUser = async () => {
   } finally {
     await prisma.$disconnect();
   }
-}
+};
 
 createUser();

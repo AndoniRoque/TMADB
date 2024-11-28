@@ -1,6 +1,5 @@
 "use client";
 import {
-  Box,
   Button,
   Flex,
   Grid,
@@ -16,12 +15,9 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { Character } from "../types/types";
-import axios from "axios";
 import CharacterCard from "../components/CharacterCard";
 import CharacterModal from "../components/CharacterModal";
 import CustomTable from "../components/CustomTable";
-import { useAuthStore } from "../store/useAuthStore";
-import { useRouter } from "next/navigation";
 import { useCharacterStore } from "../store/useCharacterStore";
 const URL_BACK = "http://localhost:3333/api";
 
@@ -78,7 +74,7 @@ function characters() {
           </Button>
         </Flex>
       </Flex>
-      <Flex justifyContent={"end"} mr={8}>
+      <Flex justifyContent={"end"}>
         <SlideFade in={isOpenSearchBar} offsetX="500px" hidden={showSearchBar}>
           <Flex justifyContent={"center"} alignItems={"center"} width={400}>
             <Input

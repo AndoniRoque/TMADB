@@ -21,7 +21,7 @@ import {
   MenuItem,
 } from "@chakra-ui/react";
 import Head from "next/head";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import Link from "next/link";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { FaUser } from "react-icons/fa";
@@ -71,6 +71,7 @@ function Header() {
         <title>The Magnus Archives Database</title>
         <meta name="description" content="The Magnus Archive Database" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/TMA_icon.webp" />
       </Head>
 
       {/* Desktop Header */}
@@ -78,7 +79,12 @@ function Header() {
         w="100%"
         p={4}
         minH="10vh"
-        bg="conic-gradient(from 90deg at 50% 50%, #0f1110, #252b26)"
+        bg={{
+          base: "conic-gradient(from 90deg at 25% 50%, #0f1110, #252b26)",
+          md: "conic-gradient(from 90deg at 50% 50%, #0f1110, #252b26)",
+          lg: "conic-gradient(from 90deg at 75% 50%, #0f1110, #252b26)",
+          xl: "conic-gradient(from 90deg at 70% 50%, #0f1110, #252b26)",
+        }}
         backgroundColor="black"
         boxShadow="0 4px 15px rgba(0, 0, 0, 0.4)"
         justifyContent="space-between"
@@ -114,18 +120,16 @@ function Header() {
         <Box flex={1}>
           <Flex
             flex={2}
-            justifyContent="space-evenly"
+            justifyContent="end"
             color="rgba(236, 223, 204, 0.8)"
-            gap={4}
+            gap={12}
           >
             {["Episodes", "Characters", "Mindmap"].map((link) => (
               <Link key={link.toLowerCase()} href={`/${link.toLowerCase()}`}>
-                <Box
-                  display="flex"
-                  justifyContent="center"
+                <Flex
+                  justifyContent="start"
                   alignItems="center"
-                  h="100%"
-                  w="15vh"
+                  h={100}
                   fontSize="xl"
                   _hover={{
                     color: "#ECDFCC",
@@ -134,13 +138,13 @@ function Header() {
                   }}
                 >
                   {link}
-                </Box>
+                </Flex>
               </Link>
             ))}
           </Flex>
         </Box>
         {isLoggedIn && (
-          <Flex justifyContent={"end"} alignItems="center">
+          <Flex justifyContent={"end"} alignItems="center" w={150}>
             <Menu>
               <MenuButton
                 as={Button}
@@ -150,10 +154,14 @@ function Header() {
                   cursor: "pointer",
                 }}
                 rightIcon={
-                  <Icon as={FaUser} boxSize={6} color={"whitesmoke"}></Icon>
+                  <Icon
+                    as={FaUser}
+                    boxSize={6}
+                    color={"rgba(236, 223, 204, 0.8)"}
+                  ></Icon>
                 }
               >
-                <Text color={"whitesmoke"} ml={2}>
+                <Text color={"rgba(236, 223, 204, 0.8)"} ml={2}>
                   {username}
                 </Text>
               </MenuButton>
@@ -197,22 +205,16 @@ function Header() {
         </Text>
 
         <IconButton
-          // ref={btnRef}
           onClick={onOpen}
           icon={<HamburgerIcon />}
           variant="outline"
-          colorScheme="whiteAlpha"
+          colorScheme="whitesmoke"
           aria-label="Open Menu"
         />
       </Flex>
 
       {/* Mobile Drawer Menu */}
-      <Drawer
-        isOpen={isOpen}
-        placement="right"
-        onClose={onClose}
-        // finalFocusRef={btnRef}
-      >
+      <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent bg="black" color="rgba(236, 223, 204, 0.8)">
           <DrawerCloseButton />

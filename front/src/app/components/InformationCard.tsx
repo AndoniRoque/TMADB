@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Box,
   Flex,
@@ -24,7 +24,7 @@ const InformationCard: React.FC<Props> = (info) => {
         alignItems={"center"}
         flexDirection={"column"}
         h={"auto"}
-        mt={"8%"}
+        mt={40}
       >
         <Flex
           flexDirection={"column"}

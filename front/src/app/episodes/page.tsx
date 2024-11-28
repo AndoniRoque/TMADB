@@ -1,6 +1,5 @@
 "use client";
 import {
-  Box,
   Button,
   Flex,
   Grid,
@@ -9,9 +8,7 @@ import {
   Input,
   LinkBox,
   LinkOverlay,
-  ScaleFade,
   Skeleton,
-  Slide,
   SlideFade,
   Text,
   useDisclosure,
@@ -20,7 +17,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import EpisodeCard from "../components/EpisodeCard";
 import EpisodeModal from "../components/EpisodeModal";
-import { Character, Episode } from "../types/types";
+import { Episode } from "../types/types";
 import CustomTable from "../components/CustomTable";
 import { useAuthStore } from "../store/useAuthStore";
 import { useRouter } from "next/navigation";
