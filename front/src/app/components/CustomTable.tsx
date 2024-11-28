@@ -129,7 +129,14 @@ const CustomTable: React.FC<TableData> = ({
   return (
     <>
       <TableContainer>
-        <Table variant="simple" color={"whitesmoke"}>
+        <Table
+          variant="simple"
+          color={"whitesmoke"}
+          style={{ tableLayout: "fixed" }}
+          m={8}
+          p={4}
+          maxW={"90vw"}
+        >
           <Thead>
             <Tr>
               {type === "character" ? (
@@ -137,19 +144,20 @@ const CustomTable: React.FC<TableData> = ({
                   <Th
                     onClick={() => handleSortList("name")}
                     _hover={{ cursor: "pointer" }}
-                    minW={"22vw"}
                     color={"whitesmoke"}
                   >
                     Character Name {sortOrder ? "▲" : "▼"}
                   </Th>
-                  <Th color={"whitesmoke"} minW={"71vw"}>
+                  <Th
+                    color={"whitesmoke"}
+                    w={{ base: "30vw", md: "40vw", lg: "52vw", xl: "71vw" }}
+                  >
                     Character Description
                   </Th>
                 </>
               ) : (
                 <>
                   <Th
-                    isNumeric
                     color={"whitesmoke"}
                     onClick={() => handleSortList("id")}
                     _hover={{ cursor: "pointer" }}
@@ -171,7 +179,13 @@ const CustomTable: React.FC<TableData> = ({
                     {" "}
                     Case Number {sortOrder ? "▲" : "▼"}
                   </Th>
-                  <Th color={"whitesmoke"}> Description </Th>
+                  <Th
+                    color={"whitesmoke"}
+                    w={{ base: "21vw", md: "30vw", lg: "35vw", xl: "40vw" }}
+                  >
+                    {" "}
+                    Description{" "}
+                  </Th>
                   <Th
                     color={"whitesmoke"}
                     onClick={() => handleSortList("date")}
@@ -180,7 +194,6 @@ const CustomTable: React.FC<TableData> = ({
                     Release Date {sortOrder ? "▲" : "▼"}
                   </Th>
                   <Th
-                    isNumeric
                     color={"whitesmoke"}
                     onClick={() => handleSortList("season")}
                   >
@@ -196,7 +209,7 @@ const CustomTable: React.FC<TableData> = ({
               sortList.length === 0 ? (
                 <Tr>
                   <Td colSpan={2}>
-                    <Text textAlign={"center"} p={4} width={"full"}>
+                    <Text textAlign={"center"} p={4}>
                       No characters found
                     </Text>
                   </Td>
@@ -223,8 +236,8 @@ const CustomTable: React.FC<TableData> = ({
             ) : sortList.length === 0 ? (
               <Tr>
                 <Td colSpan={7}>
-                  <Text textAlign={"center"} p={4} width={"full"}>
-                    No characters found
+                  <Text textAlign={"center"} p={4}>
+                    No episodes found
                   </Text>
                 </Td>
               </Tr>

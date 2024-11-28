@@ -46,6 +46,7 @@ router.post('/episodes', async (req, res) => {
     if (!description) return res.status(400).json({ message: "The episode description is missing." });
     if (!caseNumber) return res.status(400).json({ message: "Case number is missing." });
 
+
     const existingEpisode = await prisma.episode.findFirst({
       where: {
         title: { equals: title, mode: 'insensitive' },
@@ -57,9 +58,17 @@ router.post('/episodes', async (req, res) => {
 
     if (existingEpisode) return res.status(409).json({ message: "An episode with these values already exists, please upload a new one." });
 
+    let normilizedTitle = "";
+
+    function capitalizeValues(value) {
+      return value.split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(" ");
+    }
+
+    normilizedTitle = capitalizeValues(title);
+
     const newEpisode = await prisma.episode.create({
       data: {
-        title,
+        title: normilizedTitle,
         number,
         releaseDate,
         description,

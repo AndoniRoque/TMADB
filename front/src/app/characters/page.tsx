@@ -10,6 +10,7 @@ import {
   LinkBox,
   LinkOverlay,
   Skeleton,
+  SlideFade,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -26,14 +27,22 @@ const URL_BACK = "http://localhost:3333/api";
 
 function characters() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isOpenSearchBar, onToggle } = useDisclosure();
   const [characterMessage, setCharacterMessage] = useState<string>("");
   const [showTable, setShowTable] = useState<boolean>(true);
   const [search, setSearch] = useState<string>("");
+  const [showSearchBar, setShowSearchBar] = useState<boolean>(true);
   const {
     characters,
     getCharacters,
     loading: charactersLoading,
   } = useCharacterStore();
+
+  const toggleTable = () => {
+    onToggle();
+    setShowTable(!showTable);
+    setShowSearchBar(!showSearchBar);
+  };
 
   useEffect(() => {
     getCharacters();
@@ -64,23 +73,25 @@ function characters() {
           alignItems={"center"}
           flexDirection={"row"}
         >
-          <Button onClick={() => setShowTable(!showTable)}>
+          <Button onClick={toggleTable}>
             {showTable ? "Show Table" : "Show Grid"}
           </Button>
         </Flex>
       </Flex>
-      <Flex justifyContent={"end"} mb={8} mr={8}>
-        <Flex justifyContent={"center"} alignItems={"center"} width={400}>
-          <Input
-            placeholder="Search..."
-            mr={2}
-            onChange={(e) => setSearch(e.target.value)}
-            value={search}
-            _focus={{
-              backgroundColor: "whitesmoke",
-            }}
-          ></Input>
-        </Flex>
+      <Flex justifyContent={"end"} mr={8}>
+        <SlideFade in={isOpenSearchBar} offsetX="500px" hidden={showSearchBar}>
+          <Flex justifyContent={"center"} alignItems={"center"} width={400}>
+            <Input
+              placeholder="Search..."
+              onChange={(e) => setSearch(e.target.value)}
+              value={search}
+              _focus={{
+                backgroundColor: "whitesmoke",
+              }}
+              maxW={300}
+            ></Input>
+          </Flex>
+        </SlideFade>
       </Flex>
       <Flex display={"flex"} justifyContent={"center"} alignItems="center">
         {charactersLoading ? (

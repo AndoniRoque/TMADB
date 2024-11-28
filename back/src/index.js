@@ -21,7 +21,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Rutas protegidas
+// protected routes
 app.use('/auth', usersRoutes);
 
 app.use('/api', usersRoutes);

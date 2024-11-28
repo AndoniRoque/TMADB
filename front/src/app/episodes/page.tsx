@@ -9,7 +9,10 @@ import {
   Input,
   LinkBox,
   LinkOverlay,
+  ScaleFade,
   Skeleton,
+  Slide,
+  SlideFade,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -26,11 +29,13 @@ const URL_BACK = "http://localhost:3333/api";
 
 export default function EpisodesPage() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isOpenSearchBar, onToggle } = useDisclosure();
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [showTable, setShowTable] = useState<boolean>(true);
   const [search, setSearch] = useState<string>("");
+  const [showSearchBar, setShowSearchBar] = useState<boolean>(true);
   const { isLoggedIn } = useAuthStore();
   const router = useRouter();
 
@@ -60,6 +65,12 @@ export default function EpisodesPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const toggleTable = () => {
+    onToggle();
+    setShowTable(!showTable);
+    setShowSearchBar(!showSearchBar);
   };
 
   useEffect(() => {
@@ -95,23 +106,25 @@ export default function EpisodesPage() {
           alignItems={"center"}
           flexDirection={"row"}
         >
-          <Button onClick={() => setShowTable(!showTable)}>
+          <Button onClick={toggleTable}>
             {showTable ? "Show Table" : "Show Grid"}
           </Button>
         </Flex>
       </Flex>
-      <Flex justifyContent={"end"} mb={8} mr={8}>
-        <Flex justifyContent={"center"} alignItems={"center"} width={400}>
-          <Input
-            placeholder="Search..."
-            mr={2}
-            onChange={(e) => setSearch(e.target.value)}
-            value={search}
-            _focus={{
-              backgroundColor: "whitesmoke",
-            }}
-          ></Input>
-        </Flex>
+      <Flex justifyContent={"end"} mr={8}>
+        <SlideFade in={isOpenSearchBar} offsetX="500px" hidden={showSearchBar}>
+          <Flex justifyContent={"end"} alignItems={"center"} width={400}>
+            <Input
+              placeholder="Search..."
+              onChange={(e) => setSearch(e.target.value)}
+              value={search}
+              _focus={{
+                backgroundColor: "whitesmoke",
+              }}
+              maxW={300}
+            ></Input>
+          </Flex>
+        </SlideFade>
       </Flex>
       <Flex justifyContent={"center"} alignItems="center">
         {loading ? (
@@ -138,7 +151,7 @@ export default function EpisodesPage() {
                   xl: "repeat(3, 1fr)",
                 }}
                 gap={{ base: 2, md: 4, lg: 6, xl: 8 }}
-                mx={{ base: 2, md: 4, lg: 6, xl: 8 }}
+                m={{ base: 2, md: 4, lg: 6, xl: 8 }}
               >
                 {episodes.map((e: Episode) => (
                   <GridItem

@@ -5,10 +5,11 @@
   "indentRainbow.lightIndicatorStyleLineWidth": 1,
   // the same colors as above but more visible
   "indentRainbow.colors": [
-    "rgba(255,255,64,0.3)",
-    "rgba(127,255,127,0.3)",
-    "rgba(255,127,255,0.3)",
-    "rgba(79,236,236,0.3)"],
+    "#32aab5",
+    "#e7d39a",
+    "#f1aa60",
+    "#f27b68",
+    "#e54787"],
   "workbench.colorCustomizations": {
     "[Default Dark+]": {
       "tab.activeBackground": "#0004ff",
@@ -50,6 +51,4 @@
     "**/*.jsx"
   ],
   "editor.formatOnSave": true,
-}
-
 }
