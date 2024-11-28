@@ -1,4 +1,12 @@
-import { Avatar, Box, Button, Checkbox, Stack, Text } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Checkbox,
+  Flex,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import axios from "axios";
 import React from "react";
 import { Episode, EpisodeCardProps } from "../types/types";
@@ -7,9 +15,15 @@ const URL_BACK = "http://localhost:3333/api";
 function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
   const heardEpisode = async (episode: Episode) => {
     try {
-      const { data } = await axios.put(`${URL_BACK}/episodes/${episode.id}`, {
-        heard: !episode.heard,
-      });
+      const { data } = await axios.put(
+        `${URL_BACK}/episodes/${episode.id}`,
+        {
+          heard: !episode.heard,
+        },
+        {
+          withCredentials: true,
+        }
+      );
       refreshEpisodes();
     } catch (err) {
       console.error(err);
@@ -18,19 +32,12 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
   };
 
   return (
-    <Stack
-      gap="14"
-      direction="row"
-      wrap="wrap"
-      minH={"200px"}
-      h={"300px"}
-      w={"100%"}
-    >
+    <Stack direction="row" wrap="wrap" h={"320px"} minH={"200px"} w={"100%"}>
       <Box
-        p={16}
         border={"1px solid gray"}
         borderRadius={8}
-        color={"white"}
+        p={16}
+        color={"whitesmoke"}
         fontWeight={400}
         w={"100%"}
         _hover={{
@@ -40,8 +47,7 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
         }}
       >
         <Stack spacing={2}>
-          <Box
-            display={"flex"}
+          <Flex
             justifyContent={"start"}
             flexDirection={"row"}
             alignItems={"center"}
@@ -59,30 +65,31 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
               {episode.number < 10 ? `0${episode.number}` : episode.number}:{" "}
               {episode.title}
             </Text>
-            <Box display={"flex"} w={"100%"} justifyContent={"flex-end"}>
+            <Flex w={"100%"} justifyContent={"flex-end"}>
               <Checkbox
                 isChecked={episode.heard}
                 onChange={() => heardEpisode(episode)}
               />
-            </Box>
-          </Box>
-          <Text
-            mt={4}
-            overflow={"hidden"}
-            whiteSpace={"nowrap"}
-            textOverflow={"ellipsis"}
-            marginTop={"12%"}
-          >
+            </Flex>
+          </Flex>
+          <Flex marginTop={"12%"}>
             {episode.heard ? (
-              <>
+              <Text
+                textAlign={"center"}
+                overflow={"hidden"}
+                whiteSpace={"nowrap"}
+                textOverflow={"ellipsis"}
+                mt={4}
+                minW={400}
+              >
                 <strong>#{episode.caseNumber}</strong> - {episode.description}
-              </>
+              </Text>
             ) : (
-              <Text backgroundColor={"black"} textAlign={"center"}>
+              <Text backgroundColor={"black"} textAlign={"center"} minW={400}>
                 [Redacted]
               </Text>
             )}
-          </Text>
+          </Flex>
         </Stack>
       </Box>
     </Stack>

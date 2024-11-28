@@ -1,13 +1,15 @@
 "use client";
 import {
-  Box,
   Button,
+  Flex,
   Grid,
   GridItem,
   Heading,
+  Input,
   LinkBox,
   LinkOverlay,
   Skeleton,
+  SlideFade,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -15,22 +17,40 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import EpisodeCard from "../components/EpisodeCard";
 import EpisodeModal from "../components/EpisodeModal";
-import { Character, Episode } from "../types/types";
+import { Episode } from "../types/types";
 import CustomTable from "../components/CustomTable";
+import { useAuthStore } from "../store/useAuthStore";
+import { useRouter } from "next/navigation";
+import { useCharacterStore } from "../store/useCharacterStore";
 const URL_BACK = "http://localhost:3333/api";
 
 export default function EpisodesPage() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isOpenSearchBar, onToggle } = useDisclosure();
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [message, setMessage] = useState<string>("");
-  const [characterMessage, setCharacterMessage] = useState<string>("");
-  const [characters, setCharacters] = useState<Character[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [showTable, setShowTable] = useState<boolean>(false);
+  const [showTable, setShowTable] = useState<boolean>(true);
+  const [search, setSearch] = useState<string>("");
+  const [showSearchBar, setShowSearchBar] = useState<boolean>(true);
+  const { isLoggedIn } = useAuthStore();
+  const router = useRouter();
+
+  const {
+    characters,
+    getCharacters,
+    loading: charactersLoading,
+  } = useCharacterStore();
+
+  if (!isLoggedIn) {
+    router.push("/");
+  }
 
   const getEpisodes = async () => {
     try {
-      const response = await axios.get(`${URL_BACK}/episodes`);
+      const response = await axios.get(`${URL_BACK}/episodes`, {
+        withCredentials: true,
+      });
       if (response.data.message) {
         setMessage(response.data.message);
       } else {
@@ -44,20 +64,10 @@ export default function EpisodesPage() {
     }
   };
 
-  const getCharacters = async () => {
-    try {
-      const characters = await axios.get(`${URL_BACK}/characters`);
-      if (characters.data.message) {
-        setCharacterMessage(characters.data.message);
-      } else {
-        setCharacters(characters.data);
-      }
-    } catch (err) {
-      setCharacterMessage("Characters not found.");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+  const toggleTable = () => {
+    onToggle();
+    setShowTable(!showTable);
+    setShowSearchBar(!showSearchBar);
   };
 
   useEffect(() => {
@@ -67,20 +77,19 @@ export default function EpisodesPage() {
 
   return (
     <>
-      <Box
-        display={"flex"}
+      <Flex
         justifyContent={"space-between"}
         flexDirection={"row"}
-        m={4}
+        ml={4}
+        mr={4}
+        marginTop={4}
         p={4}
         mt={"8%"}
-        mb={"3%"}
       >
         <Heading fontSize="4xl" color={"whitesmoke"} flex={1}>
           T.M.A Episodes
         </Heading>
-        <Box
-          display={"flex"}
+        <Flex
           justifyContent={"center"}
           alignItems={"center"}
           flexDirection={"row"}
@@ -88,19 +97,33 @@ export default function EpisodesPage() {
           <Button onClick={onOpen} mr={2}>
             Upload Episode
           </Button>
-        </Box>
-        <Box
-          display={"flex"}
+        </Flex>
+        <Flex
           justifyContent={"center"}
           alignItems={"center"}
           flexDirection={"row"}
         >
-          <Button onClick={() => setShowTable(!showTable)}>
+          <Button onClick={toggleTable}>
             {showTable ? "Show Table" : "Show Grid"}
           </Button>
-        </Box>
-      </Box>
-      <Box display={"flex"} justifyContent={"center"} alignItems="center">
+        </Flex>
+      </Flex>
+      <Flex justifyContent={"end"} mr={8}>
+        <SlideFade in={isOpenSearchBar} offsetX="500px" hidden={showSearchBar}>
+          <Flex justifyContent={"end"} alignItems={"center"} width={400}>
+            <Input
+              placeholder="Search..."
+              onChange={(e) => setSearch(e.target.value)}
+              value={search}
+              _focus={{
+                backgroundColor: "whitesmoke",
+              }}
+              maxW={300}
+            ></Input>
+          </Flex>
+        </SlideFade>
+      </Flex>
+      <Flex justifyContent={"center"} alignItems="center">
         {loading ? (
           <>
             <Skeleton ml={16} height="200px" />
@@ -110,14 +133,9 @@ export default function EpisodesPage() {
           </>
         ) : message ? (
           <>
-            <Box
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
-              h={"70vh"}
-            >
+            <Flex justifyContent={"center"} alignItems={"center"} h={"70vh"}>
               <Text color={"whitesmoke"}>{message}</Text>
-            </Box>
+            </Flex>
           </>
         ) : (
           <>
@@ -130,7 +148,7 @@ export default function EpisodesPage() {
                   xl: "repeat(3, 1fr)",
                 }}
                 gap={{ base: 2, md: 4, lg: 6, xl: 8 }}
-                mx={{ base: 2, md: 4, lg: 6, xl: 8 }}
+                m={{ base: 2, md: 4, lg: 6, xl: 8 }}
               >
                 {episodes.map((e: Episode) => (
                   <GridItem
@@ -149,17 +167,16 @@ export default function EpisodesPage() {
                 ))}
               </Grid>
             ) : (
-              <>
-                <CustomTable
-                  data={episodes}
-                  type="episode"
-                  refreshList={getEpisodes}
-                />
-              </>
+              <CustomTable
+                data={episodes}
+                type="episode"
+                refreshList={getEpisodes}
+                searchTerm={search}
+              />
             )}
           </>
         )}
-      </Box>
+      </Flex>
 
       <EpisodeModal
         isOpen={isOpen}

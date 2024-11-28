@@ -34,7 +34,7 @@
     "react-icons": "^4.11.0",
     "react-select": "^5.8.2",
     "styled-components": "^6.1.8",
-    "zustand": "^4.4.7"
+    "zustand": "^4.5.5"
   },
   "devDependencies": {
     "@types/node": "^20",

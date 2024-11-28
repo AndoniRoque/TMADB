@@ -10,16 +10,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
       heading: `, sans-serif`,
       body: `$, sans-serif`,
     },
-    colors: {
-      muni: {
-        verde: "#95C840",
-        celeste: "#4093C8",
-      },
-    },
   });
   return (
-      <CacheProvider>
-        <ChakraProvider theme={theme}>{children}</ChakraProvider>
-      </CacheProvider>
+    <CacheProvider>
+      <ChakraProvider theme={theme}>{children}</ChakraProvider>
+    </CacheProvider>
   );
 }

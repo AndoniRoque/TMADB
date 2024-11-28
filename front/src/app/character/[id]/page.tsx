@@ -4,9 +4,10 @@ import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Character } from "@/app/types/types";
 import axios from "axios";
-import { Box, Button, useDisclosure, useToast } from "@chakra-ui/react";
+import { Box, Button, Flex, useDisclosure, useToast } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import CharacterModal from "@/app/components/CharacterModal";
+import { useAuthStore } from "@/app/store/useAuthStore";
 const URL_BACK = "http://localhost:3333/api";
 
 function character() {
@@ -26,11 +27,14 @@ function character() {
   );
   const toast = useToast();
 
-  const getEpisode = async () => {
+  const getCharacter = async () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `${URL_BACK}/characters/${characterNumber}`
+        `${URL_BACK}/characters/${characterNumber}`,
+        {
+          withCredentials: true,
+        }
       );
       setCharacter(response.data);
     } catch (err) {
@@ -44,7 +48,10 @@ function character() {
   const deleteCharacter = async () => {
     try {
       const delCharacter = await axios.delete(
-        `${URL_BACK}/characters/${characterNumber}`
+        `${URL_BACK}/characters/${characterNumber}`,
+        {
+          withCredentials: true,
+        }
       );
       if (delCharacter.status === 200) {
         toast({
@@ -85,26 +92,25 @@ function character() {
   };
 
   useEffect(() => {
-    getEpisode();
+    getCharacter();
   }, [characterNumber]);
 
   if (loading) {
-    return <div>Loading...</div>; // Mostrar algo mientras se carga
+    return <div>Loading...</div>;
   }
 
   if (message) {
-    return <div>{message}</div>; // Mostrar mensaje de error si es necesario
+    return <div>{message}</div>;
   }
 
-  // Asegurarte de que `character` está cargado antes de pasar las props
   if (!character) {
-    return <div>No character data found</div>; // Mensaje de no encontrado si no hay datos
+    return <div>No character data found</div>;
   }
 
   return (
     <>
       <Box position="fixed" m={4} top="15%" left="88%" zIndex={1000}>
-        <Box display="flex" flexDirection="column" gap={2}>
+        <Flex flexDirection="column" gap={2}>
           <Button onClick={handleEditCharacter} leftIcon={<EditIcon />}>
             Edit Character
           </Button>
@@ -115,20 +121,16 @@ function character() {
           >
             Delete Character
           </Button>
-        </Box>
+        </Flex>
       </Box>
 
-      <InformationCard
-        description={character.description}
-        id={character.id}
-        name={character.name}
-      />
+      <InformationCard {...character} />
 
       <CharacterModal
         isOpen={isOpenCharacter}
         onClose={onCloseCharacter}
         initialValue={character}
-        getEpisode={getEpisode}
+        getEpisode={getCharacter}
       />
     </>
   );

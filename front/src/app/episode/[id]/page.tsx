@@ -2,6 +2,7 @@
 import {
   Box,
   Button,
+  Flex,
   Skeleton,
   Text,
   useDisclosure,
@@ -10,19 +11,14 @@ import {
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import EpisodeModal from "@/app/components/EpisodeModal";
 import { Character, Episode, EpisodeData } from "@/app/types/types";
 import InformationCard from "@/app/components/InformationCard";
-import CharacterModal from "@/app/components/CharacterModal";
+import { useCharacterStore } from "@/app/store/useCharacterStore";
 const URL_BACK = "http://localhost:3333/api";
 
 function Page() {
-  const {
-    isOpen: isOpenCharacter,
-    onOpen: onOpenCharacter,
-    onClose: onCloseCharacter,
-  } = useDisclosure();
   const {
     isOpen: isOpenEpisode,
     onOpen: onOpenEpisode,
@@ -35,18 +31,12 @@ function Page() {
   const [episode, setEpisode] = useState<Episode | null>(null);
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
-  const [characterName, setCharacterName] = useState<string>("");
-  const [characterDescription, setCharacterDescription] = useState<string>("");
   const [episodeToEdit, setEpisodeToEdit] = useState<EpisodeData | null>(null);
-  const [characters, setCharacters] = useState<Character[]>([]);
-
-  const data = {
-    name: characterName,
-    description: characterDescription,
-    episode: {
-      connect: { id: episodeNumber },
-    },
-  };
+  const {
+    characters,
+    getCharacters,
+    loading: charactersLoading,
+  } = useCharacterStore();
 
   const handleEditEpisode = () => {
     if (episode) {
@@ -68,7 +58,12 @@ function Page() {
 
   const getEpisode = async () => {
     try {
-      const response = await axios.get(`${URL_BACK}/episodes/${episodeNumber}`);
+      const response = await axios.get(
+        `${URL_BACK}/episodes/${episodeNumber}`,
+        {
+          withCredentials: true,
+        }
+      );
       setEpisode(response.data);
     } catch (err) {
       console.error(err);
@@ -78,25 +73,13 @@ function Page() {
     }
   };
 
-  const getCharacters = async () => {
-    try {
-      const response = await axios.get(`${URL_BACK}/characters/`);
-      setCharacters(response.data);
-    } catch (err) {
-      console.error(err);
-      toast({
-        title: "Characters couldn't be fetched.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  };
-
   const deleteEpisode = async () => {
     try {
       const delEpisode = await axios.delete(
-        `${URL_BACK}/episodes/${episodeNumber}`
+        `${URL_BACK}/episodes/${episodeNumber}`,
+        {
+          withCredentials: true,
+        }
       );
       if (delEpisode.status === 200) {
         toast({
@@ -148,10 +131,7 @@ function Page() {
   return (
     <>
       <Box position="fixed" m={4} top="15%" left="88%" zIndex={1000}>
-        <Box display="flex" flexDirection="column" gap={2}>
-          <Button onClick={onOpenCharacter} leftIcon={<AddIcon />}>
-            Add Characters
-          </Button>
+        <Flex flexDirection="column" gap={2}>
           <Button onClick={handleEditEpisode} leftIcon={<EditIcon />}>
             Edit Episode
           </Button>
@@ -162,20 +142,10 @@ function Page() {
           >
             Delete Episode
           </Button>
-        </Box>
+        </Flex>
       </Box>
 
-      <InformationCard
-        heard={episode.heard}
-        id={episode.id}
-        title={episode.title}
-        number={episode.number}
-        season={episode.season}
-        caseNumber={episode.caseNumber}
-        characters={episode.characters}
-        description={episode.description}
-        releaseDate={episode.releaseDate}
-      />
+      <InformationCard {...episode} />
 
       <EpisodeModal
         isOpen={isOpenEpisode}
@@ -183,16 +153,6 @@ function Page() {
         characters={episode.characters}
         getEpisode={getEpisode}
         initialValue={episodeToEdit}
-      />
-
-      <CharacterModal
-        isOpen={isOpenCharacter}
-        onClose={onCloseCharacter}
-        initialValue={null}
-        id={episodeNumber.toString()}
-        getEpisode={getEpisode}
-        charactersList={episode.characters}
-        characters={characters}
       />
     </>
   );

@@ -1,5 +1,25 @@
 {
+  // Using the light mode
+  "indentRainbow.indicatorStyle": "light",
+  // we use a simple 1 pixel wide line
+  "indentRainbow.lightIndicatorStyleLineWidth": 1,
+  // the same colors as above but more visible
+  "indentRainbow.colors": [
+    "#32aab5",
+    "#e7d39a",
+    "#f1aa60",
+    "#f27b68",
+    "#e54787"],
   "workbench.colorCustomizations": {
+    "[Default Dark+]": {
+      "tab.activeBackground": "#0004ff",
+      "tab.activeForeground": "#e100ff",
+      "tab.inactiveBackground": "#00ff62",
+      "tab.inactiveForeground": "#00b7ff",
+      "tab.lastPinnedBorder": "#fafafa",
+      "tab.unfocusedActiveForeground": "#fbff00",
+      "tab.unfocusedActiveBackground": "#ff0000"
+    },
     "activityBar.activeBackground": "#fbed80",
     "activityBar.background": "#fbed80",
     "activityBar.foreground": "#15202b",
@@ -30,8 +50,5 @@
     "**/*.js",
     "**/*.jsx"
   ],
-  "rainbowIndent.guides": {
-    "space": "#FFFFFF00"
-  },
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
 }

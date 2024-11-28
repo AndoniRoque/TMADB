@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Character, Episode } from "../types/types";
+import { Character, Episode, TableData } from "../types/types";
 import {
   Checkbox,
-  LinkBox,
-  LinkOverlay,
   Table,
-  TableCaption,
   TableContainer,
   Tbody,
   Td,
@@ -19,13 +16,12 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 const URL_BACK = "http://localhost:3333/api";
 
-type TableData = {
-  data: Character[] | Episode[];
-  type: "character" | "episode";
-  refreshList: () => void;
-};
-
-const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
+const CustomTable: React.FC<TableData> = ({
+  data,
+  type,
+  refreshList,
+  searchTerm,
+}) => {
   const navigate = useRouter();
   const [sortList, setSortList] = useState<Character[] | Episode[]>(data);
   const [sortOrder, setSortOrder] = useState<boolean>(false);
@@ -36,9 +32,15 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
 
   const heardEpisode = async (episode: Episode) => {
     try {
-      await axios.put(`${URL_BACK}/episodes/${episode.id}`, {
-        heard: !episode.heard,
-      });
+      await axios.put(
+        `${URL_BACK}/episodes/${episode.id}`,
+        {
+          heard: !episode.heard,
+        },
+        {
+          withCredentials: true,
+        }
+      );
       refreshList();
     } catch (err) {
       console.error(err);
@@ -85,11 +87,31 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
     setSortOrder(!sortOrder);
   };
 
+  useEffect(() => {
+    if (searchTerm) {
+      const sortedList: any = data.filter(
+        (item) =>
+          item.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.caseNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.number?.toString().includes(searchTerm.toLowerCase()) ||
+          item.characters?.some((characterEntry: any) =>
+            characterEntry.character?.name
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+          ) ||
+          item.name?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setSortList(sortedList);
+    } else {
+      setSortList(data);
+    }
+  }, [searchTerm]);
+
   function converCaseNumberToDate(caseNumber: string) {
     const year = caseNumber.slice(0, 3);
     const day = caseNumber.slice(3, 5);
     const month = caseNumber.slice(5);
-    console.log(year, month, day);
 
     const fullYear =
       parseInt(year.slice(0, 1)) === 0
@@ -107,7 +129,14 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
   return (
     <>
       <TableContainer>
-        <Table variant="simple" color={"whitesmoke"}>
+        <Table
+          variant="simple"
+          color={"whitesmoke"}
+          style={{ tableLayout: "fixed" }}
+          m={8}
+          p={4}
+          maxW={"90vw"}
+        >
           <Thead>
             <Tr>
               {type === "character" ? (
@@ -115,19 +144,20 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
                   <Th
                     onClick={() => handleSortList("name")}
                     _hover={{ cursor: "pointer" }}
-                    minW={"22vw"}
                     color={"whitesmoke"}
                   >
                     Character Name {sortOrder ? "▲" : "▼"}
                   </Th>
-                  <Th color={"whitesmoke"} minW={"71vw"}>
+                  <Th
+                    color={"whitesmoke"}
+                    w={{ base: "30vw", md: "40vw", lg: "52vw", xl: "71vw" }}
+                  >
                     Character Description
                   </Th>
                 </>
               ) : (
                 <>
                   <Th
-                    isNumeric
                     color={"whitesmoke"}
                     onClick={() => handleSortList("id")}
                     _hover={{ cursor: "pointer" }}
@@ -149,7 +179,13 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
                     {" "}
                     Case Number {sortOrder ? "▲" : "▼"}
                   </Th>
-                  <Th color={"whitesmoke"}> Description </Th>
+                  <Th
+                    color={"whitesmoke"}
+                    w={{ base: "21vw", md: "30vw", lg: "35vw", xl: "40vw" }}
+                  >
+                    {" "}
+                    Description{" "}
+                  </Th>
                   <Th
                     color={"whitesmoke"}
                     onClick={() => handleSortList("date")}
@@ -158,7 +194,6 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
                     Release Date {sortOrder ? "▲" : "▼"}
                   </Th>
                   <Th
-                    isNumeric
                     color={"whitesmoke"}
                     onClick={() => handleSortList("season")}
                   >
@@ -170,8 +205,17 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
             </Tr>
           </Thead>
           <Tbody>
-            {type === "character"
-              ? (sortList as Character[]).map((character) => (
+            {type === "character" ? (
+              sortList.length === 0 ? (
+                <Tr>
+                  <Td colSpan={2}>
+                    <Text textAlign={"center"} p={4}>
+                      No characters found
+                    </Text>
+                  </Td>
+                </Tr>
+              ) : (
+                (sortList as Character[]).map((character) => (
                   <Tr
                     key={character.id}
                     onClick={() =>
@@ -188,72 +232,94 @@ const CustomTable: React.FC<TableData> = ({ data, type, refreshList }) => {
                     <Td>{character.description}</Td>
                   </Tr>
                 ))
-              : (sortList as Episode[]).map((episode) => (
-                  <Tr
-                    key={episode.id}
-                    _hover={{
-                      cursor: "pointer",
-                      bg: "gray.300",
-                      opacity: 0.2,
-                      color: "black",
-                    }}
+              )
+            ) : sortList.length === 0 ? (
+              <Tr>
+                <Td colSpan={7}>
+                  <Text textAlign={"center"} p={4}>
+                    No episodes found
+                  </Text>
+                </Td>
+              </Tr>
+            ) : (
+              (sortList as Episode[]).map((episode) => (
+                <Tr
+                  key={episode.id}
+                  _hover={{
+                    cursor: "pointer",
+                    bg: "gray.300",
+                    opacity: 0.2,
+                    color: "black",
+                  }}
+                >
+                  <Td
+                    onClick={() => handleNavigation(`/episode/${episode.id}`)}
                   >
-                    <Td
-                      onClick={() => handleNavigation(`/episode/${episode.id}`)}
-                    >
-                      M.A.G {episode.number}
-                    </Td>
-                    <Td
-                      onClick={() => handleNavigation(`/episode/${episode.id}`)}
-                    >
-                      {episode.title}
-                    </Td>
-                    <Td
-                      onClick={() => handleNavigation(`/episode/${episode.id}`)}
-                    >
-                      {episode.caseNumber}
-                    </Td>
-                    <Td
-                      maxW={{
-                        base: "10vw",
-                        sm: "30vw",
-                        md: "40vw",
-                        lg: "50vw",
-                      }}
-                      onClick={() => handleNavigation(`/episode/${episode.id}`)}
-                      overflow={"hidden"}
-                      whiteSpace={"nowrap"}
-                      textOverflow={"ellipsis"}
-                    >
-                      {episode.heard ? (
-                        episode.description
-                      ) : (
-                        <Text backgroundColor={"black"} textAlign={"center"}>
-                          [Redacted]
-                        </Text>
-                      )}
-                    </Td>
-                    <Td
-                      onClick={() => handleNavigation(`/episode/${episode.id}`)}
-                    >
-                      {dayjs(episode.releaseDate).format("DD-MM-YYYY")}
-                    </Td>
-                    <Td
-                      onClick={() => handleNavigation(`/episode/${episode.id}`)}
-                    >
-                      {episode.season}
-                    </Td>
-                    <Td>
-                      <Checkbox
-                        isChecked={episode.heard}
-                        onChange={(e) => {
-                          e.preventDefault();
-                          heardEpisode(episode);
+                    M.A.G {episode.number}
+                  </Td>
+                  <Td
+                    onClick={() => handleNavigation(`/episode/${episode.id}`)}
+                  >
+                    {episode.title}
+                  </Td>
+                  <Td
+                    onClick={() => handleNavigation(`/episode/${episode.id}`)}
+                  >
+                    #{episode.caseNumber}
+                  </Td>
+                  <Td
+                    minW={{
+                      base: 100,
+                      sm: 200,
+                      md: 300,
+                      lg: 400,
+                      xl: 1000,
+                    }}
+                    onClick={() => handleNavigation(`/episode/${episode.id}`)}
+                    overflow={"hidden"}
+                    whiteSpace={"nowrap"}
+                    textOverflow={"ellipsis"}
+                  >
+                    {episode.heard ? (
+                      episode.description
+                    ) : (
+                      <Text
+                        backgroundColor={"black"}
+                        textAlign={"center"}
+                        minW={{
+                          base: 100,
+                          sm: 200,
+                          md: 300,
+                          lg: 400,
+                          xl: 1000,
                         }}
-                      ></Checkbox>
-                    </Td>
-                  </Tr>
-                ))}
+                      >
+                        [Redacted]
+                      </Text>
+                    )}
+                  </Td>
+                  <Td
+                    onClick={() => handleNavigation(`/episode/${episode.id}`)}
+                  >
+                    {dayjs(episode.releaseDate).format("DD-MM-YYYY")}
+                  </Td>
+                  <Td
+                    onClick={() => handleNavigation(`/episode/${episode.id}`)}
+                  >
+                    {episode.season}
+                  </Td>
+                  <Td>
+                    <Checkbox
+                      isChecked={episode.heard}
+                      onChange={(e) => {
+                        e.preventDefault();
+                        heardEpisode(episode);
+                      }}
+                    ></Checkbox>
+                  </Td>
+                </Tr>
+              ))
+            )}
           </Tbody>
         </Table>
       </TableContainer>

@@ -1,8 +1,6 @@
 "use client";
-
-import axios from "axios";
-import { useRouter } from "next/navigation";
 import {
+  Box,
   Button,
   Flex,
   FormControl,
@@ -13,21 +11,19 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
-import { useAuthStore } from "./store/useAuthStore";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
-const base_url = process.env.NEXT_PUBLIC_BASE_URL;
-
-function Login() {
+function Register() {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const toast = useToast();
   const router = useRouter();
   const URL_BACK = "http://localhost:3333/api";
-  const { checkAuthStatus } = useAuthStore();
 
-  const iniciarSesion = async (event: any) => {
+  const register = async (event: any) => {
     event.preventDefault();
     try {
       const data = {
@@ -35,29 +31,27 @@ function Login() {
         password: password,
         mail: email,
       };
-      const response = await axios.post(`${URL_BACK}/login/`, data, {
-        withCredentials: true,
-      });
+      const response = await axios.post(`${URL_BACK}/register/`, data);
       if (response.status === 200) {
-        setUser(response.data.user.username);
         toast({
-          title: "Login successful!",
+          title: "Sign in successful!",
           status: "success",
           duration: 3000,
           isClosable: true,
         });
-        checkAuthStatus();
-        router.push("/episodes");
+        router.push("/");
       }
-    } catch (error) {
-      console.error(error);
-      toast({
-        title: "Login failed.",
-        description: "Please check your credentials and try again.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+    } catch (error: any) {
+      console.error(">", error);
+      if (error.response.status === 409) {
+        toast({
+          title: "Register failed.",
+          description: error.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
     }
   };
 
@@ -69,22 +63,23 @@ function Login() {
         w={"full"}
         color={"whitesmoke"}
       >
-        <Flex w={"50%"} backgroundColor={"black"}>
+        <Box display={"flex"} w={"50%"} backgroundColor={"black"}>
           <Image
             src="TMA_Logo.webp"
             alt="The Magnus Archive logo"
             h={"100vh"}
             fit="contain"
           />
-        </Flex>
-        <Flex
-          fontFamily={"typewriter"}
-          justifyContent={"center"}
-          alignItems={"center"}
+        </Box>
+        <Box
+          display={"flex"}
           minW={"50%"}
           h={"75vh"}
           p={16}
           m={20}
+          justifyContent={"center"}
+          alignItems={"center"}
+          fontFamily={"typewriter"}
         >
           <FormControl
             display={"flex"}
@@ -120,15 +115,15 @@ function Login() {
               Email{" "}
             </FormLabel>
             <Input value={email} onChange={(e) => setEmail(e.target.value)} />
-            <Button mt={4} onClick={iniciarSesion}>
+            <Button mt={4} onClick={register}>
               {" "}
-              Log in
+              Sign in
             </Button>
           </FormControl>
-        </Flex>
+        </Box>
       </Flex>
     </>
   );
 }
 
-export default Login;
+export default Register;
