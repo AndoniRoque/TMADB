@@ -124,3 +124,12 @@ body::after {
   /*...previous props*/
   animation: animateAfter 7s cubic-bezier(0.47, 0, 0.745, 0.715) infinite;
 }
+
+body {
+  margin: 0;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
