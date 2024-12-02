@@ -27,9 +27,7 @@ router.get("/episodes", ensureAuthenticated, async (req, res) => {
     });
 
     if (!episodes || episodes.length === 0) {
-      return res
-        .status(200)
-        .json({ message: "There are no uploaded episodes yet." });
+      return res.status(200).json([]);
     }
 
     res.status(200).json(episodes);

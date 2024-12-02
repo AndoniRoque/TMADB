@@ -1,6 +1,7 @@
 import {
   Button,
   Checkbox,
+  Flex,
   FormControl,
   FormLabel,
   Input,
@@ -52,6 +53,8 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   const [isReleaseDateValid, setIsReleaseDateValid] = useState<boolean>(true);
   const [isDescriptionValid, setIsDescriptionValid] = useState<boolean>(true);
   const [isCaseNumberValid, setIsCaseNumberValid] = useState<boolean>(true);
+  const [isNumberValid, setIsNumberValid] = useState<boolean>(true);
+  const [isSeasonValid, setIsSeasonsValid] = useState<boolean>(true);
   const toast = useToast();
 
   const getCharacters = async () => {
@@ -221,6 +224,8 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
     setIsReleaseDateValid(!!releaseDate);
     setIsDescriptionValid(!!description);
     setIsCaseNumberValid(!!caseNumber);
+    setIsNumberValid(!!number);
+    setIsSeasonsValid(!!season);
 
     if (!isFormValid) {
       toast({
@@ -254,7 +259,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent borderRadius={0} backgroundColor={"#E8DCB8"}>
         <ModalHeader>
           {initialValue ? "Edit Episode" : "Upload Episode"}
         </ModalHeader>
@@ -266,7 +271,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
               placeholder="Episode title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              borderColor={!isTitleValid ? "red.500" : undefined}
+              borderColor={!isTitleValid ? "red.500" : "gray"}
             />
             <FormLabel mt={5} mb={0}>
               Episode Number
@@ -277,6 +282,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
               onChange={(e) => setNumber(parseInt(e.target.value))}
               type="number"
               min={1}
+              borderColor={!isNumberValid ? "red.500" : "gray"}
             />
             <FormLabel mt={5} mb={0}>
               Season
@@ -288,6 +294,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
               type="number"
               min={1}
               max={5}
+              borderColor={!isSeasonValid ? "red.500" : "gray"}
             />
             <FormLabel mt={5} mb={0}>
               Case #
@@ -296,7 +303,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
               placeholder="Case number"
               value={caseNumber}
               onChange={(e) => setCaseNumber(e.target.value)}
-              borderColor={!isCaseNumberValid ? "red.500" : undefined}
+              borderColor={!isCaseNumberValid ? "red.500" : "gray"}
             />
             <FormLabel mt={5} mb={0}>
               Description
@@ -305,7 +312,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
               placeholder="Case description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              borderColor={!isDescriptionValid ? "red.500" : undefined}
+              borderColor={!isDescriptionValid ? "red.500" : "gray"}
             />
             <FormLabel mt={5} mb={0}>
               Release Date
@@ -315,7 +322,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
               value={dayjs(releaseDate).format("YYYY-MM-DD")}
               onChange={(e) => setReleaseDate(e.target.value)}
               type="date"
-              borderColor={!isReleaseDateValid ? "red.500" : undefined}
+              borderColor={!isReleaseDateValid ? "red.500" : "gray"}
             />
             <FormLabel mt={5} mb={0}>
               Characters in Episode
@@ -326,14 +333,30 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
               placeholder="Character appearances..."
               onChange={handleCharacterChange}
               defaultValue={initialSelectedCharacters}
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  backgroundColor: "#E8DCB8",
+                  borderColor: "gray",
+                }),
+                menu: (baseStyles) => ({
+                  ...baseStyles,
+                  backgroundColor: "#E8DCB8",
+                  borderColor: "gray",
+                }),
+              }}
             />
-            <FormLabel mt={5} mb={0}>
-              Heard Episode{" "}
-            </FormLabel>
-            <Checkbox
-              isChecked={heard}
-              onChange={(e) => setHeard(e.target.checked)}
-            ></Checkbox>
+            <Flex flexDirection={"row"} alignItems={"end"}>
+              <FormLabel mt={5} mb={0}>
+                Heard Episode{" "}
+              </FormLabel>
+              <Checkbox
+                isChecked={heard}
+                onChange={(e) => setHeard(e.target.checked)}
+                backgroundColor={"white"}
+                mb={2}
+              ></Checkbox>
+            </Flex>
           </FormControl>
         </ModalBody>
         <ModalFooter>

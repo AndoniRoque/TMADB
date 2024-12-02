@@ -97,10 +97,12 @@ function characters() {
             <Skeleton ml={16} height={"20vh"} />
             <Skeleton ml={16} height={"20vh"} />
           </>
-        ) : characterMessage ? (
+        ) : characters.length === 0 ? (
           <>
             <Flex justifyContent={"center"} alignItems={"center"} h={"70vh"}>
-              <Text color={"whitesmoke"}>{characterMessage}</Text>
+              <Text color={"whitesmoke"}>
+                There are no characters loaded yet.
+              </Text>
             </Flex>
           </>
         ) : (

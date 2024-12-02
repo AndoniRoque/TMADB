@@ -33,18 +33,12 @@ export default function EpisodesPage() {
   const [showTable, setShowTable] = useState<boolean>(true);
   const [search, setSearch] = useState<string>("");
   const [showSearchBar, setShowSearchBar] = useState<boolean>(true);
-  const { isLoggedIn } = useAuthStore();
-  const router = useRouter();
 
   const {
     characters,
     getCharacters,
     loading: charactersLoading,
   } = useCharacterStore();
-
-  if (!isLoggedIn) {
-    router.push("/");
-  }
 
   const getEpisodes = async () => {
     try {
@@ -131,10 +125,12 @@ export default function EpisodesPage() {
             <Skeleton ml={16} height="200px" />
             <Skeleton ml={16} height="200px" />
           </>
-        ) : message ? (
+        ) : episodes.length === 0 ? (
           <>
             <Flex justifyContent={"center"} alignItems={"center"} h={"70vh"}>
-              <Text color={"whitesmoke"}>{message}</Text>
+              <Text color={"whitesmoke"}>
+                There are no episodes loaded yet.
+              </Text>
             </Flex>
           </>
         ) : (
@@ -181,7 +177,6 @@ export default function EpisodesPage() {
       <EpisodeModal
         isOpen={isOpen}
         onClose={onClose}
-        characters={characters}
         initialValue={null}
         getEpisode={getEpisodes}
       />

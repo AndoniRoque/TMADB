@@ -206,7 +206,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
                 <List display={displayList}>
                   {options
                     .filter((option) =>
-                      option.toLowerCase().includes(inputValue.toLowerCase())
+                      option?.toLowerCase().includes(inputValue.toLowerCase())
                     )
                     .map((option, index) => (
                       <ListItem

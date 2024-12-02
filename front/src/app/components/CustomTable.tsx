@@ -161,6 +161,7 @@ const CustomTable: React.FC<TableData> = ({
                     color={"whitesmoke"}
                     onClick={() => handleSortList("id")}
                     _hover={{ cursor: "pointer" }}
+                    w={{ base: "4vw", md: "6vw", lg: "8vw", xl: "10vw" }}
                   >
                     Episode id {sortOrder ? "▲" : "▼"}
                   </Th>
@@ -168,6 +169,7 @@ const CustomTable: React.FC<TableData> = ({
                     color={"whitesmoke"}
                     onClick={() => handleSortList("title")}
                     _hover={{ cursor: "pointer" }}
+                    w={{ base: "3vw", md: "4vw", lg: "5vw", xl: "6vw" }}
                   >
                     {" "}
                     Episode Title {sortOrder ? "▲" : "▼"}
@@ -175,6 +177,7 @@ const CustomTable: React.FC<TableData> = ({
                   <Th
                     color={"whitesmoke"}
                     onClick={() => handleSortList("caseNumber")}
+                    w={{ base: "5vw", md: "7vw", lg: "10vw", xl: "12vw" }}
                   >
                     {" "}
                     Case Number {sortOrder ? "▲" : "▼"}
@@ -189,6 +192,7 @@ const CustomTable: React.FC<TableData> = ({
                   <Th
                     color={"whitesmoke"}
                     onClick={() => handleSortList("date")}
+                    w={{ base: "4vw", md: "6vw", lg: "8vw", xl: "10vw" }}
                   >
                     {" "}
                     Release Date {sortOrder ? "▲" : "▼"}
@@ -196,6 +200,7 @@ const CustomTable: React.FC<TableData> = ({
                   <Th
                     color={"whitesmoke"}
                     onClick={() => handleSortList("season")}
+                    w={{ base: "3vw", md: "4vw", lg: "5vw", xl: "6vw" }}
                   >
                     Season {sortOrder ? "▲" : "▼"}
                   </Th>
