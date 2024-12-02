@@ -20,15 +20,16 @@ import ReactSelect from "react-select";
 import { useEffect, useState } from "react";
 import { EpisodeModalProps, EpisodeData, Character } from "../types/types";
 import axios from "axios";
+import { useCharacterStore } from "../store/useCharacterStore";
 const URL_BACK = "http://localhost:3333/api";
 
 const EpisodeModal: React.FC<EpisodeModalProps> = ({
   isOpen,
   onClose,
-  characters,
   initialValue,
   getEpisode,
 }) => {
+  const { characters, getCharacters } = useCharacterStore();
   const [id, setId] = useState<number>(initialValue?.id || 0);
   const [title, setTitle] = useState<string>(initialValue?.title || "");
   const [number, setNumber] = useState<number>(initialValue?.season || 1);
@@ -46,9 +47,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   const [selectedCharacter, setSelectedCharacter] = useState<number[]>(
     initialValue?.characterIds || []
   );
-  const [characterMessage, setCharacterMessage] = useState<string>("");
   const [charactersList, setCharactersList] = useState<Character[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
   const [isTitleValid, setIsTitleValid] = useState<boolean>(true);
   const [isReleaseDateValid, setIsReleaseDateValid] = useState<boolean>(true);
   const [isDescriptionValid, setIsDescriptionValid] = useState<boolean>(true);
@@ -57,30 +56,12 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   const [isSeasonValid, setIsSeasonsValid] = useState<boolean>(true);
   const toast = useToast();
 
-  const getCharacters = async () => {
-    try {
-      const characters = await axios.get(`${URL_BACK}/characters`, {
-        withCredentials: true,
-      });
-      if (characters.data.message) {
-        setCharacterMessage(characters.data.message);
-      } else {
-        setCharactersList(characters.data);
-      }
-    } catch (err) {
-      setCharacterMessage("Characters not found.");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const characterOptions = charactersList.map((character) => ({
     value: character.id,
     label: character.name,
   }));
 
-  const initialSelectedCharacters = characters.map((characterEntry) => ({
+  const initialSelectedCharacters = characters?.map((characterEntry) => ({
     value: characterEntry.character?.id,
     label: characterEntry.character?.name,
   }));
@@ -104,10 +85,6 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
       setSelectedCharacter(initialValue.characterIds);
     }
   }, [initialValue]);
-
-  useEffect(() => {
-    getCharacters();
-  }, []);
 
   const uploadEpisode = async (data: EpisodeData) => {
     try {
