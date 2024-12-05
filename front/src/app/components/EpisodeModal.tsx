@@ -47,7 +47,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   const [selectedCharacter, setSelectedCharacter] = useState<number[]>(
     initialValue?.characterIds || []
   );
-  const [charactersList, setCharactersList] = useState<Character[]>([]);
+  const [charactersList, setCharactersList] = useState<Character[]>(characters);
   const [isTitleValid, setIsTitleValid] = useState<boolean>(true);
   const [isReleaseDateValid, setIsReleaseDateValid] = useState<boolean>(true);
   const [isDescriptionValid, setIsDescriptionValid] = useState<boolean>(true);
@@ -140,7 +140,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   const updateEpisode = async (submitEpisode: EpisodeData) => {
     try {
       const updateEp = await axios.put(
-        `${URL_BACK}/episodes/${number}`,
+        `${URL_BACK}/episodes/${id}`,
         {
           ...submitEpisode,
           number: Number(submitEpisode.number),

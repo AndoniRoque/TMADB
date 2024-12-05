@@ -73,8 +73,6 @@ function Header() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/TMA_icon.webp" />
       </Head>
-
-      {/* Desktop Header */}
       <Flex
         w="100%"
         p={4}

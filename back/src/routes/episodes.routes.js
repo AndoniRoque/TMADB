@@ -161,6 +161,7 @@ router.get("/episodes/:id", async (req, res) => {
 });
 router.put("/episodes/:id", async (req, res) => {
   const { id } = req.params;
+  console.log("id > ", id);
   const {
     title,
     number,
@@ -171,6 +172,8 @@ router.put("/episodes/:id", async (req, res) => {
     season,
     characterIds = [],
   } = req.body;
+
+  console.log("body > ", req.body);
 
   if (isNaN(parseInt(id, 10))) {
     return res.status(400).json({ error: "Invalid ID format" });

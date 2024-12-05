@@ -68,17 +68,13 @@ export default function EpisodesPage() {
     getEpisodes();
     getCharacters();
   }, []);
-
   return (
     <>
       <Flex
         justifyContent={"space-between"}
         flexDirection={"row"}
-        ml={4}
-        mr={4}
-        marginTop={4}
         p={4}
-        mt={"8%"}
+        mt={150}
       >
         <Heading fontSize="4xl" color={"whitesmoke"} flex={1}>
           T.M.A Episodes
@@ -102,9 +98,9 @@ export default function EpisodesPage() {
           </Button>
         </Flex>
       </Flex>
-      <Flex justifyContent={"end"} mr={8}>
+      <Flex justifyContent={"end"} mr={4}>
         <SlideFade in={isOpenSearchBar} offsetX="500px" hidden={showSearchBar}>
-          <Flex justifyContent={"end"} alignItems={"center"} width={400}>
+          <Flex justifyContent={"end"} alignItems={"center"} width={290}>
             <Input
               placeholder="Search..."
               onChange={(e) => setSearch(e.target.value)}
@@ -126,13 +122,9 @@ export default function EpisodesPage() {
             <Skeleton ml={16} height="200px" />
           </>
         ) : episodes.length === 0 ? (
-          <>
-            <Flex justifyContent={"center"} alignItems={"center"} h={"70vh"}>
-              <Text color={"whitesmoke"}>
-                There are no episodes loaded yet.
-              </Text>
-            </Flex>
-          </>
+          <Flex justifyContent={"center"} alignItems={"center"} h={"70vh"}>
+            <Text color={"whitesmoke"}>There are no episodes loaded yet.</Text>
+          </Flex>
         ) : (
           <>
             {showTable ? (

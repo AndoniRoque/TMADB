@@ -62,72 +62,70 @@ function Login() {
   };
 
   return (
-    <>
-      <Flex
-        justifyContent={"space-evenly"}
-        flexDirection={"row"}
-        w={"full"}
-        color={"whitesmoke"}
-      >
-        <Flex w={"50%"} backgroundColor={"black"}>
-          <Image
-            src="TMA_Logo.webp"
-            alt="The Magnus Archive logo"
-            h={"100vh"}
-            fit="contain"
-          />
-        </Flex>
-        <Flex
-          fontFamily={"typewriter"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          minW={"50%"}
-          h={"75vh"}
-          p={16}
-          m={20}
-        >
-          <FormControl
-            display={"flex"}
-            justifyContent={"center"}
-            flexDirection={"column"}
-          >
-            <Flex justifyContent={"space-between"}>
-              <Text fontWeight={"bold"}> The Magnus Archive Database </Text>
-              <Text>
-                If you don't have an account yet{" "}
-                <Link href="/register" color={"green"}>
-                  Click here
-                </Link>
-              </Text>
-            </Flex>
-
-            <FormLabel mb={0} mt={4}>
-              {" "}
-              User{" "}
-            </FormLabel>
-            <Input value={user} onChange={(e) => setUser(e.target.value)} />
-            <FormLabel mb={0} mt={4}>
-              {" "}
-              Password{" "}
-            </FormLabel>
-            <Input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type="password"
-            />
-            <FormLabel mb={0} mt={4}>
-              {" "}
-              Email{" "}
-            </FormLabel>
-            <Input value={email} onChange={(e) => setEmail(e.target.value)} />
-            <Button mt={4} onClick={iniciarSesion}>
-              {" "}
-              Log in
-            </Button>
-          </FormControl>
-        </Flex>
+    <Flex
+      justifyContent={"space-evenly"}
+      flexDirection={"row"}
+      w={"full"}
+      color={"whitesmoke"}
+    >
+      <Flex w={"50%"} backgroundColor={"black"}>
+        <Image
+          src="TMA_Logo.webp"
+          alt="The Magnus Archive logo"
+          h={"100vh"}
+          fit="contain"
+        />
       </Flex>
-    </>
+      <Flex
+        fontFamily={"typewriter"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        minW={"50%"}
+        h={"75vh"}
+        p={16}
+        m={20}
+      >
+        <FormControl
+          display={"flex"}
+          justifyContent={"center"}
+          flexDirection={"column"}
+        >
+          <Flex justifyContent={"space-between"}>
+            <Text fontWeight={"bold"}> The Magnus Archive Database </Text>
+            <Text>
+              If you don't have an account yet{" "}
+              <Link href="/register" color={"green"}>
+                Click here
+              </Link>
+            </Text>
+          </Flex>
+
+          <FormLabel mb={0} mt={4}>
+            {" "}
+            User{" "}
+          </FormLabel>
+          <Input value={user} onChange={(e) => setUser(e.target.value)} />
+          <FormLabel mb={0} mt={4}>
+            {" "}
+            Password{" "}
+          </FormLabel>
+          <Input
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            type="password"
+          />
+          <FormLabel mb={0} mt={4}>
+            {" "}
+            Email{" "}
+          </FormLabel>
+          <Input value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Button mt={4} onClick={iniciarSesion}>
+            {" "}
+            Log in
+          </Button>
+        </FormControl>
+      </Flex>
+    </Flex>
   );
 }
 
