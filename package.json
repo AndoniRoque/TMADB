@@ -1,8 +1,13 @@
 {
   "dependencies": {
+    "@chakra-ui/react": "^3.2.3",
+    "@emotion/react": "^11.13.5",
+    "@emotion/styled": "^11.13.5",
     "add": "^2.0.6",
     "chakra": "^0.0.3",
     "field": "^1.0.1",
+    "framer-motion": "^11.13.1",
+    "reactflow": "^11.11.4",
     "snippet": "^0.1.0"
   }
 }

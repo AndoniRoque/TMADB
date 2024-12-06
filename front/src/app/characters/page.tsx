@@ -29,10 +29,16 @@ function characters() {
   const [search, setSearch] = useState<string>("");
   const [showSearchBar, setShowSearchBar] = useState<boolean>(true);
   const {
-    characters,
+    characters = [],
     getCharacters,
     loading: charactersLoading,
   } = useCharacterStore();
+
+  let characterList = [];
+
+  if (characters.length > 0) {
+    characterList = characters;
+  }
 
   const toggleTable = () => {
     onToggle();
@@ -116,7 +122,7 @@ function characters() {
                 gap={{ base: 2, md: 4, lg: 6, xl: 8 }}
                 mx={{ base: 2, md: 4, lg: 6, xl: 8 }}
               >
-                {characters.map((char: Character) => (
+                {characterList?.map((char: Character) => (
                   <>
                     <GridItem
                       key={char.id}
@@ -134,7 +140,7 @@ function characters() {
             ) : (
               <>
                 <CustomTable
-                  data={characters}
+                  data={characterList}
                   type="character"
                   refreshList={getCharacters}
                   searchTerm={search}

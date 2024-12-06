@@ -4,6 +4,7 @@ import passport from "./config/passport.config.js";
 import episodesRoutes from "./routes/episodes.routes.js";
 import charactersRoutes from "./routes/characters.routes.js";
 import usersRoutes from "./routes/users.routes.js";
+import graphRoutes from "./routes/graph.routes.js";
 import { ensureAuthenticated } from "./controllers/auth.controller.js";
 import cors from "cors";
 
@@ -34,6 +35,7 @@ app.use("/auth", usersRoutes);
 app.use("/api", usersRoutes);
 app.use("/api", episodesRoutes);
 app.use("/api", charactersRoutes);
+app.use("/api", graphRoutes);
 
 app.listen(3333, () => {
   console.log("Server on port ", 3333);

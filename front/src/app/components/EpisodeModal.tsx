@@ -24,7 +24,7 @@ const URL_BACK = "http://localhost:3333/api";
 const EpisodeModal: React.FC<EpisodeModalProps> = ({
   isOpen,
   onClose,
-  characters,
+  characters = [],
   initialValue,
   getEpisode,
 }) => {
@@ -77,10 +77,14 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
     label: character.name,
   }));
 
-  const initialSelectedCharacters = characters.map((characterEntry) => ({
-    value: characterEntry.character?.id,
-    label: characterEntry.character?.name,
-  }));
+  let initialSelectedCharacters: { value: number; label: string }[] = [];
+
+  if (characters.length > 0) {
+    initialSelectedCharacters = characters?.map((characterEntry) => ({
+      value: characterEntry.character?.id,
+      label: characterEntry.character?.name,
+    }));
+  }
 
   const handleCharacterChange = (selectedOptions: any) => {
     setSelectedCharacter(

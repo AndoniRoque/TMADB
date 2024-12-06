@@ -19,9 +19,7 @@ router.get("/characters", ensureAuthenticated, async (req, res) => {
     });
 
     if (!characters || characters.length === 0) {
-      return res
-        .status(200)
-        .json({ message: "There are no uploaded characters yet." });
+      return res.status(200).json([]);
     }
 
     res.status(200).json(characters);
@@ -34,6 +32,8 @@ router.get("/characters", ensureAuthenticated, async (req, res) => {
 
 router.post("/characters", ensureAuthenticated, async (req, res) => {
   const { name, description, episode } = req.body;
+  console.log(req.body);
+
   try {
     if (!name) res.status(400).json({ message: "Character name is missing." });
     if (!description)
@@ -55,6 +55,7 @@ router.post("/characters", ensureAuthenticated, async (req, res) => {
       data: {
         name,
         description,
+        episode,
       },
     });
 

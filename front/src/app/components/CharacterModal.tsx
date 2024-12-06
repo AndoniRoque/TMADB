@@ -35,10 +35,15 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   getEpisode,
 }) => {
   const {
-    characters,
+    characters = [],
     getCharacters,
     loading: charactersLoading,
   } = useCharacterStore();
+  const {
+    isOpen: isOpenInput,
+    onOpen: onOpenInput,
+    onClose: onCloseInput,
+  } = useDisclosure();
   const params = useParams();
   const characterId = params.id;
   const [characterDescription, setCharacterDescription] = useState<string>(
@@ -47,14 +52,14 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   const toast = useToast();
   const [displayList, setDisplayList] = useState<string>("none");
 
-  const {
-    isOpen: isOpenInput,
-    onOpen: onOpenInput,
-    onClose: onCloseInput,
-  } = useDisclosure();
+  let charactersList: any[] = [];
+  if (characters.length > 0) {
+    charactersList = characters;
+  }
+
   const [inputValue, setInputValue] = useState<string>("");
   const [options, setOptions] = useState<string[]>(
-    characters.map((char) => char.name) || []
+    charactersList?.map((char) => char.name) || []
   );
 
   const handleSubmit = async () => {
@@ -68,7 +73,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
       return;
     }
 
-    if (initialValue) {
+    if (initialValue.length > 0) {
       await updateCharacter({
         name: inputValue,
         description: characterDescription,
@@ -145,7 +150,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
 
-    const filteredOptions = characters
+    const filteredOptions = charactersList
       .map((char) => char.name)
       .filter((name) =>
         name.toLowerCase().includes(e.target.value.toLowerCase())
@@ -167,7 +172,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   }, []);
 
   useEffect(() => {
-    setOptions(characters.map((char) => char.name));
+    setOptions(charactersList.map((char) => char.name));
   }, [characters]);
 
   return (
