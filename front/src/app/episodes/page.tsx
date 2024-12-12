@@ -68,6 +68,7 @@ export default function EpisodesPage() {
     getEpisodes();
     getCharacters();
   }, []);
+
   return (
     <>
       <Flex

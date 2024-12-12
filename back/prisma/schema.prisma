@@ -7,17 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  ADMIN
+  USER
+}
+
 model Episode {
-  id          Int                    @id @default(autoincrement())
-  title       String                 @unique
-  number      Int
-  releaseDate DateTime
-  createdAt   DateTime               @default(now())
-  description String
-  heard       Boolean                @default(false)
-  caseNumber  String
-  season      Int                    @default(1)
-  characters  EpisodesOnCharacters[]
+  id           Int                    @id @default(autoincrement())
+  title        String                 @unique
+  number       Int
+  releaseDate  DateTime
+  createdAt    DateTime               @default(now())
+  description  String
+  caseNumber   String
+  season       Int                    @default(1)
+  characters   EpisodesOnCharacters[]
+  userEpisodes UserEpisodes[]
 }
 
 model Character {
@@ -37,8 +42,20 @@ model EpisodesOnCharacters {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  username String @unique
-  password String
-  mail     String @unique
+  id            Int            @id @default(autoincrement())
+  username      String         @unique
+  password      String
+  mail          String         @unique
+  role          UserRole       @default(USER)
+  episodesHeard UserEpisodes[]
+}
+
+model UserEpisodes {
+  userId    Int
+  episodeId Int
+  heard     Boolean @default(false)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  episode   Episode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, episodeId])
 }

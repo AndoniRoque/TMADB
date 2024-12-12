@@ -60,13 +60,17 @@ router.get("/status", (req, res) => {
 router.post("/register", async (req, res) => {
   const { username, mail, password } = req.body;
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
+    if (!username || !mail || !password) {
+      return res.status(400).json({ message: "Missing required fields." });
+    }
 
     const findUser = await prisma.user.findFirst({
       where: {
         username: { equals: username },
       },
     });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     if (findUser)
       return res
