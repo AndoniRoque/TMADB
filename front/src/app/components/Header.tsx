@@ -32,7 +32,8 @@ const URL_BACK = "http://localhost:3333/auth";
 
 function Header() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isLoggedIn, username, logout, checkAuthStatus } = useAuthStore();
+  const { isLoggedIn, username, logout, checkAuthStatus, role } =
+    useAuthStore();
   const btnRef = useRef();
   const toast = useToast();
   const router = useRouter();

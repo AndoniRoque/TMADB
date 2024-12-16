@@ -45,7 +45,6 @@ router.post("/episodes", async (req, res) => {
     description,
     caseNumber,
     season,
-    heard,
     characterIds,
   } = req.body;
 
@@ -104,7 +103,6 @@ router.post("/episodes", async (req, res) => {
         description,
         caseNumber,
         season,
-        heard,
         characters: {
           create: characterIds.map((characterId) => ({
             character: {
@@ -161,19 +159,16 @@ router.get("/episodes/:id", async (req, res) => {
 });
 router.put("/episodes/:id", async (req, res) => {
   const { id } = req.params;
-  console.log("id > ", id);
+
   const {
     title,
     number,
     releaseDate,
     description,
-    heard,
     caseNumber,
     season,
     characterIds = [],
   } = req.body;
-
-  console.log("body > ", req.body);
 
   if (isNaN(parseInt(id, 10))) {
     return res.status(400).json({ error: "Invalid ID format" });
@@ -217,7 +212,6 @@ router.put("/episodes/:id", async (req, res) => {
         number: number ?? undefined,
         releaseDate: releaseDate ? new Date(releaseDate) : undefined,
         description: description ?? undefined,
-        heard: heard ?? undefined,
         caseNumber: caseNumber ?? undefined,
         season: season ?? undefined,
       },
@@ -225,8 +219,6 @@ router.put("/episodes/:id", async (req, res) => {
         characters: true,
       },
     });
-
-    console.log("updatedEpisode", updatedEpisode);
 
     res.status(200).json(updatedEpisode);
   } catch (err) {

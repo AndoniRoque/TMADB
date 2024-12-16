@@ -1,4 +1,4 @@
-import {create} from "zustand";
+import { create } from "zustand";
 import axios from "axios";
 
 const URL_BACK = "http://localhost:3333/auth";
@@ -9,23 +9,31 @@ interface AuthState {
   setUser: (username: string) => void;
   logout: () => void;
   checkAuthStatus: () => Promise<void>;
+  role: string;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  isLoggedIn: false, 
+  isLoggedIn: false,
   username: "Annonymous User",
-  setUser: (username: string) => set({username, isLoggedIn: true}),
-  logout: () => set({username:"Annonymous User", isLoggedIn: false}),
+  setUser: (username: string) => set({ username, isLoggedIn: true }),
+  logout: () => set({ username: "Annonymous User", isLoggedIn: false }),
+  role: "USER",
   checkAuthStatus: async () => {
-    try{
-      const response = await axios.get(`${URL_BACK}/status`, {withCredentials: true});
-      if(response.data.authenticated) {
-        set({username: response.data.user.username, isLoggedIn: response.data.authenticated});
+    try {
+      const response = await axios.get(`${URL_BACK}/status`, {
+        withCredentials: true,
+      });
+      if (response.data.authenticated) {
+        set({
+          username: response.data.user.username,
+          isLoggedIn: response.data.authenticated,
+          role: response.data.user.role,
+        });
       } else {
-        set({username: "Annonymous User", isLoggedIn: false});
+        set({ username: "Annonymous User", isLoggedIn: false });
       }
     } catch (err) {
-      set({username: "Annonymous User", isLoggedIn: false})
+      set({ username: "Annonymous User", isLoggedIn: false });
     }
-  }
-}))
+  },
+}));
