@@ -15,7 +15,7 @@ const URL_BACK = "http://localhost:3333/api";
 
 function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
   const { username } = useAuthStore();
-  const [listOfEpisodesHeard, setListOfEpisodesHeard] = useState([]);
+  const [listOfEpisodesHeard, setListOfEpisodesHeard] = useState<Episode[]>([]);
 
   const heardEpisode = async (episode: Episode) => {
     try {
@@ -29,7 +29,7 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
           withCredentials: true,
         }
       );
-      refreshEpisodes();
+      heardEpisodes();
     } catch (err) {
       console.error(err);
       throw err;
@@ -38,24 +38,14 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
 
   const heardEpisodes = async () => {
     try {
-      const getEpisodes = await axios.post(
+      const getEpisodesbyUser = await axios.post(
         `${URL_BACK}/episodesByUser/`,
         { username: username },
         {
           withCredentials: true,
         }
       );
-      setListOfEpisodesHeard((prev) => {
-        const exists = prev.some((e: Episode) => e.id === episode.id);
-
-        if (exists) {
-          // Si ya existe, removerlo de la lista
-          return prev.filter((e: Episode) => e.id !== episode.id);
-        } else {
-          // Si no existe, agregarlo
-          return [...prev, { ...episode, heard: true }];
-        }
-      });
+      setListOfEpisodesHeard(getEpisodesbyUser.data.episodesHeard);
     } catch {
       console.error;
     }
@@ -102,7 +92,7 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
             <Flex w={"100%"} justifyContent={"flex-end"}>
               <Checkbox
                 isChecked={listOfEpisodesHeard.some(
-                  (heardEpisode: Episode) => heardEpisode.id === episode.id
+                  (heardEpisode) => heardEpisode.id === episode.id
                 )}
                 onChange={() => heardEpisode(episode)}
               />
@@ -110,7 +100,7 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
           </Flex>
           <Flex marginTop={"12%"}>
             {listOfEpisodesHeard.some(
-              (heardEpisode: Episode) => heardEpisode.id === episode.id
+              (heardEpisode) => heardEpisode.id === episode.id
             ) ? (
               <Text
                 mt={4}

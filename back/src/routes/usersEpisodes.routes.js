@@ -71,6 +71,7 @@ router.post("/episodesHeard", async (req, res, next) => {
     }
 
     const userId = findUser.id;
+    let userEpisode;
 
     // Buscar el registro existente en UserEpisodes
     const existingUserEpisode = await prisma.userEpisodes.findUnique({
