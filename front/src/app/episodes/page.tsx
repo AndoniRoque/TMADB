@@ -27,6 +27,7 @@ const URL_BACK = "http://localhost:3333/api";
 export default function EpisodesPage() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isOpenSearchBar, onToggle } = useDisclosure();
+  const { role } = useAuthStore();
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
@@ -80,15 +81,17 @@ export default function EpisodesPage() {
         <Heading fontSize="4xl" color={"whitesmoke"} flex={1}>
           T.M.A Episodes
         </Heading>
-        <Flex
-          justifyContent={"center"}
-          alignItems={"center"}
-          flexDirection={"row"}
-        >
-          <Button onClick={onOpen} mr={2}>
-            Upload Episode
-          </Button>
-        </Flex>
+        {role === "ADMIN" && (
+          <Flex
+            justifyContent={"center"}
+            alignItems={"center"}
+            flexDirection={"row"}
+          >
+            <Button onClick={onOpen} mr={2}>
+              Upload Episode
+            </Button>
+          </Flex>
+        )}
         <Flex
           justifyContent={"center"}
           alignItems={"center"}
