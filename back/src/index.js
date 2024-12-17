@@ -42,4 +42,4 @@ app.listen(3333, () => {
 
 // TODO: un endpoint que muestre todos los personajes por cada capitulo?
 // TODO: adapatar endponits para que usuarios puedan definir qué capitulos escucharon
-//
+// TODO: proteger las funcionalidades de ADMIN con user.role admin en el back
