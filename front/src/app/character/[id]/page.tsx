@@ -18,6 +18,7 @@ function character() {
   } = useDisclosure();
   const router = useRouter();
   const params = useParams();
+  const { role } = useAuthStore();
   const characterNumber = params.id;
   const [character, setCharacter] = useState<Character | null>(null);
   const [message, setMessage] = useState<string>("");
@@ -110,18 +111,20 @@ function character() {
   return (
     <>
       <Box position="fixed" m={4} top="15%" left="88%" zIndex={1000}>
-        <Flex flexDirection="column" gap={2}>
-          <Button onClick={handleEditCharacter} leftIcon={<EditIcon />}>
-            Edit Character
-          </Button>
-          <Button
-            onClick={deleteCharacter}
-            leftIcon={<DeleteIcon />}
-            color={"red"}
-          >
-            Delete Character
-          </Button>
-        </Flex>
+        {role === "ADMIN" && (
+          <Flex flexDirection="column" gap={2}>
+            <Button onClick={handleEditCharacter} leftIcon={<EditIcon />}>
+              Edit
+            </Button>
+            <Button
+              onClick={deleteCharacter}
+              leftIcon={<DeleteIcon />}
+              color={"red"}
+            >
+              Delete
+            </Button>
+          </Flex>
+        )}
       </Box>
 
       <InformationCard {...character} />

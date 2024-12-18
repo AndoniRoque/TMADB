@@ -33,13 +33,9 @@ export default function RootLayout({
   );
 }
 
-// TODO: Agregar buscador para poder filtrar los episodios y personajes.
 // TODO: Que las cards de episodes y characters ocupen el mismo espacio
 // TODO: ensanchar la tabla de personajes para que ocupe (mas o menos) el mismo espacio que la de episodios.
 // TODO: Todo tiene que ser responsive.
 // TODO: resolver update, le estoy pasando ids que no corresponden con la base de datos o algo asi.
 // que se yo. si justamente el numero del episodio es el que quiero editar, al cambiarlo me
 // descuaraja la bd
-// TODO: Una página que muestre todos los personajes de cada episodio.
-// -------------------------------------------------------------------------------------------------------------------
-// TODO: los usuarios van a poder marcar y desmarcar qué episodios vieron

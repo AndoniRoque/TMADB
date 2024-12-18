@@ -149,7 +149,7 @@ function Header() {
                 ))}
               </Flex>
             </Box>
-            <Flex justifyContent={"end"} alignItems="center" w={150}>
+            <Flex justifyContent={"end"} alignItems="center" minW={150}>
               <Menu>
                 <MenuButton
                   as={Button}
@@ -166,7 +166,7 @@ function Header() {
                     ></Icon>
                   }
                 >
-                  <Text color={"rgba(236, 223, 204, 0.8)"} ml={2}>
+                  <Text color={"rgba(236, 223, 204, 0.8)"} ml={2} w={150}>
                     {username}
                   </Text>
                 </MenuButton>

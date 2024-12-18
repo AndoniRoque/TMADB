@@ -19,6 +19,7 @@ import CharacterCard from "../components/CharacterCard";
 import CharacterModal from "../components/CharacterModal";
 import CustomTable from "../components/CustomTable";
 import { useCharacterStore } from "../store/useCharacterStore";
+import { useAuthStore } from "../store/useAuthStore";
 const URL_BACK = "http://localhost:3333/api";
 
 function characters() {
@@ -28,6 +29,7 @@ function characters() {
   const [showTable, setShowTable] = useState<boolean>(true);
   const [search, setSearch] = useState<string>("");
   const [showSearchBar, setShowSearchBar] = useState<boolean>(true);
+  const { role } = useAuthStore();
   const {
     characters,
     getCharacters,
@@ -62,10 +64,12 @@ function characters() {
           alignItems={"center"}
           flexDirection={"row"}
         >
-          <Button onClick={onOpen} mr={2}>
-            {" "}
-            Upload Character{" "}
-          </Button>
+          {role === "ADMIN" && (
+            <Button onClick={onOpen} mr={2}>
+              {" "}
+              Upload Character{" "}
+            </Button>
+          )}
           <Button onClick={toggleTable}>
             {showTable ? "Show Table" : "Show Grid"}
           </Button>

@@ -16,6 +16,7 @@ import EpisodeModal from "@/app/components/EpisodeModal";
 import { Character, Episode, EpisodeData } from "@/app/types/types";
 import InformationCard from "@/app/components/InformationCard";
 import { useCharacterStore } from "@/app/store/useCharacterStore";
+import { useAuthStore } from "@/app/store/useAuthStore";
 const URL_BACK = "http://localhost:3333/api";
 
 function Page() {
@@ -28,6 +29,7 @@ function Page() {
   const episodeNumber = params.id;
   const router = useRouter();
   const toast = useToast();
+  const { role } = useAuthStore();
   const [episode, setEpisode] = useState<Episode | null>(null);
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
@@ -131,18 +133,25 @@ function Page() {
   return (
     <>
       <Box position="fixed" m={4} top="15%" left="88%" zIndex={1000}>
-        <Flex flexDirection="column" gap={2}>
-          <Button onClick={handleEditEpisode} leftIcon={<EditIcon />}>
-            Edit Episode
-          </Button>
-          <Button
-            onClick={deleteEpisode}
-            leftIcon={<DeleteIcon />}
-            color={"red"}
-          >
-            Delete Episode
-          </Button>
-        </Flex>
+        {role === "ADMIN" && (
+          <Flex flexDirection="column" gap={2}>
+            <Button
+              onClick={handleEditEpisode}
+              justifyContent="center"
+              alignItems="center"
+            >
+              <EditIcon />
+            </Button>
+            <Button
+              onClick={deleteEpisode}
+              color={"red"}
+              justifyContent="center"
+              alignItems="center"
+            >
+              <DeleteIcon />
+            </Button>
+          </Flex>
+        )}
       </Box>
 
       <InformationCard {...episode} />
@@ -150,7 +159,6 @@ function Page() {
       <EpisodeModal
         isOpen={isOpenEpisode}
         onClose={onCloseEpisode}
-        characters={episode.characters}
         getEpisode={getEpisode}
         initialValue={episodeToEdit}
       />
