@@ -14,6 +14,7 @@ import {
 import dayjs from "dayjs";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useAuthStore } from "../store/useAuthStore";
 const URL_BACK = "http://localhost:3333/api";
 
 const CustomTable: React.FC<TableData> = ({
@@ -25,6 +26,8 @@ const CustomTable: React.FC<TableData> = ({
   const navigate = useRouter();
   const [sortList, setSortList] = useState<Character[] | Episode[]>(data);
   const [sortOrder, setSortOrder] = useState<boolean>(false);
+  const { username } = useAuthStore();
+  const [listOfEpisodesHeard, setListOfEpisodesHeard] = useState<Episode[]>([]);
 
   const handleNavigation = (path: string) => {
     navigate.push(path);
@@ -32,19 +35,35 @@ const CustomTable: React.FC<TableData> = ({
 
   const heardEpisode = async (episode: Episode) => {
     try {
-      await axios.put(
-        `${URL_BACK}/episodes/${episode.id}`,
+      const { data } = await axios.post(
+        `${URL_BACK}/episodesHeard/`,
         {
-          heard: !episode.heard,
+          userId: username,
+          episodeId: episode.id,
         },
         {
           withCredentials: true,
         }
       );
-      refreshList();
+      await heardEpisodes();
     } catch (err) {
       console.error(err);
       throw err;
+    }
+  };
+
+  const heardEpisodes = async () => {
+    try {
+      const getEpisodesbyUser = await axios.post(
+        `${URL_BACK}/episodesByUser/`,
+        { username: username },
+        {
+          withCredentials: true,
+        }
+      );
+      setListOfEpisodesHeard(getEpisodesbyUser.data.episodesHeard);
+    } catch {
+      console.error;
     }
   };
 
@@ -126,6 +145,10 @@ const CustomTable: React.FC<TableData> = ({
     setSortList(data);
   }, [data]);
 
+  useEffect(() => {
+    heardEpisodes();
+  }, []);
+
   return (
     <>
       <TableContainer>
@@ -161,7 +184,7 @@ const CustomTable: React.FC<TableData> = ({
                     color={"whitesmoke"}
                     onClick={() => handleSortList("id")}
                     _hover={{ cursor: "pointer" }}
-                    w={{ base: "4vw", md: "6vw", lg: "8vw", xl: "10vw" }}
+                    w={{ base: "3vw", md: "4vw", lg: "5vw", xl: "7vw" }}
                   >
                     Episode id {sortOrder ? "▲" : "▼"}
                   </Th>
@@ -169,7 +192,7 @@ const CustomTable: React.FC<TableData> = ({
                     color={"whitesmoke"}
                     onClick={() => handleSortList("title")}
                     _hover={{ cursor: "pointer" }}
-                    w={{ base: "3vw", md: "4vw", lg: "5vw", xl: "6vw" }}
+                    w={{ base: "3vw", md: "4vw", lg: "6vw", xl: "8vw" }}
                   >
                     {" "}
                     Episode Title {sortOrder ? "▲" : "▼"}
@@ -285,7 +308,9 @@ const CustomTable: React.FC<TableData> = ({
                     whiteSpace={"nowrap"}
                     textOverflow={"ellipsis"}
                   >
-                    {episode.heard ? (
+                    {listOfEpisodesHeard.some(
+                      (heardEpisode) => heardEpisode.id === episode.id
+                    ) ? (
                       episode.description
                     ) : (
                       <Text
@@ -293,10 +318,10 @@ const CustomTable: React.FC<TableData> = ({
                         textAlign={"center"}
                         minW={{
                           base: 100,
-                          sm: 200,
-                          md: 300,
-                          lg: 400,
-                          xl: 1000,
+                          sm: 100,
+                          md: 100,
+                          lg: 100,
+                          xl: 100,
                         }}
                       >
                         [Redacted]
@@ -315,11 +340,10 @@ const CustomTable: React.FC<TableData> = ({
                   </Td>
                   <Td>
                     <Checkbox
-                      isChecked={episode.heard}
-                      onChange={(e) => {
-                        e.preventDefault();
-                        heardEpisode(episode);
-                      }}
+                      isChecked={listOfEpisodesHeard.some(
+                        (heardEpisode) => heardEpisode.id === episode.id
+                      )}
+                      onChange={() => heardEpisode(episode)}
                     ></Checkbox>
                   </Td>
                 </Tr>

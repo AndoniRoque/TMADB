@@ -38,8 +38,8 @@ router.post("/episodesByUser", async (req, res, next) => {
 
     if (!episodesHeard.length) {
       return res
-        .status(404)
-        .json({ message: "No episodes heard by this user" });
+        .status(200)
+        .json({ user: findUser.username, episodesHeard: [] });
     }
     res.status(200).json({
       user: findUser.username,

@@ -29,7 +29,7 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
           withCredentials: true,
         }
       );
-      heardEpisodes();
+      await heardEpisodes();
     } catch (err) {
       console.error(err);
       throw err;
@@ -99,7 +99,7 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
             </Flex>
           </Flex>
           <Flex marginTop={"12%"}>
-            {listOfEpisodesHeard.some(
+            {listOfEpisodesHeard?.some(
               (heardEpisode) => heardEpisode.id === episode.id
             ) ? (
               <Text
