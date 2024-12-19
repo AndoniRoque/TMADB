@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={typewriter.className}>
-      <body style={{ margin: "0px", backgroundColor: "rgba(24,57,43, 1)" }}>
+      <body style={{ margin: "0", backgroundColor: "rgba(24,57,43, 1)" }}>
         <ChakraProvider theme={customTheme}>
           <Providers>
             <ReactFlowProvider>

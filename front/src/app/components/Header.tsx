@@ -79,7 +79,7 @@ function Header() {
       <Flex
         w="100%"
         p={4}
-        minH="10vh"
+        minH={10}
         bg={{
           base: "conic-gradient(from 90deg at 25% 50%, #0f1110, #252b26)",
           md: "conic-gradient(from 90deg at 50% 50%, #0f1110, #252b26)",
@@ -149,7 +149,7 @@ function Header() {
                 ))}
               </Flex>
             </Box>
-            <Flex justifyContent={"end"} alignItems="center" minW={150}>
+            <Flex justifyContent={"end"}>
               <Menu>
                 <MenuButton
                   as={Button}
@@ -162,11 +162,11 @@ function Header() {
                     <Icon
                       as={FaUser}
                       boxSize={6}
-                      color={"rgba(236, 223, 204, 0.8)"}
+                      color="rgba(236, 223, 204, 0.8)"
                     ></Icon>
                   }
                 >
-                  <Text color={"rgba(236, 223, 204, 0.8)"} ml={2} w={150}>
+                  <Text color={"rgba(236, 223, 204, 0.8)"} ml={2}>
                     {username}
                   </Text>
                 </MenuButton>
@@ -183,7 +183,7 @@ function Header() {
       <Flex
         w="100%"
         p={4}
-        minH="10vh"
+        minH={10}
         bg="conic-gradient(from 90deg at 77% 50%, #0f1110, #252b26)"
         backgroundColor="black"
         boxShadow="0 4px 15px rgba(0, 0, 0, 0.4)"

@@ -67,7 +67,7 @@ function characters() {
           {role === "ADMIN" && (
             <Button onClick={onOpen} mr={2}>
               {" "}
-              Upload Character{" "}
+              Add{" "}
             </Button>
           )}
           <Button onClick={toggleTable}>
@@ -104,7 +104,7 @@ function characters() {
             <Skeleton ml={16} height={"20vh"} />
           </>
         ) : characters.length === 0 ? (
-          <Flex justifyContent={"center"} alignItems={"center"} h={"70vh"}>
+          <Flex justifyContent={"center"} alignItems={"center"} h={500}>
             <Text color={"whitesmoke"}>
               There are no characters loaded yet.
             </Text>

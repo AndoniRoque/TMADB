@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -11,11 +11,35 @@ import {
 import CharacterCard from "./CharacterCard";
 import dayjs from "dayjs";
 import { Character, Episode } from "../types/types";
+import { useAuthStore } from "../store/useAuthStore";
+import axios from "axios";
+const URL_BACK = "http://localhost:3333/api";
 
 type Props = Character | Episode;
 
 const InformationCard: React.FC<Props> = (info) => {
   const isEpisode = (info: Props): info is Episode => "title" in info;
+  const { username } = useAuthStore();
+  const [listOfEpisodesHeard, setListOfEpisodesHeard] = useState<Episode[]>([]);
+
+  const heardEpisodes = async () => {
+    try {
+      const getEpisodesbyUser = await axios.post(
+        `${URL_BACK}/episodesByUser/`,
+        { username: username },
+        {
+          withCredentials: true,
+        }
+      );
+      setListOfEpisodesHeard(getEpisodesbyUser.data.episodesHeard);
+    } catch {
+      console.error;
+    }
+  };
+
+  useEffect(() => {
+    heardEpisodes();
+  }, []);
 
   return (
     <Flex
@@ -51,7 +75,9 @@ const InformationCard: React.FC<Props> = (info) => {
           </Flex>
         )}
         {isEpisode(info) ? (
-          info.heard ? (
+          listOfEpisodesHeard?.some(
+            (heardEpisode) => heardEpisode.id === info.id
+          ) ? (
             <Text fontSize="2xl" mt={8}>
               {info.description}
             </Text>

@@ -236,7 +236,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent borderRadius={0} backgroundColor={"#E8DCB8"}>
+      <ModalContent>
         <ModalHeader>
           {initialValue ? "Edit Episode" : "Upload Episode"}
         </ModalHeader>
@@ -310,18 +310,6 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
               placeholder="Character appearances..."
               onChange={handleCharacterChange}
               defaultValue={initialSelectedCharacters}
-              styles={{
-                control: (baseStyles) => ({
-                  ...baseStyles,
-                  backgroundColor: "#E8DCB8",
-                  borderColor: "gray",
-                }),
-                menu: (baseStyles) => ({
-                  ...baseStyles,
-                  backgroundColor: "#E8DCB8",
-                  borderColor: "gray",
-                }),
-              }}
             />
             <Flex flexDirection={"row"} alignItems={"end"}>
               <FormLabel mt={5} mb={0}>

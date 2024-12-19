@@ -121,7 +121,7 @@ function Page() {
         flexDirection="column"
         alignItems="center"
         justifyContent="center"
-        h="50vh"
+        h={100}
       >
         <Skeleton ml={16} height="100px" width="80%" w="600px" />
       </Box>

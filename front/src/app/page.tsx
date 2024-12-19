@@ -65,14 +65,14 @@ function Login() {
     <Flex
       justifyContent={"space-evenly"}
       flexDirection={"row"}
-      w={"full"}
       color={"whitesmoke"}
+      w={"full"}
     >
-      <Flex w={"50%"} backgroundColor={"black"}>
+      <Flex w={1000} backgroundColor={"black"} mt={10}>
         <Image
           src="TMA_Logo.webp"
           alt="The Magnus Archive logo"
-          h={"100vh"}
+          h={1000}
           fit="contain"
         />
       </Flex>
@@ -80,10 +80,8 @@ function Login() {
         fontFamily={"typewriter"}
         justifyContent={"center"}
         alignItems={"center"}
-        minW={"50%"}
-        h={"75vh"}
-        p={16}
-        m={20}
+        minW={1000}
+        p={20}
       >
         <FormControl
           display={"flex"}

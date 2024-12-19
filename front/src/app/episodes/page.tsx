@@ -88,7 +88,7 @@ export default function EpisodesPage() {
             flexDirection={"row"}
           >
             <Button onClick={onOpen} mr={2}>
-              Upload Episode
+              Add
             </Button>
           </Flex>
         )}
@@ -126,7 +126,7 @@ export default function EpisodesPage() {
             <Skeleton ml={16} height="200px" />
           </>
         ) : episodes.length === 0 ? (
-          <Flex justifyContent={"center"} alignItems={"center"} h={"70vh"}>
+          <Flex justifyContent={"center"} alignItems={"center"} h={500}>
             <Text color={"whitesmoke"}>There are no episodes loaded yet.</Text>
           </Flex>
         ) : (

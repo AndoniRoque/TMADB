@@ -59,26 +59,23 @@ function Register() {
     <Flex
       justifyContent={"space-evenly"}
       flexDirection={"row"}
-      w={"full"}
       color={"whitesmoke"}
+      w={"full"}
     >
-      <Box display={"flex"} w={"50%"} backgroundColor={"black"}>
+      <Flex w={1000} backgroundColor={"black"} mt={10}>
         <Image
           src="TMA_Logo.webp"
           alt="The Magnus Archive logo"
-          h={"100vh"}
+          h={1000}
           fit="contain"
         />
-      </Box>
-      <Box
-        display={"flex"}
-        minW={"50%"}
-        h={"75vh"}
-        p={16}
-        m={20}
+      </Flex>
+      <Flex
+        fontFamily={"typewriter"}
         justifyContent={"center"}
         alignItems={"center"}
-        fontFamily={"typewriter"}
+        minW={1000}
+        p={20}
       >
         <FormControl
           display={"flex"}
@@ -87,12 +84,6 @@ function Register() {
         >
           <Flex justifyContent={"space-between"}>
             <Text fontWeight={"bold"}> The Magnus Archive Database </Text>
-            <Text>
-              If you don't have an account yet{" "}
-              <Link href="/register" color={"green"}>
-                Click here
-              </Link>
-            </Text>
           </Flex>
 
           <FormLabel mb={0} mt={4}>
@@ -111,6 +102,15 @@ function Register() {
           />
           <FormLabel mb={0} mt={4}>
             {" "}
+            Reenter Password{" "}
+          </FormLabel>
+          <Input
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            type="password"
+          />
+          <FormLabel mb={0} mt={4}>
+            {" "}
             Email{" "}
           </FormLabel>
           <Input value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -119,7 +119,7 @@ function Register() {
             Sign in
           </Button>
         </FormControl>
-      </Box>
+      </Flex>
     </Flex>
   );
 }

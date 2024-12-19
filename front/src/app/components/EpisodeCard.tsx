@@ -89,7 +89,7 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
               {episode.number < 10 ? `0${episode.number}` : episode.number}:{" "}
               {episode.title}
             </Text>
-            <Flex w={"100%"} justifyContent={"flex-end"}>
+            <Flex w={100} h={100} justifyContent={"center"}>
               <Checkbox
                 isChecked={listOfEpisodesHeard.some(
                   (heardEpisode) => heardEpisode.id === episode.id
