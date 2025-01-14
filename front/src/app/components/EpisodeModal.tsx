@@ -21,6 +21,7 @@ import { useEffect, useState } from "react";
 import { EpisodeModalProps, EpisodeData, Character } from "../types/types";
 import axios from "axios";
 import { useCharacterStore } from "../store/useCharacterStore";
+import { sub } from "date-fns";
 const URL_BACK = "http://localhost:3333/api";
 
 const EpisodeModal: React.FC<EpisodeModalProps> = ({
@@ -47,13 +48,16 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   const [selectedCharacter, setSelectedCharacter] = useState<number[]>(
     initialValue?.characterIds || []
   );
-  const [charactersList, setCharactersList] = useState<Character[]>(characters);
+  const [charactersList, setCharactersList] = useState<Character[]>(characters); // lista completa de personajes
   const [isTitleValid, setIsTitleValid] = useState<boolean>(true);
   const [isReleaseDateValid, setIsReleaseDateValid] = useState<boolean>(true);
   const [isDescriptionValid, setIsDescriptionValid] = useState<boolean>(true);
   const [isCaseNumberValid, setIsCaseNumberValid] = useState<boolean>(true);
   const [isNumberValid, setIsNumberValid] = useState<boolean>(true);
   const [isSeasonValid, setIsSeasonsValid] = useState<boolean>(true);
+  const [charactersOnEpisode, setCharactersOnEpisode] = useState<Character[]>(
+    initialValue?.characters || []
+  );
   const toast = useToast();
 
   const characterOptions = charactersList.map((character) => ({
@@ -61,15 +65,55 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
     label: character.name,
   }));
 
-  const initialSelectedCharacters = characters?.map((characterEntry) => ({
-    value: characterEntry.character?.id,
-    label: characterEntry.character?.name,
-  }));
+  useEffect(() => {
+    setCharactersOnEpisode(initialValue?.characters || []);
+  }, [initialValue?.characters]);
 
-  const handleCharacterChange = (selectedOptions: any) => {
-    setSelectedCharacter(
-      selectedOptions ? selectedOptions.map((option: any) => option.value) : []
-    );
+  console.log("characters on episode >>>", charactersOnEpisode);
+
+  const listOfCharactersOnThisEpisode =
+    charactersOnEpisode?.map((char: any) => {
+      // Check if we're dealing with a nested character object or direct character
+      if (char.character) {
+        return {
+          value: char.character.id,
+          label: char.character.name,
+        };
+      } else {
+        return {
+          value: char.value,
+          label: char.label,
+        };
+      }
+    }) || []; // Add a default empty array in case charactersOnEpisode is null
+
+  const handleCharacterChange = (newSelectedOptions: any) => {
+    // Update the display state
+    setCharactersOnEpisode(newSelectedOptions || []);
+
+    // Update the IDs state with the new selection
+    const newSelectedIds = newSelectedOptions
+      ? newSelectedOptions.map((opt: any) => opt.value)
+      : [];
+    setSelectedCharacter(newSelectedIds);
+
+    console.log("New selected character IDs:", newSelectedIds); // For debugging
+  };
+
+  const getInitialSelectedCharacters = () => {
+    if (!initialValue?.characterIds || !characters) return [];
+
+    return initialValue.characterIds
+      .map((id) => {
+        const character = characters.find((c) => c.id === id);
+        return character
+          ? {
+              value: character.id,
+              label: character.name,
+            }
+          : null;
+      })
+      .filter(Boolean);
   };
 
   useEffect(() => {
@@ -139,12 +183,35 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
 
   const updateEpisode = async (submitEpisode: EpisodeData) => {
     try {
+      const updatedFields: Partial<EpisodeData> = {};
+
+      if (submitEpisode.title !== initialValue?.title)
+        updatedFields.title = submitEpisode.title;
+      if (submitEpisode.number !== initialValue?.number)
+        updatedFields.number = submitEpisode.number;
+      if (submitEpisode.releaseDate !== initialValue?.releaseDate)
+        updatedFields.releaseDate = submitEpisode.releaseDate;
+      if (submitEpisode.description !== initialValue?.description)
+        updatedFields.description = submitEpisode.description;
+      if (submitEpisode.caseNumber !== initialValue?.caseNumber)
+        updatedFields.caseNumber = submitEpisode.caseNumber;
+      if (submitEpisode.season !== initialValue?.season)
+        updatedFields.season = submitEpisode.season;
+      if (
+        JSON.stringify(submitEpisode.characterIds) !==
+        JSON.stringify(initialValue?.characterIds)
+      ) {
+        updatedFields.characterIds = submitEpisode.characterIds;
+      }
+
+      console.log(">>", updatedFields.characterIds);
+
       const updateEp = await axios.put(
         `${URL_BACK}/episodes/${id}`,
         {
-          ...submitEpisode,
-          number: Number(submitEpisode.number),
-          season: Number(submitEpisode.season),
+          ...updatedFields,
+          number: Number(number),
+          season: Number(season),
         },
         {
           withCredentials: true,
@@ -230,6 +297,24 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   };
 
   useEffect(() => {
+    if (initialValue?.characterIds && characters.length > 0) {
+      const initialSelected = initialValue.characterIds
+        .map((characterId) => {
+          const character = characters.find((c) => c.id === characterId);
+          return character
+            ? {
+                value: character.id,
+                label: character.name,
+              }
+            : null;
+        })
+        .filter(Boolean);
+
+      setSelectedCharacter(initialValue.characterIds);
+    }
+  }, [initialValue, characters]);
+
+  useEffect(() => {
     getCharacters();
   }, []);
 
@@ -309,7 +394,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
               isMulti
               placeholder="Character appearances..."
               onChange={handleCharacterChange}
-              defaultValue={initialSelectedCharacters}
+              value={listOfCharactersOnThisEpisode} // Usar selectedCharacters en lugar de getInitialSelectedCharacters()
             />
             <Flex flexDirection={"row"} alignItems={"end"}>
               <FormLabel mt={5} mb={0}>
