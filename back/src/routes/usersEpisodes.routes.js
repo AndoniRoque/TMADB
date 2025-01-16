@@ -2,14 +2,16 @@ import { Router } from "express";
 import passport from "../config/passport.config.js";
 import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
+import {
+  ensureAdmin,
+  ensureAuthenticated,
+} from "../controllers/auth.controller.js";
 
 const prisma = new PrismaClient();
 
 const router = Router();
 
-router.post("/episodesByUser", async (req, res, next) => {
-  console.log(req.body);
-
+router.post("/episodesByUser", ensureAuthenticated, async (req, res, next) => {
   const { username } = req.body;
 
   if (!username) {
@@ -23,7 +25,6 @@ router.post("/episodesByUser", async (req, res, next) => {
       },
     });
 
-    console.log(findUser);
     const userId = findUser.id;
 
     const episodesHeard = await prisma.userEpisodes.findMany({
@@ -50,8 +51,7 @@ router.post("/episodesByUser", async (req, res, next) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-router.post("/episodesHeard", async (req, res, next) => {
-  console.log(req.body);
+router.post("/episodesHeard", ensureAuthenticated, async (req, res, next) => {
   const { userId: username, episodeId } = req.body;
 
   if (!username || !episodeId) {

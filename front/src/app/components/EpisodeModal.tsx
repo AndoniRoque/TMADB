@@ -69,8 +69,6 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
     setCharactersOnEpisode(initialValue?.characters || []);
   }, [initialValue?.characters]);
 
-  console.log("characters on episode >>>", charactersOnEpisode);
-
   const listOfCharactersOnThisEpisode =
     charactersOnEpisode?.map((char: any) => {
       // Check if we're dealing with a nested character object or direct character
@@ -96,8 +94,6 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
       ? newSelectedOptions.map((opt: any) => opt.value)
       : [];
     setSelectedCharacter(newSelectedIds);
-
-    console.log("New selected character IDs:", newSelectedIds); // For debugging
   };
 
   const getInitialSelectedCharacters = () => {
@@ -203,8 +199,6 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
       ) {
         updatedFields.characterIds = submitEpisode.characterIds;
       }
-
-      console.log(">>", updatedFields.characterIds);
 
       const updateEp = await axios.put(
         `${URL_BACK}/episodes/${id}`,
@@ -396,17 +390,6 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
               onChange={handleCharacterChange}
               value={listOfCharactersOnThisEpisode} // Usar selectedCharacters en lugar de getInitialSelectedCharacters()
             />
-            <Flex flexDirection={"row"} alignItems={"end"}>
-              <FormLabel mt={5} mb={0}>
-                Heard Episode{" "}
-              </FormLabel>
-              <Checkbox
-                isChecked={heard}
-                onChange={(e) => setHeard(e.target.checked)}
-                backgroundColor={"white"}
-                mb={2}
-              ></Checkbox>
-            </Flex>
           </FormControl>
         </ModalBody>
         <ModalFooter>

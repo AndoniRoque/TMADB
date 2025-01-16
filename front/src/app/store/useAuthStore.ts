@@ -23,7 +23,9 @@ export const useAuthStore = create<AuthState>((set) => ({
       const response = await axios.get(`${URL_BACK}/status`, {
         withCredentials: true,
       });
+      console.log(response.data);
       if (response.data.authenticated) {
+        console.log(">>>>", response.data.user.role);
         set({
           username: response.data.user.username,
           isLoggedIn: response.data.authenticated,
