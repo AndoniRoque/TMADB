@@ -2,12 +2,13 @@
 import InformationCard from "@/app/components/InformationCard";
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Character } from "@/app/types/types";
+import { Character, Episode } from "@/app/types/types";
 import axios from "axios";
 import { Box, Button, Flex, useDisclosure, useToast } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import CharacterModal from "@/app/components/CharacterModal";
 import { useAuthStore } from "@/app/store/useAuthStore";
+import CustomTable from "@/app/components/CustomTable";
 const URL_BACK = "http://localhost:3333/api";
 
 function character() {
@@ -23,6 +24,8 @@ function character() {
   const [character, setCharacter] = useState<Character | null>(null);
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
+  const [search, setSearch] = useState<string>("");
+  const [episodesPerCharacter, setEpisodesPerCharacter] = useState<Episode[]>();
   const [characterToEdit, setCharacterToEdit] = useState<Character | null>(
     null
   );
@@ -92,8 +95,24 @@ function character() {
     }
   };
 
+  const getEpisodeAppearences = async () => {
+    try {
+      const episodes = await axios.get(
+        `${URL_BACK}/characters/${characterNumber}/episodes`,
+        { withCredentials: true }
+      );
+      setEpisodesPerCharacter(episodes.data.episodes);
+    } catch (err) {
+      console.error(err);
+      setMessage("The episode appearences couldn't be loaded.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     getCharacter();
+    getEpisodeAppearences();
   }, [characterNumber]);
 
   if (loading) {
@@ -135,6 +154,16 @@ function character() {
         initialValue={character}
         getEpisode={getCharacter}
       />
+
+      <Box m={4} color={"whitesmoke"}>
+        <h2>Episodes appearences:</h2>
+        <CustomTable
+          data={episodesPerCharacter}
+          type="episode"
+          refreshList={getEpisodeAppearences}
+          searchTerm={search}
+        />
+      </Box>
     </>
   );
 }
