@@ -26,7 +26,7 @@ function Page() {
     onClose: onCloseEpisode,
   } = useDisclosure();
   const params = useParams();
-  const episodeNumber = params.id;
+  const episodeNumber = params.number;
   const router = useRouter();
   const toast = useToast();
   const { role } = useAuthStore();
@@ -39,6 +39,8 @@ function Page() {
     getCharacters,
     loading: charactersLoading,
   } = useCharacterStore();
+
+  console.log(">", episode);
 
   const handleEditEpisode = () => {
     if (episode) {
@@ -66,6 +68,7 @@ function Page() {
           withCredentials: true,
         }
       );
+      console.log(">>>>>", response);
       setEpisode(response.data);
     } catch (err) {
       console.error(err);

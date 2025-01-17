@@ -12,6 +12,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Select,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
@@ -55,10 +56,28 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   const [isCaseNumberValid, setIsCaseNumberValid] = useState<boolean>(true);
   const [isNumberValid, setIsNumberValid] = useState<boolean>(true);
   const [isSeasonValid, setIsSeasonsValid] = useState<boolean>(true);
+  const [entity, setEntity] = useState<string>(initialValue?.entity || "");
   const [charactersOnEpisode, setCharactersOnEpisode] = useState<Character[]>(
     initialValue?.characters || []
   );
   const toast = useToast();
+  const entities = [
+    "BURIED",
+    "CORRUPTION",
+    "DARK",
+    "DESOLATION",
+    "END",
+    "EXTINCTION",
+    "EYE",
+    "FLESH",
+    "HUNT",
+    "LONELY",
+    "SLAUGHTER",
+    "SPIRAL",
+    "STRANGER",
+    "VAST",
+    "WEB",
+  ];
 
   const characterOptions = charactersList.map((character) => ({
     value: character.id,
@@ -285,6 +304,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
       caseNumber,
       season,
       characterIds: selectedCharacter,
+      entity,
     };
 
     initialValue ? updateEpisode(data) : uploadEpisode(data);
@@ -390,6 +410,20 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
               onChange={handleCharacterChange}
               value={listOfCharactersOnThisEpisode} // Usar selectedCharacters en lugar de getInitialSelectedCharacters()
             />
+            <FormLabel mt={5} mb={0}>
+              Entity
+            </FormLabel>
+            <Select
+              placeholder="Select an entity"
+              value={entity} // El estado que controla el valor seleccionado
+              onChange={(e) => setEntity(e.target.value)} // Actualiza el estado cuando cambias la selección
+            >
+              {entities.map((entity) => (
+                <option key={entity} value={entity}>
+                  {entity}
+                </option>
+              ))}
+            </Select>
           </FormControl>
         </ModalBody>
         <ModalFooter>

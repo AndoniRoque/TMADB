@@ -35,6 +35,7 @@ export interface EpisodeData {
   season: number;
   characters?: Character[];
   characterIds: number[];
+  entity: string;
 }
 
 export interface CharacterData {

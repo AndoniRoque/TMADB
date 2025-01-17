@@ -148,7 +148,7 @@ export default function EpisodesPage() {
                     minW={{ base: 300, md: 500, lg: 500, xl: 500 }}
                   >
                     <LinkBox>
-                      <LinkOverlay href={`/episode/${e.id}`}>
+                      <LinkOverlay href={`/episode/${e.number}`}>
                         <EpisodeCard
                           episode={e}
                           refreshEpisodes={getEpisodes}

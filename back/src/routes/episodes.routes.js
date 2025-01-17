@@ -48,6 +48,7 @@ router.post("/episodes", ensureAuthenticated, ensureAdmin, async (req, res) => {
     caseNumber,
     season,
     characterIds,
+    entity,
   } = req.body;
 
   try {
@@ -66,6 +67,7 @@ router.post("/episodes", ensureAuthenticated, ensureAdmin, async (req, res) => {
         .json({ message: "The episode description is missing." });
     if (!caseNumber)
       return res.status(400).json({ message: "Case number is missing." });
+    if (!entity) return res.status(400).json({ message: "Entity is missing." });
 
     const existingEpisode = await prisma.episode.findFirst({
       where: {
@@ -96,6 +98,7 @@ router.post("/episodes", ensureAuthenticated, ensureAdmin, async (req, res) => {
         description,
         caseNumber,
         season,
+        entity,
         characters: {
           create: characterIds.map((characterId) => ({
             character: {
@@ -122,8 +125,8 @@ router.post("/episodes", ensureAuthenticated, ensureAdmin, async (req, res) => {
       .json({ error: "Error getting episodes", details: err.message });
   }
 });
-router.get("/episodes/:id", async (req, res) => {
-  const id = parseInt(req.params.id, 10);
+router.get("/episodes/:number", async (req, res) => {
+  const id = parseInt(req.params.number, 10);
 
   if (isNaN(id)) {
     return res.status(400).json({ error: "Invalid ID format" });
@@ -131,7 +134,7 @@ router.get("/episodes/:id", async (req, res) => {
 
   try {
     const episode = await prisma.episode.findFirst({
-      where: { id },
+      where: { number: id },
       include: {
         characters: {
           include: {
