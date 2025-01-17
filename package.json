@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@react-native-vector-icons/common": "^11.0.0",
     "add": "^2.0.6",
     "chakra": "^0.0.3",
     "classcat": "^5.0.5",

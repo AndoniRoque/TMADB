@@ -4,6 +4,7 @@ import {
   Flex,
   Grid,
   GridItem,
+  Image,
   LinkBox,
   LinkOverlay,
   Text,
@@ -60,11 +61,23 @@ const InformationCard: React.FC<Props> = (info) => {
         boxShadow={"2px 0px 10px rgba(0,0,0,0.5)"}
         mb={16}
       >
-        <Text fontSize="4xl" textAlign={"left"}>
-          {isEpisode(info)
-            ? `MAG ${info.number} - ${info.title}`
-            : `Name: ${info.name}`}
-        </Text>
+        <Flex justifyContent={"space-between"} alignItems={"center"}>
+          <Text fontSize="4xl" textAlign={"left"}>
+            {isEpisode(info)
+              ? `MAG ${info.number} - ${info.title}`
+              : `Name: ${info.name}`}
+          </Text>
+          {listOfEpisodesHeard?.some(
+            (heardEpisode) => heardEpisode.id === info.id
+          ) && (
+            <Image
+              src={`/${info.entity.toLowerCase()}.png`}
+              alt={`${info.entity.toLowerCase()}`}
+              ml={2}
+              w={10}
+            />
+          )}
+        </Flex>
         {isEpisode(info) && (
           <Flex flexDirection={"column"} alignItems={"start"} w={"43%"}>
             <Text textAlign="right">Season: {info.season}</Text>
@@ -78,9 +91,11 @@ const InformationCard: React.FC<Props> = (info) => {
           listOfEpisodesHeard?.some(
             (heardEpisode) => heardEpisode.id === info.id
           ) ? (
-            <Text fontSize="2xl" mt={8}>
-              {info.description}
-            </Text>
+            <>
+              <Text fontSize="2xl" mt={8}>
+                {info.description}
+              </Text>
+            </>
           ) : (
             <Box
               display={"flex"}

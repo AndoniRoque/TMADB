@@ -128,6 +128,8 @@ function Page() {
     );
   }
 
+  console.log(episode);
+
   if (!episode) return <Text textAlign="center">{message}</Text>;
 
   return (
