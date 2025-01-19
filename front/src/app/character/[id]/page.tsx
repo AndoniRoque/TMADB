@@ -2,12 +2,13 @@
 import InformationCard from "@/app/components/InformationCard";
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Character } from "@/app/types/types";
+import { Character, Episode } from "@/app/types/types";
 import axios from "axios";
 import { Box, Button, Flex, useDisclosure, useToast } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import CharacterModal from "@/app/components/CharacterModal";
 import { useAuthStore } from "@/app/store/useAuthStore";
+import CustomTable from "@/app/components/CustomTable";
 const URL_BACK = "http://localhost:3333/api";
 
 function character() {
@@ -18,10 +19,13 @@ function character() {
   } = useDisclosure();
   const router = useRouter();
   const params = useParams();
+  const { role } = useAuthStore();
   const characterNumber = params.id;
   const [character, setCharacter] = useState<Character | null>(null);
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
+  const [search, setSearch] = useState<string>("");
+  const [episodesPerCharacter, setEpisodesPerCharacter] = useState<Episode[]>();
   const [characterToEdit, setCharacterToEdit] = useState<Character | null>(
     null
   );
@@ -91,8 +95,24 @@ function character() {
     }
   };
 
+  const getEpisodeAppearences = async () => {
+    try {
+      const episodes = await axios.get(
+        `${URL_BACK}/characters/${characterNumber}/episodes`,
+        { withCredentials: true }
+      );
+      setEpisodesPerCharacter(episodes.data.episodes);
+    } catch (err) {
+      console.error(err);
+      setMessage("The episode appearences couldn't be loaded.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     getCharacter();
+    getEpisodeAppearences();
   }, [characterNumber]);
 
   if (loading) {
@@ -110,18 +130,20 @@ function character() {
   return (
     <>
       <Box position="fixed" m={4} top="15%" left="88%" zIndex={1000}>
-        <Flex flexDirection="column" gap={2}>
-          <Button onClick={handleEditCharacter} leftIcon={<EditIcon />}>
-            Edit Character
-          </Button>
-          <Button
-            onClick={deleteCharacter}
-            leftIcon={<DeleteIcon />}
-            color={"red"}
-          >
-            Delete Character
-          </Button>
-        </Flex>
+        {role === "ADMIN" && (
+          <Flex flexDirection="column" gap={2}>
+            <Button onClick={handleEditCharacter} leftIcon={<EditIcon />}>
+              Edit
+            </Button>
+            <Button
+              onClick={deleteCharacter}
+              leftIcon={<DeleteIcon />}
+              color={"red"}
+            >
+              Delete
+            </Button>
+          </Flex>
+        )}
       </Box>
 
       <InformationCard {...character} />
@@ -132,6 +154,16 @@ function character() {
         initialValue={character}
         getEpisode={getCharacter}
       />
+
+      <Box m={4} color={"whitesmoke"}>
+        <h2>Episodes appearences:</h2>
+        <CustomTable
+          data={episodesPerCharacter}
+          type="episode"
+          refreshList={getEpisodeAppearences}
+          searchTerm={search}
+        />
+      </Box>
     </>
   );
 }

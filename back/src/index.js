@@ -4,7 +4,7 @@ import passport from "./config/passport.config.js";
 import episodesRoutes from "./routes/episodes.routes.js";
 import charactersRoutes from "./routes/characters.routes.js";
 import usersRoutes from "./routes/users.routes.js";
-import { ensureAuthenticated } from "./controllers/auth.controller.js";
+import usersEpisode from "./routes/usersEpisodes.routes.js";
 import cors from "cors";
 
 const app = express();
@@ -34,7 +34,11 @@ app.use("/auth", usersRoutes);
 app.use("/api", usersRoutes);
 app.use("/api", episodesRoutes);
 app.use("/api", charactersRoutes);
+app.use("/api", usersEpisode);
 
 app.listen(3333, () => {
   console.log("Server on port ", 3333);
 });
+
+// TODO: un endpoint que muestre todos los personajes por cada capitulo?
+// TODO: mostrar los episodios en los que aparece cada personaje en la vista del personaje

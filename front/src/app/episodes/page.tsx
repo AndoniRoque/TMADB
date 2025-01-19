@@ -27,24 +27,19 @@ const URL_BACK = "http://localhost:3333/api";
 export default function EpisodesPage() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isOpenSearchBar, onToggle } = useDisclosure();
+  const { role } = useAuthStore();
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [showTable, setShowTable] = useState<boolean>(true);
   const [search, setSearch] = useState<string>("");
   const [showSearchBar, setShowSearchBar] = useState<boolean>(true);
-  const { isLoggedIn } = useAuthStore();
-  const router = useRouter();
 
   const {
     characters,
     getCharacters,
     loading: charactersLoading,
   } = useCharacterStore();
-
-  if (!isLoggedIn) {
-    router.push("/");
-  }
 
   const getEpisodes = async () => {
     try {
@@ -80,24 +75,23 @@ export default function EpisodesPage() {
       <Flex
         justifyContent={"space-between"}
         flexDirection={"row"}
-        ml={4}
-        mr={4}
-        marginTop={4}
         p={4}
-        mt={"8%"}
+        mt={150}
       >
         <Heading fontSize="4xl" color={"whitesmoke"} flex={1}>
           T.M.A Episodes
         </Heading>
-        <Flex
-          justifyContent={"center"}
-          alignItems={"center"}
-          flexDirection={"row"}
-        >
-          <Button onClick={onOpen} mr={2}>
-            Upload Episode
-          </Button>
-        </Flex>
+        {role === "ADMIN" && (
+          <Flex
+            justifyContent={"center"}
+            alignItems={"center"}
+            flexDirection={"row"}
+          >
+            <Button onClick={onOpen} mr={2}>
+              Add
+            </Button>
+          </Flex>
+        )}
         <Flex
           justifyContent={"center"}
           alignItems={"center"}
@@ -108,9 +102,9 @@ export default function EpisodesPage() {
           </Button>
         </Flex>
       </Flex>
-      <Flex justifyContent={"end"} mr={8}>
+      <Flex justifyContent={"end"} mr={4}>
         <SlideFade in={isOpenSearchBar} offsetX="500px" hidden={showSearchBar}>
-          <Flex justifyContent={"end"} alignItems={"center"} width={400}>
+          <Flex justifyContent={"end"} alignItems={"center"} width={290}>
             <Input
               placeholder="Search..."
               onChange={(e) => setSearch(e.target.value)}
@@ -131,12 +125,10 @@ export default function EpisodesPage() {
             <Skeleton ml={16} height="200px" />
             <Skeleton ml={16} height="200px" />
           </>
-        ) : message ? (
-          <>
-            <Flex justifyContent={"center"} alignItems={"center"} h={"70vh"}>
-              <Text color={"whitesmoke"}>{message}</Text>
-            </Flex>
-          </>
+        ) : episodes.length === 0 ? (
+          <Flex justifyContent={"center"} alignItems={"center"} h={500}>
+            <Text color={"whitesmoke"}>There are no episodes loaded yet.</Text>
+          </Flex>
         ) : (
           <>
             {showTable ? (
@@ -156,7 +148,7 @@ export default function EpisodesPage() {
                     minW={{ base: 300, md: 500, lg: 500, xl: 500 }}
                   >
                     <LinkBox>
-                      <LinkOverlay href={`/episode/${e.id}`}>
+                      <LinkOverlay href={`/episode/${e.number}`}>
                         <EpisodeCard
                           episode={e}
                           refreshEpisodes={getEpisodes}
@@ -181,7 +173,6 @@ export default function EpisodesPage() {
       <EpisodeModal
         isOpen={isOpen}
         onClose={onClose}
-        characters={characters}
         initialValue={null}
         getEpisode={getEpisodes}
       />

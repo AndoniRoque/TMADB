@@ -1,6 +1,7 @@
 import {
   Button,
   Checkbox,
+  Flex,
   FormControl,
   FormLabel,
   Input,
@@ -11,6 +12,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Select,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
@@ -19,15 +21,17 @@ import ReactSelect from "react-select";
 import { useEffect, useState } from "react";
 import { EpisodeModalProps, EpisodeData, Character } from "../types/types";
 import axios from "axios";
+import { useCharacterStore } from "../store/useCharacterStore";
+import { sub } from "date-fns";
 const URL_BACK = "http://localhost:3333/api";
 
 const EpisodeModal: React.FC<EpisodeModalProps> = ({
   isOpen,
   onClose,
-  characters,
   initialValue,
   getEpisode,
 }) => {
+  const { characters, getCharacters } = useCharacterStore();
   const [id, setId] = useState<number>(initialValue?.id || 0);
   const [title, setTitle] = useState<string>(initialValue?.title || "");
   const [number, setNumber] = useState<number>(initialValue?.season || 1);
@@ -45,47 +49,86 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   const [selectedCharacter, setSelectedCharacter] = useState<number[]>(
     initialValue?.characterIds || []
   );
-  const [characterMessage, setCharacterMessage] = useState<string>("");
-  const [charactersList, setCharactersList] = useState<Character[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [charactersList, setCharactersList] = useState<Character[]>(characters); // lista completa de personajes
   const [isTitleValid, setIsTitleValid] = useState<boolean>(true);
   const [isReleaseDateValid, setIsReleaseDateValid] = useState<boolean>(true);
   const [isDescriptionValid, setIsDescriptionValid] = useState<boolean>(true);
   const [isCaseNumberValid, setIsCaseNumberValid] = useState<boolean>(true);
+  const [isNumberValid, setIsNumberValid] = useState<boolean>(true);
+  const [isSeasonValid, setIsSeasonsValid] = useState<boolean>(true);
+  const [entity, setEntity] = useState<string>(initialValue?.entity || "");
+  const [charactersOnEpisode, setCharactersOnEpisode] = useState<Character[]>(
+    initialValue?.characters || []
+  );
   const toast = useToast();
-
-  const getCharacters = async () => {
-    try {
-      const characters = await axios.get(`${URL_BACK}/characters`, {
-        withCredentials: true,
-      });
-      if (characters.data.message) {
-        setCharacterMessage(characters.data.message);
-      } else {
-        setCharactersList(characters.data);
-      }
-    } catch (err) {
-      setCharacterMessage("Characters not found.");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const entities = [
+    "BURIED",
+    "CORRUPTION",
+    "DARK",
+    "DESOLATION",
+    "END",
+    "EXTINCTION",
+    "EYE",
+    "FLESH",
+    "HUNT",
+    "LONELY",
+    "SLAUGHTER",
+    "SPIRAL",
+    "STRANGER",
+    "VAST",
+    "WEB",
+  ];
 
   const characterOptions = charactersList.map((character) => ({
     value: character.id,
     label: character.name,
   }));
 
-  const initialSelectedCharacters = characters.map((characterEntry) => ({
-    value: characterEntry.character?.id,
-    label: characterEntry.character?.name,
-  }));
+  useEffect(() => {
+    setCharactersOnEpisode(initialValue?.characters || []);
+  }, [initialValue?.characters]);
 
-  const handleCharacterChange = (selectedOptions: any) => {
-    setSelectedCharacter(
-      selectedOptions ? selectedOptions.map((option: any) => option.value) : []
-    );
+  const listOfCharactersOnThisEpisode =
+    charactersOnEpisode?.map((char: any) => {
+      // Check if we're dealing with a nested character object or direct character
+      if (char.character) {
+        return {
+          value: char.character.id,
+          label: char.character.name,
+        };
+      } else {
+        return {
+          value: char.value,
+          label: char.label,
+        };
+      }
+    }) || []; // Add a default empty array in case charactersOnEpisode is null
+
+  const handleCharacterChange = (newSelectedOptions: any) => {
+    // Update the display state
+    setCharactersOnEpisode(newSelectedOptions || []);
+
+    // Update the IDs state with the new selection
+    const newSelectedIds = newSelectedOptions
+      ? newSelectedOptions.map((opt: any) => opt.value)
+      : [];
+    setSelectedCharacter(newSelectedIds);
+  };
+
+  const getInitialSelectedCharacters = () => {
+    if (!initialValue?.characterIds || !characters) return [];
+
+    return initialValue.characterIds
+      .map((id) => {
+        const character = characters.find((c) => c.id === id);
+        return character
+          ? {
+              value: character.id,
+              label: character.name,
+            }
+          : null;
+      })
+      .filter(Boolean);
   };
 
   useEffect(() => {
@@ -101,10 +144,6 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
       setSelectedCharacter(initialValue.characterIds);
     }
   }, [initialValue]);
-
-  useEffect(() => {
-    getCharacters();
-  }, []);
 
   const uploadEpisode = async (data: EpisodeData) => {
     try {
@@ -159,12 +198,33 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
 
   const updateEpisode = async (submitEpisode: EpisodeData) => {
     try {
+      const updatedFields: Partial<EpisodeData> = {};
+
+      if (submitEpisode.title !== initialValue?.title)
+        updatedFields.title = submitEpisode.title;
+      if (submitEpisode.number !== initialValue?.number)
+        updatedFields.number = submitEpisode.number;
+      if (submitEpisode.releaseDate !== initialValue?.releaseDate)
+        updatedFields.releaseDate = submitEpisode.releaseDate;
+      if (submitEpisode.description !== initialValue?.description)
+        updatedFields.description = submitEpisode.description;
+      if (submitEpisode.caseNumber !== initialValue?.caseNumber)
+        updatedFields.caseNumber = submitEpisode.caseNumber;
+      if (submitEpisode.season !== initialValue?.season)
+        updatedFields.season = submitEpisode.season;
+      if (
+        JSON.stringify(submitEpisode.characterIds) !==
+        JSON.stringify(initialValue?.characterIds)
+      ) {
+        updatedFields.characterIds = submitEpisode.characterIds;
+      }
+
       const updateEp = await axios.put(
-        `${URL_BACK}/episodes/${number}`,
+        `${URL_BACK}/episodes/${id}`,
         {
-          ...submitEpisode,
-          number: Number(submitEpisode.number),
-          season: Number(submitEpisode.season),
+          ...updatedFields,
+          number: Number(number),
+          season: Number(season),
         },
         {
           withCredentials: true,
@@ -221,6 +281,8 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
     setIsReleaseDateValid(!!releaseDate);
     setIsDescriptionValid(!!description);
     setIsCaseNumberValid(!!caseNumber);
+    setIsNumberValid(!!number);
+    setIsSeasonsValid(!!season);
 
     if (!isFormValid) {
       toast({
@@ -242,10 +304,29 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
       caseNumber,
       season,
       characterIds: selectedCharacter,
+      entity,
     };
 
     initialValue ? updateEpisode(data) : uploadEpisode(data);
   };
+
+  useEffect(() => {
+    if (initialValue?.characterIds && characters.length > 0) {
+      const initialSelected = initialValue.characterIds
+        .map((characterId) => {
+          const character = characters.find((c) => c.id === characterId);
+          return character
+            ? {
+                value: character.id,
+                label: character.name,
+              }
+            : null;
+        })
+        .filter(Boolean);
+
+      setSelectedCharacter(initialValue.characterIds);
+    }
+  }, [initialValue, characters]);
 
   useEffect(() => {
     getCharacters();
@@ -266,7 +347,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
               placeholder="Episode title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              borderColor={!isTitleValid ? "red.500" : undefined}
+              borderColor={!isTitleValid ? "red.500" : "gray"}
             />
             <FormLabel mt={5} mb={0}>
               Episode Number
@@ -277,6 +358,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
               onChange={(e) => setNumber(parseInt(e.target.value))}
               type="number"
               min={1}
+              borderColor={!isNumberValid ? "red.500" : "gray"}
             />
             <FormLabel mt={5} mb={0}>
               Season
@@ -288,6 +370,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
               type="number"
               min={1}
               max={5}
+              borderColor={!isSeasonValid ? "red.500" : "gray"}
             />
             <FormLabel mt={5} mb={0}>
               Case #
@@ -296,7 +379,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
               placeholder="Case number"
               value={caseNumber}
               onChange={(e) => setCaseNumber(e.target.value)}
-              borderColor={!isCaseNumberValid ? "red.500" : undefined}
+              borderColor={!isCaseNumberValid ? "red.500" : "gray"}
             />
             <FormLabel mt={5} mb={0}>
               Description
@@ -305,7 +388,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
               placeholder="Case description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              borderColor={!isDescriptionValid ? "red.500" : undefined}
+              borderColor={!isDescriptionValid ? "red.500" : "gray"}
             />
             <FormLabel mt={5} mb={0}>
               Release Date
@@ -315,7 +398,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
               value={dayjs(releaseDate).format("YYYY-MM-DD")}
               onChange={(e) => setReleaseDate(e.target.value)}
               type="date"
-              borderColor={!isReleaseDateValid ? "red.500" : undefined}
+              borderColor={!isReleaseDateValid ? "red.500" : "gray"}
             />
             <FormLabel mt={5} mb={0}>
               Characters in Episode
@@ -325,15 +408,22 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
               isMulti
               placeholder="Character appearances..."
               onChange={handleCharacterChange}
-              defaultValue={initialSelectedCharacters}
+              value={listOfCharactersOnThisEpisode} // Usar selectedCharacters en lugar de getInitialSelectedCharacters()
             />
             <FormLabel mt={5} mb={0}>
-              Heard Episode{" "}
+              Entity
             </FormLabel>
-            <Checkbox
-              isChecked={heard}
-              onChange={(e) => setHeard(e.target.checked)}
-            ></Checkbox>
+            <Select
+              placeholder="Select an entity"
+              value={entity} // El estado que controla el valor seleccionado
+              onChange={(e) => setEntity(e.target.value)} // Actualiza el estado cuando cambias la selección
+            >
+              {entities.map((entity) => (
+                <option key={entity} value={entity}>
+                  {entity}
+                </option>
+              ))}
+            </Select>
           </FormControl>
         </ModalBody>
         <ModalFooter>

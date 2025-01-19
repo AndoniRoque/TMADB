@@ -11,3 +11,5 @@ front/.next
 back/node_modules
 
 back/Docker/data
+
+back/Dockerback/Docker/data/db/

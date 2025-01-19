@@ -21,7 +21,7 @@ passport.use(
       const match = await bcrypt.compare(password, user.password);
 
       if (!match) {
-        done(null, false, { message: "Incorrect passowrd" });
+        return done(null, false, { message: "Incorrect passowrd" });
       }
 
       return done(null, user);
@@ -56,6 +56,22 @@ export const ensureAuthenticated = (req, res, next) => {
     : res
         .status(401)
         .json({ message: "You need to log in to access this resource." });
+};
+
+export const ensureAdmin = async (req, res, next) => {
+  try {
+    if (req.user && req.user.role === "ADMIN") {
+      return next();
+    } else {
+      return res
+        .status(403)
+        .json({ message: "You need to be an admin to access this resource." });
+    }
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error checking user role.", error: error.message });
+  }
 };
 
 export default passport;

@@ -35,6 +35,7 @@ export interface EpisodeData {
   season: number;
   characters?: Character[];
   characterIds: number[];
+  entity: string;
 }
 
 export interface CharacterData {
@@ -55,7 +56,6 @@ export interface EpisodeCardProps {
 export interface EpisodeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  characters: Character[];
   getEpisode: () => void;
   initialValue?: EpisodeData | null;
 }
@@ -95,4 +95,9 @@ export type TableData = {
   type: "character" | "episode";
   refreshList: () => void;
   searchTerm: string;
+};
+
+export type CharacterSelect = {
+  value: number;
+  label: string;
 };

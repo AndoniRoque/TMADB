@@ -1,6 +1,9 @@
 import { Router } from "express";
 import { prisma } from "../db.js";
-import { ensureAuthenticated } from "../controllers/auth.controller.js";
+import {
+  ensureAuthenticated,
+  ensureAdmin,
+} from "../controllers/auth.controller.js";
 
 const router = Router();
 
@@ -27,11 +30,8 @@ router.get("/episodes", ensureAuthenticated, async (req, res) => {
     });
 
     if (!episodes || episodes.length === 0) {
-      return res
-        .status(200)
-        .json({ message: "There are no uploaded episodes yet." });
+      return res.status(200).json([]);
     }
-
     res.status(200).json(episodes);
   } catch (err) {
     res
@@ -39,7 +39,7 @@ router.get("/episodes", ensureAuthenticated, async (req, res) => {
       .json({ error: "Error getting episodes", details: err.message });
   }
 });
-router.post("/episodes", async (req, res) => {
+router.post("/episodes", ensureAuthenticated, ensureAdmin, async (req, res) => {
   const {
     title,
     number,
@@ -47,8 +47,8 @@ router.post("/episodes", async (req, res) => {
     description,
     caseNumber,
     season,
-    heard,
     characterIds,
+    entity,
   } = req.body;
 
   try {
@@ -67,6 +67,7 @@ router.post("/episodes", async (req, res) => {
         .json({ message: "The episode description is missing." });
     if (!caseNumber)
       return res.status(400).json({ message: "Case number is missing." });
+    if (!entity) return res.status(400).json({ message: "Entity is missing." });
 
     const existingEpisode = await prisma.episode.findFirst({
       where: {
@@ -87,15 +88,6 @@ router.post("/episodes", async (req, res) => {
 
     let normilizedTitle = "";
 
-    function capitalizeValues(value) {
-      return value
-        .split(" ")
-        .map(
-          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-        )
-        .join(" ");
-    }
-
     normilizedTitle = capitalizeValues(title);
 
     const newEpisode = await prisma.episode.create({
@@ -106,7 +98,7 @@ router.post("/episodes", async (req, res) => {
         description,
         caseNumber,
         season,
-        heard,
+        entity,
         characters: {
           create: characterIds.map((characterId) => ({
             character: {
@@ -133,8 +125,8 @@ router.post("/episodes", async (req, res) => {
       .json({ error: "Error getting episodes", details: err.message });
   }
 });
-router.get("/episodes/:id", async (req, res) => {
-  const id = parseInt(req.params.id, 10);
+router.get("/episodes/:number", async (req, res) => {
+  const id = parseInt(req.params.number, 10);
 
   if (isNaN(id)) {
     return res.status(400).json({ error: "Invalid ID format" });
@@ -142,7 +134,7 @@ router.get("/episodes/:id", async (req, res) => {
 
   try {
     const episode = await prisma.episode.findFirst({
-      where: { id },
+      where: { number: id },
       include: {
         characters: {
           include: {
@@ -161,105 +153,134 @@ router.get("/episodes/:id", async (req, res) => {
       .json({ error: "Error getting episodes", details: err.message });
   }
 });
-router.put("/episodes/:id", async (req, res) => {
-  const { id } = req.params;
-  const {
-    title,
-    number,
-    releaseDate,
-    description,
-    heard,
-    caseNumber,
-    season,
-    characterIds = [],
-  } = req.body;
+router.put(
+  "/episodes/:id",
+  ensureAuthenticated,
+  ensureAdmin,
+  async (req, res) => {
+    const { id } = req.params;
+    const {
+      title,
+      number,
+      releaseDate,
+      description,
+      caseNumber,
+      season,
+      characterIds,
+    } = req.body;
 
-  if (isNaN(parseInt(id, 10))) {
-    return res.status(400).json({ error: "Invalid ID format" });
+    if (isNaN(parseInt(id, 10))) {
+      return res.status(400).json({ error: "Invalid ID format" });
+    }
+
+    try {
+      const episodeId = parseInt(id);
+
+      // Only update characters if characterIds is provided
+      if (characterIds !== undefined) {
+        // Get current character associations
+        const currentCharacters = await prisma.episodesOnCharacters.findMany({
+          where: { episodeId },
+          select: { characterId: true },
+        });
+
+        const currentCharacterIds = currentCharacters.map((c) => c.characterId);
+
+        // Calculate differences
+        const charactersToRemove = currentCharacterIds.filter(
+          (id) => !characterIds.includes(id)
+        );
+
+        const charactersToAdd = characterIds.filter(
+          (id) => !currentCharacterIds.includes(id)
+        );
+
+        // Remove characters no longer in the list
+        if (charactersToRemove.length > 0) {
+          await prisma.episodesOnCharacters.deleteMany({
+            where: {
+              episodeId,
+              characterId: { in: charactersToRemove },
+            },
+          });
+        }
+
+        // Add new characters
+        if (charactersToAdd.length > 0) {
+          await prisma.episodesOnCharacters.createMany({
+            data: charactersToAdd.map((characterId) => ({
+              episodeId,
+              characterId,
+            })),
+          });
+        }
+      }
+
+      // Build update data object only with provided fields
+      const updateData = {};
+      if (title !== undefined) updateData.title = capitalizeValues(title);
+      if (number !== undefined) updateData.number = number;
+      if (releaseDate !== undefined)
+        updateData.releaseDate = new Date(releaseDate);
+      if (description !== undefined) updateData.description = description;
+      if (caseNumber !== undefined) updateData.caseNumber = caseNumber;
+      if (season !== undefined) updateData.season = season;
+
+      const updatedEpisode = await prisma.episode.update({
+        where: { id: episodeId },
+        data: updateData,
+        include: {
+          characters: true,
+        },
+      });
+
+      res.status(200).json(updatedEpisode);
+    } catch (err) {
+      res.status(500).json({
+        error: "Error updating episode",
+        details: err.message,
+      });
+    }
   }
+);
+router.delete(
+  "/episodes/:id",
+  ensureAuthenticated,
+  ensureAdmin,
+  async (req, res) => {
+    const id = parseInt(req.params.id, 10);
 
-  try {
-    const existingCharacterIds = (
-      await prisma.episodesOnCharacters.findMany({
-        select: { characterId: true },
-      })
-    ).map(({ characterId }) => characterId);
+    if (isNaN(id)) {
+      return res.send(400).json({ error: "Invalid ID format." });
+    }
 
-    const charactersToDisconnect = existingCharacterIds.filter(
-      (characterId) => !characterIds.includes(characterId)
-    );
+    try {
+      await prisma.episodesOnCharacters.deleteMany({
+        where: {
+          episodeId: id,
+        },
+      });
 
-    await prisma.episodesOnCharacters.deleteMany({
-      where: {
-        episodeId: parseInt(id),
-        characterId: { in: charactersToDisconnect },
-      },
-    });
+      await prisma.episode.delete({
+        where: {
+          id: id,
+        },
+      });
 
-    const charactersToConnect = characterIds.filter(
-      (characterId) => !existingCharacterIds.includes(characterId)
-    );
-
-    console.log("Characters to connect > ", charactersToConnect);
-
-    await prisma.episodesOnCharacters.createMany({
-      data: charactersToConnect.map((characterId) => ({
-        episodeId: parseInt(id),
-        characterId,
-      })),
-    });
-
-    const updatedEpisode = await prisma.episode.update({
-      where: { id: parseInt(id) },
-      data: {
-        title: title ?? undefined,
-        number: number ?? undefined,
-        releaseDate: releaseDate ? new Date(releaseDate) : undefined,
-        description: description ?? undefined,
-        heard: heard ?? undefined,
-        caseNumber: caseNumber ?? undefined,
-        season: season ?? undefined,
-      },
-      include: {
-        characters: true,
-      },
-    });
-
-    console.log("updatedEpisode", updatedEpisode);
-
-    res.status(200).json(updatedEpisode);
-  } catch (err) {
-    res
-      .status(500)
-      .json({ error: "Error updating episode", details: err.message });
+      res.status(200).json({ message: "The episode was deleted successfully" });
+    } catch (err) {
+      res
+        .status(500)
+        .json({ error: "Error deleting episode", details: err.message });
+    }
   }
-});
-router.delete("/episodes/:id", async (req, res) => {
-  const id = parseInt(req.params.id, 10);
+);
 
-  if (isNaN(id)) {
-    return res.send(400).json({ error: "Invalid ID format." });
-  }
-
-  try {
-    await prisma.episodesOnCharacters.deleteMany({
-      where: {
-        episodeId: id,
-      },
-    });
-
-    await prisma.episode.delete({
-      where: {
-        id: id,
-      },
-    });
-
-    res.status(200).json({ message: "The episode was deleted successfully" });
-  } catch (err) {
-    res
-      .status(500)
-      .json({ error: "Error deleting episode", details: err.message });
-  }
-});
+function capitalizeValues(value) {
+  return value
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+}
 
 export default router;

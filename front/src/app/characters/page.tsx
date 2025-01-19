@@ -19,6 +19,7 @@ import CharacterCard from "../components/CharacterCard";
 import CharacterModal from "../components/CharacterModal";
 import CustomTable from "../components/CustomTable";
 import { useCharacterStore } from "../store/useCharacterStore";
+import { useAuthStore } from "../store/useAuthStore";
 const URL_BACK = "http://localhost:3333/api";
 
 function characters() {
@@ -28,6 +29,7 @@ function characters() {
   const [showTable, setShowTable] = useState<boolean>(true);
   const [search, setSearch] = useState<string>("");
   const [showSearchBar, setShowSearchBar] = useState<boolean>(true);
+  const { role } = useAuthStore();
   const {
     characters,
     getCharacters,
@@ -49,26 +51,25 @@ function characters() {
       <Flex
         justifyContent={"space-between"}
         flexDirection={"row"}
-        ml={4}
-        mr={4}
-        marginTop={4}
         p={4}
-        mt={"8%"}
+        mt={150}
       >
         <Heading fontSize="4xl" color={"whitesmoke"} flex={1}>
           {" "}
           T.M.A Characters
         </Heading>
-        <Button onClick={onOpen} mr={2}>
-          {" "}
-          Upload Character{" "}
-        </Button>
         <Flex
           display={"flex"}
           justifyContent={"center"}
           alignItems={"center"}
           flexDirection={"row"}
         >
+          {role === "ADMIN" && (
+            <Button onClick={onOpen} mr={2}>
+              {" "}
+              Add{" "}
+            </Button>
+          )}
           <Button onClick={toggleTable}>
             {showTable ? "Show Table" : "Show Grid"}
           </Button>
@@ -76,7 +77,12 @@ function characters() {
       </Flex>
       <Flex justifyContent={"end"}>
         <SlideFade in={isOpenSearchBar} offsetX="500px" hidden={showSearchBar}>
-          <Flex justifyContent={"center"} alignItems={"center"} width={400}>
+          <Flex
+            justifyContent={"center"}
+            alignItems={"center"}
+            width={300}
+            mr={4}
+          >
             <Input
               placeholder="Search..."
               onChange={(e) => setSearch(e.target.value)}
@@ -97,12 +103,12 @@ function characters() {
             <Skeleton ml={16} height={"20vh"} />
             <Skeleton ml={16} height={"20vh"} />
           </>
-        ) : characterMessage ? (
-          <>
-            <Flex justifyContent={"center"} alignItems={"center"} h={"70vh"}>
-              <Text color={"whitesmoke"}>{characterMessage}</Text>
-            </Flex>
-          </>
+        ) : characters.length === 0 ? (
+          <Flex justifyContent={"center"} alignItems={"center"} h={500}>
+            <Text color={"whitesmoke"}>
+              There are no characters loaded yet.
+            </Text>
+          </Flex>
         ) : (
           <>
             {showTable ? (
@@ -115,31 +121,28 @@ function characters() {
                 }}
                 gap={{ base: 2, md: 4, lg: 6, xl: 8 }}
                 mx={{ base: 2, md: 4, lg: 6, xl: 8 }}
+                mt={8}
               >
                 {characters.map((char: Character) => (
-                  <>
-                    <GridItem
-                      key={char.id}
-                      minW={{ base: 300, md: 500, lg: 500, xl: 500 }}
-                    >
-                      <LinkBox>
-                        <LinkOverlay href={`/character/${char.id}`}>
-                          <CharacterCard character={char} />
-                        </LinkOverlay>
-                      </LinkBox>
-                    </GridItem>
-                  </>
+                  <GridItem
+                    key={char.id}
+                    minW={{ base: 300, md: 500, lg: 500, xl: 500 }}
+                  >
+                    <LinkBox>
+                      <LinkOverlay href={`/character/${char.id}`}>
+                        <CharacterCard character={char} />
+                      </LinkOverlay>
+                    </LinkBox>
+                  </GridItem>
                 ))}
               </Grid>
             ) : (
-              <>
-                <CustomTable
-                  data={characters}
-                  type="character"
-                  refreshList={getCharacters}
-                  searchTerm={search}
-                />
-              </>
+              <CustomTable
+                data={characters}
+                type="character"
+                refreshList={getCharacters}
+                searchTerm={search}
+              />
             )}
           </>
         )}
@@ -149,8 +152,6 @@ function characters() {
         isOpen={isOpen}
         onClose={onClose}
         getEpisode={getCharacters}
-        initialValue={characters}
-        characters={characters}
       />
     </>
   );

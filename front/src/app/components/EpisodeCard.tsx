@@ -8,28 +8,52 @@ import {
   Text,
 } from "@chakra-ui/react";
 import axios from "axios";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Episode, EpisodeCardProps } from "../types/types";
+import { useAuthStore } from "../store/useAuthStore";
 const URL_BACK = "http://localhost:3333/api";
 
 function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
+  const { username } = useAuthStore();
+  const [listOfEpisodesHeard, setListOfEpisodesHeard] = useState<Episode[]>([]);
+
   const heardEpisode = async (episode: Episode) => {
     try {
-      const { data } = await axios.put(
-        `${URL_BACK}/episodes/${episode.id}`,
+      const { data } = await axios.post(
+        `${URL_BACK}/episodesHeard/`,
         {
-          heard: !episode.heard,
+          userId: username,
+          episodeId: episode.id,
         },
         {
           withCredentials: true,
         }
       );
-      refreshEpisodes();
+      await heardEpisodes();
     } catch (err) {
       console.error(err);
       throw err;
     }
   };
+
+  const heardEpisodes = async () => {
+    try {
+      const getEpisodesbyUser = await axios.post(
+        `${URL_BACK}/episodesByUser/`,
+        { username: username },
+        {
+          withCredentials: true,
+        }
+      );
+      setListOfEpisodesHeard(getEpisodesbyUser.data.episodesHeard);
+    } catch {
+      console.error;
+    }
+  };
+
+  useEffect(() => {
+    heardEpisodes();
+  }, []);
 
   return (
     <Stack direction="row" wrap="wrap" h={"320px"} minH={"200px"} w={"100%"}>
@@ -65,22 +89,24 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
               {episode.number < 10 ? `0${episode.number}` : episode.number}:{" "}
               {episode.title}
             </Text>
-            <Flex w={"100%"} justifyContent={"flex-end"}>
+            <Flex w={100} h={100} justifyContent={"center"}>
               <Checkbox
-                isChecked={episode.heard}
+                isChecked={listOfEpisodesHeard.some(
+                  (heardEpisode) => heardEpisode.id === episode.id
+                )}
                 onChange={() => heardEpisode(episode)}
               />
             </Flex>
           </Flex>
           <Flex marginTop={"12%"}>
-            {episode.heard ? (
+            {listOfEpisodesHeard?.some(
+              (heardEpisode) => heardEpisode.id === episode.id
+            ) ? (
               <Text
-                textAlign={"center"}
+                mt={4}
                 overflow={"hidden"}
                 whiteSpace={"nowrap"}
                 textOverflow={"ellipsis"}
-                mt={4}
-                minW={400}
               >
                 <strong>#{episode.caseNumber}</strong> - {episode.description}
               </Text>

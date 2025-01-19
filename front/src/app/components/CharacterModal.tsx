@@ -39,6 +39,11 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
     getCharacters,
     loading: charactersLoading,
   } = useCharacterStore();
+  const {
+    isOpen: isOpenInput,
+    onOpen: onOpenInput,
+    onClose: onCloseInput,
+  } = useDisclosure();
   const params = useParams();
   const characterId = params.id;
   const [characterDescription, setCharacterDescription] = useState<string>(
@@ -46,12 +51,6 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   );
   const toast = useToast();
   const [displayList, setDisplayList] = useState<string>("none");
-
-  const {
-    isOpen: isOpenInput,
-    onOpen: onOpenInput,
-    onClose: onCloseInput,
-  } = useDisclosure();
   const [inputValue, setInputValue] = useState<string>("");
   const [options, setOptions] = useState<string[]>(
     characters.map((char) => char.name) || []
@@ -206,7 +205,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
                 <List display={displayList}>
                   {options
                     .filter((option) =>
-                      option.toLowerCase().includes(inputValue.toLowerCase())
+                      option?.toLowerCase().includes(inputValue.toLowerCase())
                     )
                     .map((option, index) => (
                       <ListItem

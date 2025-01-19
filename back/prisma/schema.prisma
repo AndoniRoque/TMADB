@@ -7,17 +7,41 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  ADMIN
+  USER
+}
+
+enum Entity {
+  BURIED     @map("THE BURIED")
+  CORRUPTION @map("THE CORRUPTION")
+  DARK       @map("THE DARK")
+  DESOLATION @map("THE DESOLATION")
+  END        @map("THE END")
+  EXTINCTION @map("THE EXTINCTION")
+  EYE        @map("THE EYE")
+  FLESH      @map("THE FLESH")
+  HUNT       @map("THE HUNT")
+  LONELY     @map("THE LONELY")
+  SLAUGHTER  @map("THE SLAUGHTER")
+  SPIRAL     @map("THE SPIRAL")
+  STRANGER   @map("THE STRANGER")
+  VAST       @map("THE VAST")
+  WEB        @map("THE WEB")
+}
+
 model Episode {
-  id          Int                    @id @default(autoincrement())
-  title       String                 @unique
-  number      Int
-  releaseDate DateTime
-  createdAt   DateTime               @default(now())
-  description String
-  heard       Boolean                @default(false)
-  caseNumber  String
-  season      Int                    @default(1)
-  characters  EpisodesOnCharacters[]
+  id           Int                    @id @default(autoincrement())
+  title        String                 @unique
+  number       Int
+  releaseDate  DateTime
+  createdAt    DateTime               @default(now())
+  description  String
+  caseNumber   String
+  season       Int                    @default(1)
+  characters   EpisodesOnCharacters[]
+  userEpisodes UserEpisodes[]
+  entity       Entity                 @default(EYE)
 }
 
 model Character {
@@ -37,8 +61,20 @@ model EpisodesOnCharacters {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  username String @unique
-  password String
-  mail     String @unique
+  id            Int            @id @default(autoincrement())
+  username      String         @unique
+  password      String
+  mail          String         @unique
+  role          UserRole       @default(USER)
+  episodesHeard UserEpisodes[]
+}
+
+model UserEpisodes {
+  userId    Int
+  episodeId Int
+  heard     Boolean @default(false)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  episode   Episode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, episodeId])
 }

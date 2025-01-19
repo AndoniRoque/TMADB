@@ -1,8 +1,13 @@
 {
   "dependencies": {
+    "@react-native-vector-icons/common": "^11.0.0",
     "add": "^2.0.6",
     "chakra": "^0.0.3",
+    "classcat": "^5.0.5",
     "field": "^1.0.1",
+    "nanoid": "^5.0.9",
+    "react-icons": "^5.4.0",
+    "reactflow": "^11.11.4",
     "snippet": "^0.1.0"
   }
 }

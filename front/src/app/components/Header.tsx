@@ -32,7 +32,8 @@ const URL_BACK = "http://localhost:3333/auth";
 
 function Header() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isLoggedIn, username, logout, checkAuthStatus } = useAuthStore();
+  const { isLoggedIn, username, logout, checkAuthStatus, role } =
+    useAuthStore();
   const btnRef = useRef();
   const toast = useToast();
   const router = useRouter();
@@ -78,7 +79,7 @@ function Header() {
       <Flex
         w="100%"
         p={4}
-        minH="10vh"
+        minH={10}
         bg={{
           base: "conic-gradient(from 90deg at 25% 50%, #0f1110, #252b26)",
           md: "conic-gradient(from 90deg at 50% 50%, #0f1110, #252b26)",
@@ -117,59 +118,64 @@ function Header() {
         </Flex>
 
         {/* Navigation Links */}
-        <Box flex={1}>
-          <Flex
-            flex={2}
-            justifyContent="end"
-            color="rgba(236, 223, 204, 0.8)"
-            gap={12}
-          >
-            {["Episodes", "Characters", "Mindmap"].map((link) => (
-              <Link key={link.toLowerCase()} href={`/${link.toLowerCase()}`}>
-                <Flex
-                  justifyContent="start"
-                  alignItems="center"
-                  h={100}
-                  fontSize="xl"
-                  _hover={{
-                    color: "#ECDFCC",
-                    transform: "scale(1.05)",
-                    transition: "all 0.3s ease-in-out",
-                  }}
-                >
-                  {link}
-                </Flex>
-              </Link>
-            ))}
-          </Flex>
-        </Box>
         {isLoggedIn && (
-          <Flex justifyContent={"end"} alignItems="center" w={150}>
-            <Menu>
-              <MenuButton
-                as={Button}
-                backgroundColor={"transparent"}
-                _hover={{
-                  backgrdounColor: "transparent",
-                  cursor: "pointer",
-                }}
-                rightIcon={
-                  <Icon
-                    as={FaUser}
-                    boxSize={6}
-                    color={"rgba(236, 223, 204, 0.8)"}
-                  ></Icon>
-                }
+          <>
+            <Box flex={1}>
+              <Flex
+                flex={2}
+                justifyContent="end"
+                color="rgba(236, 223, 204, 0.8)"
+                gap={12}
               >
-                <Text color={"rgba(236, 223, 204, 0.8)"} ml={2}>
-                  {username}
-                </Text>
-              </MenuButton>
-              <MenuList>
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
-              </MenuList>
-            </Menu>
-          </Flex>
+                {["Episodes", "Characters", "Mindmap"].map((link) => (
+                  <Link
+                    key={link.toLowerCase()}
+                    href={`/${link.toLowerCase()}`}
+                  >
+                    <Flex
+                      justifyContent="start"
+                      alignItems="center"
+                      h={100}
+                      fontSize="xl"
+                      _hover={{
+                        color: "#ECDFCC",
+                        transform: "scale(1.05)",
+                        transition: "all 0.3s ease-in-out",
+                      }}
+                    >
+                      {link}
+                    </Flex>
+                  </Link>
+                ))}
+              </Flex>
+            </Box>
+            <Flex justifyContent={"end"}>
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  backgroundColor={"transparent"}
+                  _hover={{
+                    backgrdounColor: "transparent",
+                    cursor: "pointer",
+                  }}
+                  rightIcon={
+                    <Icon
+                      as={FaUser}
+                      boxSize={6}
+                      color="rgba(236, 223, 204, 0.8)"
+                    ></Icon>
+                  }
+                >
+                  <Text color={"rgba(236, 223, 204, 0.8)"} ml={2}>
+                    {username}
+                  </Text>
+                </MenuButton>
+                <MenuList>
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                </MenuList>
+              </Menu>
+            </Flex>
+          </>
         )}
       </Flex>
 
@@ -177,7 +183,7 @@ function Header() {
       <Flex
         w="100%"
         p={4}
-        minH="10vh"
+        minH={10}
         bg="conic-gradient(from 90deg at 77% 50%, #0f1110, #252b26)"
         backgroundColor="black"
         boxShadow="0 4px 15px rgba(0, 0, 0, 0.4)"
