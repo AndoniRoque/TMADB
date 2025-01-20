@@ -98,15 +98,15 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
               />
             </Flex>
           </Flex>
-          <Flex marginTop={"12%"}>
+          <Flex>
             {listOfEpisodesHeard?.some(
               (heardEpisode) => heardEpisode.id === episode.id
             ) ? (
               <Text
                 mt={4}
-                overflow={"hidden"}
-                whiteSpace={"nowrap"}
-                textOverflow={"ellipsis"}
+                overflow="hidden"
+                display="-webkit-box"
+                noOfLines={[1, 2, 3]}
               >
                 <strong>#{episode.caseNumber}</strong> - {episode.description}
               </Text>

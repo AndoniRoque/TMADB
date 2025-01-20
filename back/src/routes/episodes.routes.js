@@ -244,26 +244,35 @@ router.put(
   }
 );
 router.delete(
-  "/episodes/:id",
+  "/episodes/:number",
   ensureAuthenticated,
   ensureAdmin,
   async (req, res) => {
-    const id = parseInt(req.params.id, 10);
+    const number = parseInt(req.params.number, 10);
+    console.log(number);
 
-    if (isNaN(id)) {
-      return res.send(400).json({ error: "Invalid ID format." });
+    if (isNaN(number)) {
+      return res.status(400).json({ error: "Invalid ID format." });
     }
 
     try {
+      const episode = await prisma.episode.findFirst({
+        where: { number },
+      });
+
+      if (!episode) {
+        return res.status(404).json({ error: "The episode was not found." });
+      }
+
       await prisma.episodesOnCharacters.deleteMany({
         where: {
-          episodeId: id,
+          episodeId: number,
         },
       });
 
       await prisma.episode.delete({
         where: {
-          id: id,
+          id: episode.id,
         },
       });
 

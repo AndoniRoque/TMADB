@@ -86,6 +86,7 @@ function Page() {
           withCredentials: true,
         }
       );
+      console.log("de eóspde", delEpisode);
       if (delEpisode.status === 200) {
         toast({
           title: "Episode deleted successfully",
