@@ -4,7 +4,14 @@ import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Character, Episode } from "@/app/types/types";
 import axios from "axios";
-import { Box, Button, Flex, useDisclosure, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Text,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import CharacterModal from "@/app/components/CharacterModal";
 import { useAuthStore } from "@/app/store/useAuthStore";
@@ -156,7 +163,7 @@ function character() {
       />
 
       <Box m={4} color={"whitesmoke"}>
-        <h2>Episodes appearences:</h2>
+        <Text ml={8}>Episodes appearences:</Text>
         <CustomTable
           data={episodesPerCharacter}
           type="episode"

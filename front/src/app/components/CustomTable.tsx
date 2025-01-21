@@ -267,7 +267,7 @@ const CustomTable: React.FC<TableData> = ({
                   </Tr>
                 ))
               )
-            ) : sortList.length === 0 ? (
+            ) : sortList?.length === 0 ? (
               <Tr>
                 <Td colSpan={7}>
                   <Text textAlign={"center"} p={4}>

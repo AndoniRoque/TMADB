@@ -23,6 +23,10 @@ const InformationCard: React.FC<Props> = (info) => {
   const { username } = useAuthStore();
   const [listOfEpisodesHeard, setListOfEpisodesHeard] = useState<Episode[]>([]);
 
+  const matchedEpisode = listOfEpisodesHeard?.find(
+    (heardEpisode) => heardEpisode.id === info.id
+  );
+
   const heardEpisodes = async () => {
     try {
       const getEpisodesbyUser = await axios.post(
@@ -67,12 +71,10 @@ const InformationCard: React.FC<Props> = (info) => {
               ? `MAG ${info.number} - ${info.title}`
               : `Name: ${info.name}`}
           </Text>
-          {listOfEpisodesHeard?.some(
-            (heardEpisode) => heardEpisode.id === info.id
-          ) && (
+          {matchedEpisode && (
             <Image
-              src={`/${info.entity.toLowerCase()}.png`}
-              alt={`${info.entity.toLowerCase()}`}
+              src={`/${matchedEpisode.entity.toLowerCase()}.png`}
+              alt={`${matchedEpisode.entity.toLowerCase()}`}
               ml={2}
               w={10}
             />

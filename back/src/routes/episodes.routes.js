@@ -154,11 +154,11 @@ router.get("/episodes/:number", async (req, res) => {
   }
 });
 router.put(
-  "/episodes/:id",
+  "/episodes/:number",
   ensureAuthenticated,
   ensureAdmin,
   async (req, res) => {
-    const { id } = req.params;
+    const episodeNumber = parseInt(req.params.number, 10);
     const {
       title,
       number,
@@ -169,18 +169,28 @@ router.put(
       characterIds,
     } = req.body;
 
-    if (isNaN(parseInt(id, 10))) {
-      return res.status(400).json({ error: "Invalid ID format" });
+    if (isNaN(episodeNumber)) {
+      return res.status(400).json({ error: "Invalid episode number format" });
     }
 
+    console.log(episodeNumber);
+
     try {
-      const episodeId = parseInt(id);
+      const episode = await prisma.episode.findFirst({
+        where: { number: episodeNumber },
+      });
+
+      console.log(episode);
+
+      if (!episode) {
+        return res.status(404).json({ error: "Episode not found" });
+      }
 
       // Only update characters if characterIds is provided
       if (characterIds !== undefined) {
         // Get current character associations
         const currentCharacters = await prisma.episodesOnCharacters.findMany({
-          where: { episodeId },
+          where: { episodeId: episode.id },
           select: { characterId: true },
         });
 
@@ -199,7 +209,7 @@ router.put(
         if (charactersToRemove.length > 0) {
           await prisma.episodesOnCharacters.deleteMany({
             where: {
-              episodeId,
+              episodeId: episode.id,
               characterId: { in: charactersToRemove },
             },
           });
@@ -209,7 +219,7 @@ router.put(
         if (charactersToAdd.length > 0) {
           await prisma.episodesOnCharacters.createMany({
             data: charactersToAdd.map((characterId) => ({
-              episodeId,
+              episodeId: episode.id,
               characterId,
             })),
           });
@@ -227,7 +237,7 @@ router.put(
       if (season !== undefined) updateData.season = season;
 
       const updatedEpisode = await prisma.episode.update({
-        where: { id: episodeId },
+        where: { id: episode.id },
         data: updateData,
         include: {
           characters: true,

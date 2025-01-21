@@ -220,7 +220,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
       }
 
       const updateEp = await axios.put(
-        `${URL_BACK}/episodes/${id}`,
+        `${URL_BACK}/episodes/${number}`,
         {
           ...updatedFields,
           number: Number(number),
