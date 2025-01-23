@@ -167,20 +167,17 @@ router.put(
       caseNumber,
       season,
       characterIds,
+      entity,
     } = req.body;
 
     if (isNaN(episodeNumber)) {
       return res.status(400).json({ error: "Invalid episode number format" });
     }
 
-    console.log(episodeNumber);
-
     try {
       const episode = await prisma.episode.findFirst({
         where: { number: episodeNumber },
       });
-
-      console.log(episode);
 
       if (!episode) {
         return res.status(404).json({ error: "Episode not found" });
@@ -235,6 +232,7 @@ router.put(
       if (description !== undefined) updateData.description = description;
       if (caseNumber !== undefined) updateData.caseNumber = caseNumber;
       if (season !== undefined) updateData.season = season;
+      if (entity !== undefined) updateData.entity = entity;
 
       const updatedEpisode = await prisma.episode.update({
         where: { id: episode.id },
@@ -259,7 +257,6 @@ router.delete(
   ensureAdmin,
   async (req, res) => {
     const number = parseInt(req.params.number, 10);
-    console.log(number);
 
     if (isNaN(number)) {
       return res.status(400).json({ error: "Invalid ID format." });

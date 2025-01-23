@@ -31,7 +31,6 @@ export interface EpisodeData {
   releaseDate: string;
   description: string;
   caseNumber: string;
-  heard: boolean;
   season: number;
   characters?: Character[];
   characterIds: number[];

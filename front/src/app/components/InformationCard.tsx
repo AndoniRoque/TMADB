@@ -44,7 +44,7 @@ const InformationCard: React.FC<Props> = (info) => {
 
   useEffect(() => {
     heardEpisodes();
-  }, []);
+  }, [username, info]);
 
   return (
     <Flex

@@ -1,7 +1,5 @@
 import {
   Button,
-  Checkbox,
-  Flex,
   FormControl,
   FormLabel,
   Input,
@@ -22,7 +20,6 @@ import { useEffect, useState } from "react";
 import { EpisodeModalProps, EpisodeData, Character } from "../types/types";
 import axios from "axios";
 import { useCharacterStore } from "../store/useCharacterStore";
-import { sub } from "date-fns";
 const URL_BACK = "http://localhost:3333/api";
 
 const EpisodeModal: React.FC<EpisodeModalProps> = ({
@@ -31,6 +28,8 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   initialValue,
   getEpisode,
 }) => {
+  console.log(">>>>", initialValue);
+
   const { characters, getCharacters } = useCharacterStore();
   const [id, setId] = useState<number>(initialValue?.id || 0);
   const [title, setTitle] = useState<string>(initialValue?.title || "");
@@ -41,7 +40,6 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   const [description, setDescription] = useState<string>(
     initialValue?.description || ""
   );
-  const [heard, setHeard] = useState<boolean>(initialValue?.heard || false);
   const [caseNumber, setCaseNumber] = useState<string>(
     initialValue?.caseNumber || ""
   );
@@ -49,7 +47,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   const [selectedCharacter, setSelectedCharacter] = useState<number[]>(
     initialValue?.characterIds || []
   );
-  const [charactersList, setCharactersList] = useState<Character[]>(characters); // lista completa de personajes
+  const [charactersList, setCharactersList] = useState<Character[]>(characters);
   const [isTitleValid, setIsTitleValid] = useState<boolean>(true);
   const [isReleaseDateValid, setIsReleaseDateValid] = useState<boolean>(true);
   const [isDescriptionValid, setIsDescriptionValid] = useState<boolean>(true);
@@ -138,7 +136,6 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
       setNumber(initialValue.number);
       setReleaseDate(initialValue.releaseDate);
       setDescription(initialValue.description);
-      setHeard(initialValue.heard);
       setCaseNumber(initialValue.caseNumber);
       setSeason(initialValue.season);
       setSelectedCharacter(initialValue.characterIds);
@@ -217,6 +214,9 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
         JSON.stringify(initialValue?.characterIds)
       ) {
         updatedFields.characterIds = submitEpisode.characterIds;
+      }
+      if (submitEpisode.entity !== initialValue?.entity) {
+        updatedFields.entity = submitEpisode.entity; // Aquí se asegura que se agregue el campo entity.
       }
 
       const updateEp = await axios.put(
@@ -300,7 +300,6 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
       number,
       releaseDate: dayjs(releaseDate, "YYYY-MM-DD").toISOString(),
       description,
-      heard,
       caseNumber,
       season,
       characterIds: selectedCharacter,
@@ -325,6 +324,7 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
         .filter(Boolean);
 
       setSelectedCharacter(initialValue.characterIds);
+      setEntity(initialValue.entity || "");
     }
   }, [initialValue, characters]);
 
@@ -415,12 +415,16 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
             </FormLabel>
             <Select
               placeholder="Select an entity"
-              value={entity} // El estado que controla el valor seleccionado
-              onChange={(e) => setEntity(e.target.value)} // Actualiza el estado cuando cambias la selección
+              value={entity}
+              onChange={(e) => setEntity(e.target.value)}
             >
-              {entities.map((entity) => (
-                <option key={entity} value={entity}>
-                  {entity}
+              {entities.map((entityOption) => (
+                <option
+                  key={entityOption}
+                  value={entityOption}
+                  selected={entityOption === initialValue?.entity}
+                >
+                  {entityOption}
                 </option>
               ))}
             </Select>

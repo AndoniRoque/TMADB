@@ -40,8 +40,6 @@ function Page() {
     loading: charactersLoading,
   } = useCharacterStore();
 
-  console.log(">", episode);
-
   const handleEditEpisode = () => {
     if (episode) {
       setEpisodeToEdit({
@@ -50,11 +48,11 @@ function Page() {
         number: Number(episode.number),
         releaseDate: episode.releaseDate,
         description: episode.description,
-        heard: episode.heard,
         caseNumber: episode.caseNumber,
         season: Number(episode.season),
         characters: episode.characters,
         characterIds: episode.characters.map((character) => character.id),
+        entity: episode.entity,
       });
       onOpenEpisode();
     }
@@ -68,7 +66,10 @@ function Page() {
           withCredentials: true,
         }
       );
-      console.log(">>>>>", response);
+      console.log(
+        ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+        response.data
+      );
       setEpisode(response.data);
     } catch (err) {
       console.error(err);
@@ -86,7 +87,6 @@ function Page() {
           withCredentials: true,
         }
       );
-      console.log("de eóspde", delEpisode);
       if (delEpisode.status === 200) {
         toast({
           title: "Episode deleted successfully",
@@ -131,8 +131,6 @@ function Page() {
       </Box>
     );
   }
-
-  console.log(episode);
 
   if (!episode) return <Text textAlign="center">{message}</Text>;
 

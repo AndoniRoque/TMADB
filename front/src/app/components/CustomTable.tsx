@@ -276,7 +276,7 @@ const CustomTable: React.FC<TableData> = ({
                 </Td>
               </Tr>
             ) : (
-              (sortList as Episode[]).map((episode) => (
+              (sortList as Episode[])?.map((episode) => (
                 <Tr
                   key={episode.id}
                   _hover={{

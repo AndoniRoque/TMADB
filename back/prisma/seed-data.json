@@ -1,0 +1,212 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "archivist",
+      "password": "$2b$10$ooiImNe335WJArNFdATLYOjCMTp4.D3akHajJCofvaC4iDPk4n/OW",
+      "mail": "roque.andoni@tma.com",
+      "role": "ADMIN"
+    }
+  ],
+  "episodes": [
+    {
+      "id": 1,
+      "title": "Angler Fish",
+      "number": 1,
+      "releaseDate": "2016-03-24T03:00:00.000Z",
+      "createdAt": "2025-01-22T10:40:08.205Z",
+      "description": "Statement of Nathan Watts regarding an encounter on Old Fishmarket Close, Edinburgh. \nNote: 86-91 G/H",
+      "caseNumber": "0122204",
+      "season": 1,
+      "entity": "STRANGER"
+    },
+    {
+      "id": 2,
+      "title": "Do Not Open",
+      "number": 2,
+      "releaseDate": "2016-03-25T03:00:00.000Z",
+      "createdAt": "2025-01-22T12:01:35.718Z",
+      "description": "Statement of Joshua Gillespie regarding his time in the possession of an apparently empty wooden casket. ",
+      "caseNumber": "9982211",
+      "season": 1,
+      "entity": "BURIED"
+    }
+  ],
+  "characters": [
+    {
+      "id": 1,
+      "name": "Jonathan Sims",
+      "description": "Head archivist of the Magnus Institute, London."
+    },
+    {
+      "id": 2,
+      "name": "Elias Bouchard",
+      "description": "Head of the Magnus Institute, London."
+    },
+    {
+      "id": 3,
+      "name": "Gertrude Robinson",
+      "description": "Former head archivist of the Magnus Institute, London. Recently passed away. "
+    },
+    {
+      "id": 4,
+      "name": "Timothy Stoker",
+      "description": "Archivist assistant."
+    },
+    {
+      "id": 5,
+      "name": "Sasha James",
+      "description": "Archivist assistant."
+    },
+    {
+      "id": 6,
+      "name": "Martin Blackwood",
+      "description": "Archivist assistant."
+    },
+    {
+      "id": 7,
+      "name": "Nathan Watts",
+      "description": "Statement giver on Angler Fish."
+    },
+    {
+      "id": 8,
+      "name": "Michael MacAulay",
+      "description": "Friend of Nathan Watts"
+    },
+    {
+      "id": 10,
+      "name": "Jessica McEwen",
+      "description": "Missing person a few days later after Nathan Watts' encounter in Old Fishmarket Close. November 2005"
+    },
+    {
+      "id": 12,
+      "name": "Daniel Rawlings",
+      "description": "Missing person a few days later after Nathan Watts' encounter in Old Fishmarket Close. December 2006."
+    },
+    {
+      "id": 9,
+      "name": "John Fellowes",
+      "description": "Missing person a few days later after Nathan Watts' encounter in Old Fishmarket Close. March 2010."
+    },
+    {
+      "id": 11,
+      "name": "Sarah Baldwin",
+      "description": "Missing person a few days later after Nathan Watts' encounter in Old Fishmarket Close. August 2006. Smoker."
+    },
+    {
+      "id": 14,
+      "name": "Megan Shaw",
+      "description": "Missing person a few days later after Nathan Watts' encounter in Old Fishmarket Close. June 2008. Smoker."
+    },
+    {
+      "id": 15,
+      "name": "Siobhan Dobson",
+      "description": "Sister of Ashley Dobson, recieved the photo of the stranger in Old Fishmarket Close."
+    },
+    {
+      "id": 13,
+      "name": "Ashley Dobson",
+      "description": "Missing person in Old Fishmarket Close. May 2008. Managed to take a picture of the stranger on Old Fishmarket Close before disappearing. \"Check out this drunk creep, lol\""
+    },
+    {
+      "id": 16,
+      "name": "Joshua Gillespie",
+      "description": "Statement giver on Do Not Open"
+    },
+    {
+      "id": 17,
+      "name": "\"John\"",
+      "description": "Undescribable stranger that sat with Joshua Gillespie on Amsterdam and tasked him with looking after a wooden coffin in exchange of a large sum of money."
+    }
+  ],
+  "userEpisodes": [
+    {
+      "userId": 1,
+      "episodeId": 1,
+      "heard": true
+    },
+    {
+      "userId": 1,
+      "episodeId": 2,
+      "heard": true
+    }
+  ],
+  "episodesOnCharacters": [
+    {
+      "episodeId": 1,
+      "characterId": 1
+    },
+    {
+      "episodeId": 1,
+      "characterId": 2
+    },
+    {
+      "episodeId": 1,
+      "characterId": 3
+    },
+    {
+      "episodeId": 1,
+      "characterId": 4
+    },
+    {
+      "episodeId": 1,
+      "characterId": 6
+    },
+    {
+      "episodeId": 1,
+      "characterId": 5
+    },
+    {
+      "episodeId": 1,
+      "characterId": 7
+    },
+    {
+      "episodeId": 1,
+      "characterId": 8
+    },
+    {
+      "episodeId": 1,
+      "characterId": 9
+    },
+    {
+      "episodeId": 1,
+      "characterId": 10
+    },
+    {
+      "episodeId": 1,
+      "characterId": 11
+    },
+    {
+      "episodeId": 1,
+      "characterId": 12
+    },
+    {
+      "episodeId": 1,
+      "characterId": 13
+    },
+    {
+      "episodeId": 1,
+      "characterId": 14
+    },
+    {
+      "episodeId": 1,
+      "characterId": 15
+    },
+    {
+      "episodeId": 2,
+      "characterId": 1
+    },
+    {
+      "episodeId": 2,
+      "characterId": 4
+    },
+    {
+      "episodeId": 2,
+      "characterId": 16
+    },
+    {
+      "episodeId": 2,
+      "characterId": 17
+    }
+  ]
+}
