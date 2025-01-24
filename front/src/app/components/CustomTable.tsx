@@ -263,7 +263,13 @@ const CustomTable: React.FC<TableData> = ({
                     }}
                   >
                     <Td>{character.name}</Td>
-                    <Td>{character.description}</Td>
+                    <Td
+                      overflow={"hidden"}
+                      whiteSpace={"nowrap"}
+                      textOverflow={"ellipsis"}
+                    >
+                      {character.description}
+                    </Td>
                   </Tr>
                 ))
               )
