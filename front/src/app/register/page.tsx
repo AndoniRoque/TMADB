@@ -21,7 +21,7 @@ function Register() {
   const [email, setEmail] = useState("");
   const toast = useToast();
   const router = useRouter();
-  const URL_BACK = "http://localhost:3333/api";
+  const URL_BACK = process.env.NEXT_PUBLIC_API_URL; //"http://localhost:3333/api";
 
   const register = async (event: any) => {
     event.preventDefault();

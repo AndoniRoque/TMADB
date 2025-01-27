@@ -22,7 +22,7 @@ import CustomTable from "../components/CustomTable";
 import { useAuthStore } from "../store/useAuthStore";
 import { useRouter } from "next/navigation";
 import { useCharacterStore } from "../store/useCharacterStore";
-const URL_BACK = "http://localhost:3333/api";
+const URL_BACK = process.env.NEXT_PUBLIC_API_URL; //"http://localhost:3333/api";
 
 export default function EpisodesPage() {
   const { isOpen, onOpen, onClose } = useDisclosure();

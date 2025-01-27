@@ -11,7 +11,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Episode, EpisodeCardProps } from "../types/types";
 import { useAuthStore } from "../store/useAuthStore";
-const URL_BACK = "http://localhost:3333/api";
+const URL_BACK = process.env.NEXT_PUBLIC_API_URL; //"http://localhost:3333/api";
 
 function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
   const { username } = useAuthStore();

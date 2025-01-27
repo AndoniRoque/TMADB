@@ -21,7 +21,7 @@ const createUser = async () => {
       },
     });
   } catch (error) {
-    console.error("Error creating user: ", error);
+    console.error("Error creating user: ", error.message);
   } finally {
     await prisma.$disconnect();
   }

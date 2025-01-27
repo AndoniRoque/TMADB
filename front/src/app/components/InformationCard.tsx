@@ -14,7 +14,7 @@ import dayjs from "dayjs";
 import { Character, Episode } from "../types/types";
 import { useAuthStore } from "../store/useAuthStore";
 import axios from "axios";
-const URL_BACK = "http://localhost:3333/api";
+const URL_BACK = process.env.NEXT_PUBLIC_API_URL; //"http://localhost:3333/api";
 
 type Props = Character | Episode;
 

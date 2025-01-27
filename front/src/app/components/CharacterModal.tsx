@@ -25,7 +25,7 @@ import axios from "axios";
 import { CharacterData, CharacterModalProps } from "../types/types";
 import { useCharacterStore } from "../store/useCharacterStore";
 
-const URL_BACK = "http://localhost:3333/api";
+const URL_BACK = process.env.NEXT_PUBLIC_API_URL; //"http://localhost:3333/api";
 
 const CharacterModal: React.FC<CharacterModalProps> = ({
   onClose,

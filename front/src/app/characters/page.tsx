@@ -20,7 +20,7 @@ import CharacterModal from "../components/CharacterModal";
 import CustomTable from "../components/CustomTable";
 import { useCharacterStore } from "../store/useCharacterStore";
 import { useAuthStore } from "../store/useAuthStore";
-const URL_BACK = "http://localhost:3333/api";
+const URL_BACK = process.env.NEXT_PUBLIC_API_URL; //"http://localhost:3333/api";
 
 function characters() {
   const { isOpen, onOpen, onClose } = useDisclosure();

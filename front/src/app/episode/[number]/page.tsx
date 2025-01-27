@@ -17,7 +17,7 @@ import { Character, Episode, EpisodeData } from "@/app/types/types";
 import InformationCard from "@/app/components/InformationCard";
 import { useCharacterStore } from "@/app/store/useCharacterStore";
 import { useAuthStore } from "@/app/store/useAuthStore";
-const URL_BACK = "http://localhost:3333/api";
+const URL_BACK = process.env.NEXT_PUBLIC_API_URL; //"http://localhost:3333/api";
 
 function Page() {
   const {

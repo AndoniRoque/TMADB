@@ -16,7 +16,7 @@ import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import CharacterModal from "@/app/components/CharacterModal";
 import { useAuthStore } from "@/app/store/useAuthStore";
 import CustomTable from "@/app/components/CustomTable";
-const URL_BACK = "http://localhost:3333/api";
+const URL_BACK = process.env.NEXT_PUBLIC_API_URL; //"http://localhost:3333/api";
 
 function character() {
   const {

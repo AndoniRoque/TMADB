@@ -20,7 +20,7 @@ import { useEffect, useState } from "react";
 import { EpisodeModalProps, EpisodeData, Character } from "../types/types";
 import axios from "axios";
 import { useCharacterStore } from "../store/useCharacterStore";
-const URL_BACK = "http://localhost:3333/api";
+const URL_BACK = process.env.NEXT_PUBLIC_API_URL; //"http://localhost:3333/api";
 
 const EpisodeModal: React.FC<EpisodeModalProps> = ({
   isOpen,

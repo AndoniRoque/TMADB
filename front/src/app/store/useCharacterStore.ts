@@ -1,7 +1,7 @@
 import create from "zustand";
 import axios from "axios";
 import { CharacterStore } from "../types/types";
-const URL_BACK = "http://localhost:3333/api";
+const URL_BACK = process.env.NEXT_PUBLIC_API_URL; //"http://localhost:3333/api";
 
 export const useCharacterStore = create<CharacterStore>((set) => ({
   characters: [],
