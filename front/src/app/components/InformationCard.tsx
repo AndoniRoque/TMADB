@@ -94,7 +94,12 @@ const InformationCard: React.FC<Props> = (info) => {
             (heardEpisode) => heardEpisode.id === info.id
           ) ? (
             <>
-              <Text fontSize="2xl" mt={8}>
+              <Text
+                fontSize="2xl"
+                mt={8}
+                whiteSpace="pre-wrap"
+                wordBreak="break-word"
+              >
                 {info.description}
               </Text>
             </>
@@ -111,7 +116,9 @@ const InformationCard: React.FC<Props> = (info) => {
             </Box>
           )
         ) : (
-          <Text fontSize="2xl">{info.description}</Text>
+          <Text fontSize="2xl" whiteSpace="pre-wrap" wordBreak="break-word">
+            {info.description}
+          </Text>
         )}
       </Flex>
 

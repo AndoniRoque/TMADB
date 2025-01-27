@@ -1,13 +1,20 @@
-import { ReactFlow, Controls, Panel } from "reactflow";
+import { Flex, Text } from "@chakra-ui/react";
+// import { ReactFlow, Controls, Panel } from "reactflow";
 
-import "reactflow/globals.css";
+// import "reactflow/globals.css";
 
 function Flow() {
   return (
-    <ReactFlow>
-      <Controls showInteractive={false} />
-      <Panel position="top-left">React flow mindmap</Panel>
-    </ReactFlow>
+    <Flex
+      justifyContent={"center"}
+      alignItems={"center"}
+      flexDirection={"column"}
+      h={"100vh"}
+    >
+      <Text color={"whitesmoke"} fontFamily={"typewriter"}>
+        Coming soon... maybe
+      </Text>
+    </Flex>
   );
 }
 

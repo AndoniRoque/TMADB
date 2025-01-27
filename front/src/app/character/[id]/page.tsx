@@ -165,7 +165,7 @@ function character() {
       <Box m={4} color={"whitesmoke"}>
         <Text ml={8}>Episodes appearences:</Text>
         <CustomTable
-          data={episodesPerCharacter}
+          data={episodesPerCharacter as Episode[]}
           type="episode"
           refreshList={getEpisodeAppearences}
           searchTerm={search}

@@ -232,6 +232,9 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
               onChange={(e) => setCharacterDescription(e.target.value)}
               value={characterDescription}
               mt={2}
+              sx={{
+                whiteSpace: "pre-wrap",
+              }}
             />
           </FormControl>
         </ModalBody>
