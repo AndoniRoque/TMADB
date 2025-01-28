@@ -82,7 +82,7 @@ const isAuthenticated = (req, res, next) => {
   }
   res.status(401).json({ message: "No autenticado" });
 };
-app.use("/api", isAuthenticated, usersRoutes);
+app.use("/api", usersRoutes);
 app.use("/api", isAuthenticated, episodesRoutes);
 app.use("/api", isAuthenticated, charactersRoutes);
 app.use("/api", isAuthenticated, usersEpisode);
