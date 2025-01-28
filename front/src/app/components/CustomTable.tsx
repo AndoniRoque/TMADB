@@ -56,7 +56,7 @@ const CustomTable: React.FC<TableData> = ({
     try {
       const getEpisodesbyUser = await axios.post(
         `${URL_BACK}/episodesByUser/`,
-        { username: username },
+        { username: user.username },
         {
           withCredentials: true,
         }

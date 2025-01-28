@@ -47,7 +47,6 @@ passport.deserializeUser(async (id, done) => {
         username: true,
         mail: true,
         role: true,
-        // Excluimos password por seguridad
       },
     });
     done(null, user);
