@@ -37,9 +37,9 @@ app.use(
   session({
     secret: "cats",
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     cookie: {
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.NODE_ENV === "production", // true en producción
       sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000, // 24 horas
