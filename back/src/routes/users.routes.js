@@ -4,15 +4,7 @@ import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
-
 const router = Router();
-
-const isAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.status(401).json({ message: "No autenticado" });
-};
 
 router.use((req, res, next) => {
   res.locals.currentUser = req.user;
@@ -89,9 +81,10 @@ router.get("/logout", async (req, res) => {
 });
 
 router.get("/status", (req, res) => {
-  console.log("Session:", req.session);
-  console.log("User:", req.user);
-  console.log("Is Authenticated:", req.isAuthenticated());
+  console.log("> Session:", req.session);
+  console.log("> User:", req.user);
+  console.log("> Is Authenticated:", req.isAuthenticated());
+  console.log(req);
 
   if (req.isAuthenticated()) {
     return res.status(200).json({
