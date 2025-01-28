@@ -51,7 +51,7 @@ router.post("/login", (req, res, next) => {
         secure: process.env.NODE_ENV === "production",
         sameSite: "none",
         maxAge: 24 * 60 * 60 * 1000,
-        domain: "https://tmadb.onrender.com",
+        domain: ".onrender.com",
       });
 
       return res.status(200).json({
