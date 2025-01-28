@@ -7,6 +7,10 @@ import usersRoutes from "./routes/users.routes.js";
 import usersEpisode from "./routes/usersEpisodes.routes.js";
 import cors from "cors";
 const PORT = process.env.PORT || 3333;
+const allowedOrigins = [
+  "https://tmadb-andonis-projects.vercel.app",
+  "https://tmadb.onrender.com",
+];
 
 const app = express();
 
@@ -37,7 +41,16 @@ app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
-    origin: "https://tmadb-andonis-projects.vercel.app",
+    origin: function (origin, callback) {
+      // Permitir requests sin origin (como mobile apps o curl)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
