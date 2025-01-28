@@ -32,7 +32,7 @@ passport.use(
 
 // Serialización - Qué guardamos en la sesión
 passport.serializeUser((user, done) => {
-  console.log("Serializando usuario:", user.id);
+  console.log("Serializando usuario:", user);
   done(null, user.id);
 });
 
