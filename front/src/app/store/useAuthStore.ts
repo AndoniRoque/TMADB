@@ -40,6 +40,8 @@ export const useAuthStore = create<AuthState>((set) => ({
         password,
       });
 
+      console.log("response upon login", response.data);
+
       if (response.data.user) {
         set({
           isLoggedIn: true,
