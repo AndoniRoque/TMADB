@@ -35,7 +35,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     }),
   login: async (username: string, password: string) => {
     try {
-      const response = await axios.post(`/auth/login`, {
+      const response = await axios.post(`/api/login`, {
         username,
         password,
       });
@@ -53,7 +53,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
   logout: async () => {
     try {
-      await axios.get(`/auth/logout`);
+      await axios.get(`/api/logout`);
       set({
         isLoggedIn: false,
         user: {
