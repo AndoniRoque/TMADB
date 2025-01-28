@@ -54,6 +54,8 @@ router.post("/login", (req, res, next) => {
         domain: ".onrender.com",
       });
 
+      console.log("Hola", req.sessionID);
+
       return res.status(200).json({
         message: "Login successful.",
         user: {
