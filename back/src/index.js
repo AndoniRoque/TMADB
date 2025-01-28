@@ -6,6 +6,7 @@ import charactersRoutes from "./routes/characters.routes.js";
 import usersRoutes from "./routes/users.routes.js";
 import usersEpisode from "./routes/usersEpisodes.routes.js";
 import cors from "cors";
+const PORT = process.env.PORT || 3333;
 
 const app = express();
 
@@ -36,8 +37,8 @@ app.use("/api", episodesRoutes);
 app.use("/api", charactersRoutes);
 app.use("/api", usersEpisode);
 
-app.listen(3333, () => {
-  console.log("Server on port ", 3333);
+app.listen(PORT, () => {
+  console.log("Server on port ", `${PORT}`);
 });
 
 // TODO: un endpoint que muestre todos los personajes por cada capitulo?
