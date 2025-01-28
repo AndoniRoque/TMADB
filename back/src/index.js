@@ -8,6 +8,7 @@ import usersEpisode from "./routes/usersEpisodes.routes.js";
 import cors from "cors";
 const PORT = process.env.PORT || 3333;
 const allowedOrigins = [
+  "tmadb.vercel.app",
   "https://tmadb-andonis-projects.vercel.app",
   "https://tmadb.onrender.com",
 ];
@@ -18,7 +19,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Permitir requests sin origin (como mobile apps o curl)
       if (!origin) return callback(null, true);
 
       if (allowedOrigins.indexOf(origin) !== -1) {

@@ -68,7 +68,10 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
   checkAuthStatus: async () => {
     try {
-      const response = await axios.get(`/api/status`);
+      const response = await axios.get(`/api/status`, {
+        withCredentials: true,
+      });
+      console.log("response data on check auth status", response.data);
       if (response.data.authenticated) {
         set({
           user: {
