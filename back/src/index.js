@@ -11,18 +11,39 @@ const PORT = process.env.PORT || 3333;
 const app = express();
 
 app.use(express.json());
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 app.use(
   session({
     secret: "cats",
     resave: false,
     saveUninitialized: false,
-    cookie: { httpOnly: true, secure: false },
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // true en producción
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000, // 24 horas
+    },
   })
 );
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors({ origin: "https://tmadb-andonis-projects.vercel.app/", credentials: true }));
+app.use(
+  cors({
+    origin: "https://tmadb-andonis-projects.vercel.app",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["set-cookie"],
+  })
+);
 
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;
@@ -40,6 +61,3 @@ app.use("/api", usersEpisode);
 app.listen(PORT, () => {
   console.log("Server on port ", `${PORT}`);
 });
-
-// TODO: un endpoint que muestre todos los personajes por cada capitulo?
-// TODO: mostrar los episodios en los que aparece cada personaje en la vista del personaje
