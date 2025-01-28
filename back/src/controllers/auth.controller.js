@@ -69,7 +69,9 @@ export const ensureAuthenticated = (req, res, next) => {
 
 export const ensureAdmin = async (req, res, next) => {
   if (!req.isAuthenticated()) {
-    return res.status(401).json({ message: "No autenticado" });
+    return res
+      .status(401)
+      .json({ message: "No autenticadoooooooooooooooooooooooooooooooooooooo" });
   }
 
   if (req.user?.role !== "ADMIN") {
