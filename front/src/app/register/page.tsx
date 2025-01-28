@@ -18,6 +18,7 @@ import React, { useState } from "react";
 function Register() {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
+  const [repassword, setRePassword] = useState("");
   const [email, setEmail] = useState("");
   const toast = useToast();
   const router = useRouter();
@@ -105,7 +106,7 @@ function Register() {
             Reenter Password{" "}
           </FormLabel>
           <Input
-            value={password}
+            value={repassword}
             onChange={(e) => setPassword(e.target.value)}
             type="password"
           />
