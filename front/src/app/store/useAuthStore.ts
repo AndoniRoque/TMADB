@@ -1,41 +1,111 @@
 import { create } from "zustand";
 import axios from "axios";
-
+import { useEffect } from "react";
 const URL_BACK = process.env.NEXT_PUBLIC_API_URL; //"http://localhost:3333/api";
+
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = URL_BACK;
+
+interface User {
+  username: string;
+  role: string;
+  id?: string;
+  mail?: string;
+}
 
 interface AuthState {
   isLoggedIn: boolean;
-  username: string;
-  setUser: (username: string) => void;
-  logout: () => void;
+  user: User;
+  setUser: (user: User) => void;
+  login: (username: string, passwrod: string) => Promise<void>;
+  logout: () => Promise<void>;
   checkAuthStatus: () => Promise<void>;
-  role: string;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   isLoggedIn: false,
-  username: "Annonymous User",
-  setUser: (username: string) => set({ username, isLoggedIn: true }),
-  logout: () => set({ username: "Annonymous User", isLoggedIn: false }),
-  role: "USER",
-  checkAuthStatus: async () => {
+  user: {
+    username: "Annonymous User",
+    role: "USER",
+  },
+  setUser: (user: User) =>
+    set({
+      user,
+      isLoggedIn: true,
+    }),
+  login: async (username: string, password: string) => {
     try {
-      const response = await axios.get(`${URL_BACK}/status`, {
-        withCredentials: true,
+      const response = await axios.post(`/auth/login`, {
+        username,
+        password,
       });
-      console.log(response.data);
-      if (response.data.authenticated) {
-        console.log(">>>>", response.data.user.role);
+
+      if (response.data.user) {
         set({
-          username: response.data.user.username,
-          isLoggedIn: response.data.authenticated,
-          role: response.data.user.role,
+          isLoggedIn: true,
+          user: response.data.user,
         });
-      } else {
-        set({ username: "Annonymous User", isLoggedIn: false });
       }
     } catch (err) {
-      set({ username: "Annonymous User", isLoggedIn: false });
+      console.log(err);
+      throw err;
+    }
+  },
+  logout: async () => {
+    try {
+      await axios.get(`/auth/logout`);
+      set({
+        isLoggedIn: false,
+        user: {
+          username: "Annonymous User",
+          role: "USER",
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  },
+  checkAuthStatus: async () => {
+    try {
+      const response = await axios.get(`/api/status`);
+      if (response.data.authenticated) {
+        set({
+          user: {
+            username: response.data.user.username,
+            role: response.data.user.role,
+            id: response.data.user.id,
+            mail: response.data.user.mail,
+          },
+          isLoggedIn: true,
+        });
+      } else {
+        set({
+          isLoggedIn: false,
+          user: {
+            username: "Annonymous User",
+            role: "USER",
+          },
+        });
+      }
+    } catch (err) {
+      set({
+        isLoggedIn: false,
+        user: {
+          username: "Annonymous User",
+          role: "USER",
+        },
+      });
     }
   },
 }));
+
+export const useProtectedRoute = () => {
+  const { isLoggedIn, checkAuthStatus } = useAuthStore();
+
+  useEffect(() => {
+    checkAuthStatus();
+  }, [checkAuthStatus]);
+
+  return isLoggedIn;
+};
