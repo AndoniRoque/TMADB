@@ -14,12 +14,12 @@ passport.use(
       });
 
       if (!user) {
-        return done(null, false, { message: "Usuario no encontrado." });
+        return done(null, false, { message: "Invalid username or password." });
       }
 
       const match = await bcrypt.compare(password, user.password);
       if (!match) {
-        return done(null, false, { message: "Contraseña incorrecta" });
+        return done(null, false, { message: "Wrong password." });
       }
 
       return done(null, user);
@@ -39,15 +39,8 @@ passport.serializeUser((user, done) => {
 // Deserialización - Cómo recuperamos el usuario
 passport.deserializeUser(async (id, done) => {
   try {
-    console.log("Deserializando usuario:", id);
     const user = await prisma.user.findUnique({
       where: { id },
-      select: {
-        id: true,
-        username: true,
-        mail: true,
-        role: true,
-      },
     });
     done(null, user);
   } catch (error) {
