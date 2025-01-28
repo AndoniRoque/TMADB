@@ -7,6 +7,13 @@ const prisma = new PrismaClient();
 
 const router = Router();
 
+const isAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.status(401).json({ message: "No autenticado" });
+};
+
 router.use((req, res, next) => {
   res.locals.currentUser = req.user;
   next();
@@ -21,7 +28,7 @@ router.post("/login", (req, res, next) => {
     if (err) {
       console.error("Authentication error:", err);
       return res.status(500).json({
-        message: "An error ocurred during login.",
+        message: "An error occurred during login.",
         error: err.message,
       });
     }
@@ -30,7 +37,6 @@ router.post("/login", (req, res, next) => {
         .status(401)
         .json({ message: info?.message || "Invalid username or password." });
     }
-
     req.login(user, (loginErr) => {
       if (loginErr) {
         console.error("Login error:", loginErr);
@@ -38,6 +44,17 @@ router.post("/login", (req, res, next) => {
           .status(500)
           .json({ message: "Login failed", error: loginErr.message });
       }
+
+      // Establecer la cookie de sesión explícitamente
+      res.cookie("connect.sid", req.sessionID, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "none",
+        maxAge: 24 * 60 * 60 * 1000,
+        domain:
+          process.env.NODE_ENV === "production" ? ".onrender.com" : "localhost",
+      });
+
       return res.status(200).json({
         message: "Login successful.",
         user: {
@@ -71,6 +88,10 @@ router.get("/logout", async (req, res) => {
 });
 
 router.get("/status", (req, res) => {
+  console.log("Session:", req.session);
+  console.log("User:", req.user);
+  console.log("Is Authenticated:", req.isAuthenticated());
+
   if (req.isAuthenticated()) {
     return res.status(200).json({
       authenticated: true,
@@ -80,9 +101,13 @@ router.get("/status", (req, res) => {
         mail: req.user.mail,
         role: req.user.role,
       },
+      sessionID: req.sessionID,
     });
   }
-  res.status(401).json({ authenticated: false });
+  res.status(401).json({
+    authenticated: false,
+    sessionID: req.sessionID,
+  });
 });
 
 router.post("/register", async (req, res) => {

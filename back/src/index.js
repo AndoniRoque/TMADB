@@ -33,6 +33,8 @@ app.use(
       secure: process.env.NODE_ENV === "production", // true en producción
       sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000, // 24 horas
+      domain:
+        process.env.NODE_ENV === "production" ? ".onrender.com" : "localhost",
     },
   })
 );
