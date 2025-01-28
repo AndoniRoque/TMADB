@@ -11,35 +11,9 @@ const allowedOrigins = [
   "https://tmadb-andonis-projects.vercel.app",
   "https://tmadb.onrender.com",
 ];
-
 const app = express();
 
 app.use(express.json());
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
-app.use(
-  session({
-    secret: "cats",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // true en producción
-      sameSite: "lax",
-      maxAge: 24 * 60 * 60 * 1000, // 24 horas
-      domain:
-        process.env.NODE_ENV === "production" ? ".onrender.com" : "localhost",
-    },
-  })
-);
-app.use(passport.initialize());
-app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
@@ -59,19 +33,70 @@ app.use(
     exposedHeaders: ["set-cookie"],
   })
 );
+app.use(
+  session({
+    secret: "cats",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // true en producción
+      sameSite: "none",
+      maxAge: 24 * 60 * 60 * 1000, // 24 horas
+      domain:
+        process.env.NODE_ENV === "production" ? ".onrender.com" : "localhost",
+    },
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   next();
 });
-
-// protected routes
 app.use("/auth", usersRoutes);
+const isAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.status(401).json({ message: "No autenticado" });
+};
+app.use("/api", isAuthenticated, usersRoutes);
+app.use("/api", isAuthenticated, episodesRoutes);
+app.use("/api", isAuthenticated, charactersRoutes);
+app.use("/api", isAuthenticated, usersEpisode);
 
-app.use("/api", usersRoutes);
-app.use("/api", episodesRoutes);
-app.use("/api", charactersRoutes);
-app.use("/api", usersEpisode);
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    message: "Algo salió mal!",
+    error:
+      process.env.NODE_ENV === "development"
+        ? err.message
+        : "Error interno del servidor",
+  });
+});
 
 app.listen(PORT, () => {
   console.log("Server on port ", `${PORT}`);

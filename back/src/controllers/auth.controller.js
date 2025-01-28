@@ -3,75 +3,81 @@ import LocalStrategy from "passport-local";
 import { prisma } from "../db.js";
 import bcrypt from "bcrypt";
 
+// Configuración de la estrategia local
 passport.use(
   new LocalStrategy(async (username, password, done) => {
     try {
-      const rows = await prisma.user.findUnique({
+      const user = await prisma.user.findUnique({
         where: {
           username: username,
         },
       });
 
-      const user = rows;
-
       if (!user) {
-        return done(null, false, { message: "User not found." });
+        return done(null, false, { message: "Usuario no encontrado." });
       }
 
       const match = await bcrypt.compare(password, user.password);
-
       if (!match) {
-        return done(null, false, { message: "Incorrect passowrd" });
+        return done(null, false, { message: "Contraseña incorrecta" });
       }
 
       return done(null, user);
     } catch (error) {
+      console.error("Error en autenticación:", error);
       return done(error);
     }
   })
 );
 
+// Serialización - Qué guardamos en la sesión
 passport.serializeUser((user, done) => {
+  console.log("Serializando usuario:", user.id);
   done(null, user.id);
 });
 
+// Deserialización - Cómo recuperamos el usuario
 passport.deserializeUser(async (id, done) => {
   try {
-    const rows = await prisma.user.findUnique({
-      where: {
-        id: id,
+    console.log("Deserializando usuario:", id);
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        username: true,
+        mail: true,
+        role: true,
+        // Excluimos password por seguridad
       },
     });
-    const user = rows;
-
     done(null, user);
   } catch (error) {
+    console.error("Error en deserialización:", error);
     done(error);
   }
 });
 
 export const ensureAuthenticated = (req, res, next) => {
-  return req.isAuthenticated()
-    ? next()
-    : res
-        .status(401)
-        .json({ message: "You need to log in to access this resource." });
+  console.log("Verificando autenticación:", req.isAuthenticated());
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  return res.status(401).json({
+    message: "Necesitas iniciar sesión para acceder a este recurso.",
+    authenticated: false,
+  });
 };
 
 export const ensureAdmin = async (req, res, next) => {
-  try {
-    if (req.user && req.user.role === "ADMIN") {
-      return next();
-    } else {
-      return res
-        .status(403)
-        .json({ message: "You need to be an admin to access this resource." });
-    }
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Error checking user role.", error: error.message });
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ message: "No autenticado" });
   }
+
+  if (req.user?.role !== "ADMIN") {
+    return res.status(403).json({ message: "Requiere rol de administrador" });
+  }
+
+  next();
 };
 
 export default passport;
