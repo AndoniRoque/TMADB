@@ -26,7 +26,7 @@ const CustomTable: React.FC<TableData> = ({
   const navigate = useRouter();
   const [sortList, setSortList] = useState<Character[] | Episode[]>(data);
   const [sortOrder, setSortOrder] = useState<boolean>(false);
-  const { username } = useAuthStore();
+  const { user } = useAuthStore();
   const [listOfEpisodesHeard, setListOfEpisodesHeard] = useState<Episode[]>([]);
 
   const handleNavigation = (path: string) => {
@@ -38,7 +38,7 @@ const CustomTable: React.FC<TableData> = ({
       const { data } = await axios.post(
         `${URL_BACK}/episodesHeard/`,
         {
-          userId: username,
+          userId: user.username,
           episodeId: episode.id,
         },
         {

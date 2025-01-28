@@ -27,7 +27,7 @@ const URL_BACK = process.env.NEXT_PUBLIC_API_URL; //"http://localhost:3333/api";
 export default function EpisodesPage() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isOpenSearchBar, onToggle } = useDisclosure();
-  const { role } = useAuthStore();
+  const { user } = useAuthStore();
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
@@ -81,7 +81,7 @@ export default function EpisodesPage() {
         <Heading fontSize="4xl" color={"whitesmoke"} flex={1}>
           T.M.A Episodes
         </Heading>
-        {role === "ADMIN" && (
+        {user.role === "ADMIN" && (
           <Flex
             justifyContent={"center"}
             alignItems={"center"}

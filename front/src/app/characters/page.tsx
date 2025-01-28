@@ -29,7 +29,7 @@ function characters() {
   const [showTable, setShowTable] = useState<boolean>(true);
   const [search, setSearch] = useState<string>("");
   const [showSearchBar, setShowSearchBar] = useState<boolean>(true);
-  const { role } = useAuthStore();
+  const { user } = useAuthStore();
   const {
     characters,
     getCharacters,
@@ -64,7 +64,7 @@ function characters() {
           alignItems={"center"}
           flexDirection={"row"}
         >
-          {role === "ADMIN" && (
+          {user.role === "ADMIN" && (
             <Button onClick={onOpen} mr={2}>
               {" "}
               Add{" "}

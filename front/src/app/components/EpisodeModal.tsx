@@ -28,8 +28,6 @@ const EpisodeModal: React.FC<EpisodeModalProps> = ({
   initialValue,
   getEpisode,
 }) => {
-  console.log(">>>>", initialValue);
-
   const { characters, getCharacters } = useCharacterStore();
   const [id, setId] = useState<number>(initialValue?.id || 0);
   const [title, setTitle] = useState<string>(initialValue?.title || "");

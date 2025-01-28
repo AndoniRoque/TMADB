@@ -20,7 +20,7 @@ type Props = Character | Episode;
 
 const InformationCard: React.FC<Props> = (info) => {
   const isEpisode = (info: Props): info is Episode => "title" in info;
-  const { username } = useAuthStore();
+  const { user } = useAuthStore();
   const [listOfEpisodesHeard, setListOfEpisodesHeard] = useState<Episode[]>([]);
 
   const matchedEpisode = listOfEpisodesHeard?.find(
@@ -31,7 +31,7 @@ const InformationCard: React.FC<Props> = (info) => {
     try {
       const getEpisodesbyUser = await axios.post(
         `${URL_BACK}/episodesByUser/`,
-        { username: username },
+        { username: user.username },
         {
           withCredentials: true,
         }
@@ -44,7 +44,7 @@ const InformationCard: React.FC<Props> = (info) => {
 
   useEffect(() => {
     heardEpisodes();
-  }, [username, info]);
+  }, [user.username, info]);
 
   return (
     <Flex

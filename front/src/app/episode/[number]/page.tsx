@@ -29,7 +29,7 @@ function Page() {
   const episodeNumber = params.number;
   const router = useRouter();
   const toast = useToast();
-  const { role } = useAuthStore();
+  const { user } = useAuthStore();
   const [episode, setEpisode] = useState<Episode | null>(null);
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
@@ -137,7 +137,7 @@ function Page() {
   return (
     <>
       <Box position="fixed" m={4} top="15%" left="88%" zIndex={1000}>
-        {role === "ADMIN" && (
+        {user.role === "ADMIN" && (
           <Flex flexDirection="column" gap={2}>
             <Button
               onClick={handleEditEpisode}

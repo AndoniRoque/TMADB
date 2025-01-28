@@ -14,7 +14,7 @@ import { useAuthStore } from "../store/useAuthStore";
 const URL_BACK = process.env.NEXT_PUBLIC_API_URL; //"http://localhost:3333/api";
 
 function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
-  const { username } = useAuthStore();
+  const { user } = useAuthStore();
   const [listOfEpisodesHeard, setListOfEpisodesHeard] = useState<Episode[]>([]);
 
   const heardEpisode = async (episode: Episode) => {
@@ -22,7 +22,7 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
       const { data } = await axios.post(
         `${URL_BACK}/episodesHeard/`,
         {
-          userId: username,
+          userId: user.username,
           episodeId: episode.id,
         },
         {
@@ -40,7 +40,7 @@ function EpisodeCard({ episode, refreshEpisodes }: EpisodeCardProps) {
     try {
       const getEpisodesbyUser = await axios.post(
         `${URL_BACK}/episodesByUser/`,
-        { username: username },
+        { username: user.username },
         {
           withCredentials: true,
         }

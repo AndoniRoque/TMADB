@@ -32,8 +32,7 @@ const URL_BACK = process.env.NEXT_PUBLIC_API_URL; //"http://localhost:3333/api";
 
 function Header() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isLoggedIn, username, logout, checkAuthStatus, role } =
-    useAuthStore();
+  const { isLoggedIn, user, logout, checkAuthStatus } = useAuthStore();
   const btnRef = useRef();
   const toast = useToast();
   const router = useRouter();
@@ -167,7 +166,7 @@ function Header() {
                   }
                 >
                   <Text color={"rgba(236, 223, 204, 0.8)"} ml={2}>
-                    {username}
+                    {user.username}
                   </Text>
                 </MenuButton>
                 <MenuList>
