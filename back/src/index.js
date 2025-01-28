@@ -43,8 +43,6 @@ app.use(
       secure: process.env.NODE_ENV === "production", // true en producción
       sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000, // 24 horas
-      domain:
-        process.env.NODE_ENV === "production" ? ".onrender.com" : "localhost",
     },
   })
 );
@@ -85,7 +83,7 @@ const isAuthenticated = (req, res, next) => {
 app.use("/api", usersRoutes);
 app.use("/api", isAuthenticated, episodesRoutes);
 app.use("/api", isAuthenticated, charactersRoutes);
-app.use("/api", isAuthenticated, usersEpisode);
+app.use("/api", usersEpisode);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
